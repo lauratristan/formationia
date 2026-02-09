@@ -1,0 +1,4403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Infiltration - Escape Game IA & Environnement</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Exo+2:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --neon-green: #00ff88;
+            --neon-blue: #00d4ff;
+            --neon-pink: #ff0080;
+            --dark-bg: #0a0e17;
+            --panel-bg: rgba(10, 20, 40, 0.95);
+            --text: #e0f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* ==================== ÉCRAN TITRE ==================== */
+        #title-screen {
+            position: fixed;
+            inset: 0;
+            background: url('images/title-bg.png') center/cover no-repeat, linear-gradient(135deg, #0a0e17 0%, #1a1a3a 50%, #0a0e17 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #title-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 14, 23, 0.7);
+            z-index: -1;
+        }
+
+        #title-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .title-logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .main-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 3em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 50px rgba(0, 255, 136, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: #8899aa;
+            margin-bottom: 50px;
+            font-weight: 300;
+        }
+
+        .start-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2em;
+            padding: 20px 60px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5), inset 0 0 30px rgba(0, 255, 136, 0.1);
+            transform: scale(1.05);
+        }
+
+        .intro-text {
+            max-width: 600px;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: #aabbcc;
+        }
+
+        /* ==================== LIENS RETOUR MODULES ==================== */
+        /* Lien dans la sidebar du briefing */
+        .back-link-sidebar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link-sidebar:hover {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: var(--neon-blue);
+            transform: translateX(-3px);
+        }
+
+        .back-link-sidebar .back-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .back-link-sidebar:hover .back-arrow {
+            transform: translateX(-3px);
+        }
+
+        /* Bouton dans la top-bar du jeu */
+        .back-btn-game {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            margin-right: 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 6px;
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn-game:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        /* Lien discret sur l'écran titre */
+        .back-link-title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            color: #8899aa;
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link-title:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #aabbcc;
+        }
+
+        /* ==================== GAME CONTAINER ==================== */
+        #game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #game-container.active {
+            display: block;
+        }
+
+        /* ==================== ROOM VIEW ==================== */
+        #room-view {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-background {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: opacity 0.5s;
+        }
+
+        /* Salles avec images de fond */
+        .room-corridor {
+            background: url('images/room-corridor.png') center/cover no-repeat;
+        }
+
+        .room-servers {
+            background: url('images/room-servers.png') center/cover no-repeat;
+        }
+
+        .room-control {
+            background: url('images/room-control.png') center/cover no-repeat;
+        }
+
+        .room-cooling {
+            background: url('images/room-cooling.png') center/cover no-repeat;
+        }
+
+        .room-office {
+            background: url('images/room-office.png') center/cover no-repeat;
+        }
+
+        /* Overlay sombre sur les salles pour meilleure lisibilité */
+        .room-background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+
+        /* ==================== OBJETS INTERACTIFS ==================== */
+        .interactive-object {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .interactive-object:hover {
+            filter: brightness(1.3) drop-shadow(0 0 15px var(--neon-green));
+            transform: scale(1.05);
+        }
+
+        .interactive-object.collected {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Serveurs */
+        .server-rack {
+            width: 80px;
+            height: 200px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 2px solid #2a2a4e;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+            gap: 3px;
+        }
+
+        .server-unit {
+            height: 20px;
+            background: linear-gradient(90deg, #2a2a4e, #1a1a3e);
+            border-radius: 2px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .server-led {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 3px;
+            animation: blink 1s infinite;
+        }
+
+        .server-led.green { background: #00ff88; box-shadow: 0 0 5px #00ff88; }
+        .server-led.orange { background: #ffaa00; box-shadow: 0 0 5px #ffaa00; animation-delay: 0.3s; }
+        .server-led.red { background: #ff3366; box-shadow: 0 0 5px #ff3366; animation-delay: 0.6s; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Terminal */
+        .terminal-object {
+            width: 120px;
+            height: 100px;
+        }
+
+        .terminal-screen {
+            width: 100%;
+            height: 70px;
+            background: #0a1520;
+            border: 3px solid #2a3a4a;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .terminal-screen::before {
+            content: '>';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: var(--neon-green);
+            font-family: 'Space Mono', monospace;
+            animation: cursor-blink 1s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .terminal-base {
+            width: 80%;
+            height: 20px;
+            background: #2a3a4a;
+            margin: 5px auto 0;
+            border-radius: 3px;
+        }
+
+        /* Document */
+        .document-object {
+            width: 60px;
+            height: 80px;
+            background: #f5f5f0;
+            border-radius: 3px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-object::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 4px;
+            background: #333;
+            box-shadow: 0 10px 0 #333, 0 20px 0 #333, 0 30px 0 #333, 0 40px 0 #666;
+        }
+
+        .document-object.confidential::after {
+            content: 'CONFIDENTIEL';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-15deg);
+            font-size: 8px;
+            color: #ff3366;
+            font-weight: bold;
+            border: 1px solid #ff3366;
+            padding: 2px 5px;
+        }
+
+        /* Tuyaux de refroidissement */
+        .cooling-pipe {
+            width: 40px;
+            height: 300px;
+            background: linear-gradient(90deg, #3a4a5a, #5a6a7a, #3a4a5a);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .cooling-pipe::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(180deg,
+                rgba(0, 200, 255, 0.3) 0%,
+                rgba(0, 200, 255, 0.1) 50%,
+                rgba(0, 200, 255, 0.3) 100%);
+            animation: water-flow 2s linear infinite;
+        }
+
+        @keyframes water-flow {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        /* Compteur énergie */
+        .energy-meter {
+            width: 100px;
+            height: 120px;
+            background: #1a2030;
+            border: 3px solid #3a4a5a;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .meter-display {
+            width: 80px;
+            height: 40px;
+            background: #0a0a15;
+            border: 2px solid #2a3a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .meter-bars {
+            display: flex;
+            gap: 3px;
+            height: 40px;
+            align-items: flex-end;
+        }
+
+        .meter-bar {
+            width: 8px;
+            background: var(--neon-green);
+            border-radius: 2px;
+            animation: meter-pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes meter-pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ==================== UI OVERLAY ==================== */
+        #ui-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #ui-overlay > * {
+            pointer-events: auto;
+        }
+
+        /* Top bar */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(10, 14, 23, 0.95), rgba(10, 14, 23, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .location-name {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .location-icon {
+            font-size: 1.5em;
+        }
+
+        /* Timer & alertes */
+        .alert-level {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3em;
+            color: var(--neon-blue);
+        }
+
+        .suspicion-meter {
+            width: 150px;
+            height: 10px;
+            background: #1a2030;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #3a4a5a;
+        }
+
+        .suspicion-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), #ffaa00, var(--neon-pink));
+            transition: width 0.5s;
+            border-radius: 5px;
+        }
+
+        /* Inventaire */
+        .inventory-bar {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(10, 20, 40, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .inventory-slot {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .inventory-slot:hover {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .inventory-slot.filled {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Navigation arrows */
+        .nav-arrow {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--neon-green);
+        }
+
+        .nav-arrow:hover {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            transform: scale(1.1);
+        }
+
+        .nav-arrow.left { left: 20px; top: 50%; transform: translateY(-50%); }
+        .nav-arrow.right { right: 20px; top: 50%; transform: translateY(-50%); }
+        .nav-arrow.up { top: 80px; left: 50%; transform: translateX(-50%); }
+        .nav-arrow.down { bottom: 160px; left: 50%; transform: translateX(-50%); }
+
+        .nav-arrow.left:hover { transform: translateY(-50%) scale(1.1); }
+        .nav-arrow.right:hover { transform: translateY(-50%) scale(1.1); }
+        .nav-arrow.up:hover { transform: translateX(-50%) scale(1.1); }
+        .nav-arrow.down:hover { transform: translateX(-50%) scale(1.1); }
+
+        /* ==================== MODALS & PUZZLES ==================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 2px solid var(--neon-pink);
+            border-radius: 50%;
+            color: var(--neon-pink);
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--neon-pink);
+            color: white;
+        }
+
+        .modal-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5em;
+            color: var(--neon-green);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ==================== PUZZLE: CONNEXION ==================== */
+        .connection-puzzle {
+            display: flex;
+            justify-content: space-between;
+            gap: 50px;
+            margin: 30px 0;
+        }
+
+        .connection-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .connection-item {
+            padding: 15px 20px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            min-width: 200px;
+        }
+
+        .connection-item:hover {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .connection-item.selected {
+            border-color: var(--neon-blue);
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .connection-item.correct {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.2);
+        }
+
+        .connection-item.incorrect {
+            border-color: var(--neon-pink);
+            background: rgba(255, 0, 128, 0.2);
+        }
+
+        /* ==================== PUZZLE: CODE ==================== */
+        .code-puzzle {
+            text-align: center;
+        }
+
+        .code-display {
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            letter-spacing: 15px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #0a0a15;
+            border-radius: 10px;
+            border: 2px solid #2a3a4a;
+        }
+
+        .code-input {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .code-digit {
+            width: 60px;
+            height: 70px;
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            text-align: center;
+            background: #0a1520;
+            border: 2px solid #3a4a5a;
+            border-radius: 10px;
+            color: var(--neon-green);
+            outline: none;
+        }
+
+        .code-digit:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        }
+
+        /* ==================== PUZZLE: SLIDER/GAUGE ==================== */
+        .gauge-puzzle {
+            margin: 30px 0;
+        }
+
+        .gauge-container {
+            position: relative;
+            height: 40px;
+            background: #0a1520;
+            border-radius: 20px;
+            border: 2px solid #3a4a5a;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .gauge-target {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: rgba(0, 255, 136, 0.2);
+            border-left: 2px solid var(--neon-green);
+            border-right: 2px solid var(--neon-green);
+        }
+
+        .gauge-slider {
+            width: 100%;
+            height: 100%;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .gauge-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 40px;
+            background: var(--neon-blue);
+            border-radius: 5px;
+            cursor: grab;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .gauge-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5em;
+            text-align: center;
+            color: var(--neon-blue);
+        }
+
+        /* ==================== PUZZLE: TRI ==================== */
+        .sorting-puzzle {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sorting-zones {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .sorting-zone {
+            width: 200px;
+            min-height: 150px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sorting-zone-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9em;
+            color: var(--neon-green);
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .sorting-item {
+            padding: 10px 15px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 8px;
+            cursor: grab;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .sorting-item:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--neon-blue);
+        }
+
+        .sorting-item.dragging {
+            opacity: 0.5;
+        }
+
+        .sorting-items-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        /* ==================== DOCUMENT VIEWER ==================== */
+        .document-viewer {
+            background: #f5f5f0;
+            color: #1a1a1a;
+            padding: 30px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .document-stamp {
+            color: #ff3366;
+            font-weight: bold;
+            border: 2px solid #ff3366;
+            padding: 5px 15px;
+            transform: rotate(-5deg);
+        }
+
+        .document-highlight {
+            background: #ffff00;
+            padding: 2px 5px;
+        }
+
+        .document-redacted {
+            background: #1a1a1a;
+            color: #1a1a1a;
+            padding: 0 30px;
+        }
+
+        /* ==================== INFO DÉCOUVERTE ==================== */
+        .discovery-panel {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+            border-left: 4px solid var(--neon-green);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .discovery-title {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .discovery-stat {
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            color: var(--neon-blue);
+            margin: 15px 0;
+        }
+
+        /* ==================== DIALOGUE SYSTEM ==================== */
+        .dialogue-box {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 20px;
+            padding: 25px;
+            display: none;
+            z-index: 200;
+        }
+
+        .dialogue-box.active {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(50px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .dialogue-speaker {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dialogue-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .dialogue-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dialogue-choice {
+            padding: 15px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .dialogue-choice:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--neon-blue);
+            transform: translateX(10px);
+        }
+
+        /* ==================== PROGRESS TRACKER ==================== */
+        .evidence-tracker {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            width: 250px;
+        }
+
+        .tracker-title {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .evidence-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .evidence-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9em;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .evidence-item.found {
+            opacity: 1;
+        }
+
+        .evidence-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .evidence-item.found .evidence-icon {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: var(--neon-green);
+        }
+
+        /* ==================== FINAL SCREEN ==================== */
+        .final-report {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .final-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5em;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+        }
+
+        .final-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .final-stat {
+            text-align: center;
+        }
+
+        .final-stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 3em;
+            color: var(--neon-green);
+        }
+
+        .final-stat-label {
+            color: #8899aa;
+            margin-top: 10px;
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(0, 255, 136, 0); }
+        }
+
+        /* ==================== MINI-MAP ==================== */
+        .mini-map {
+            position: absolute;
+            bottom: 100px;
+            right: 20px;
+            width: 150px;
+            height: 120px;
+            background: rgba(10, 20, 40, 0.9);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .mini-map-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 5px;
+            height: 100%;
+        }
+
+        .mini-map-room {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            transition: all 0.3s;
+        }
+
+        .mini-map-room.current {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .mini-map-room.visited {
+            background: rgba(0, 212, 255, 0.2);
+        }
+
+        /* ==================== BOUTON TÉLÉPHONE ==================== */
+        .phone-button {
+            position: fixed;
+            bottom: 130px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 20, 40, 0.9);
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .phone-button:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .phone-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--neon-pink);
+            color: white;
+            font-size: 0.6em;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* ==================== SECTION BRIEFING/COURS ==================== */
+        #briefing-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0a0e17 0%, #1a1a3a 50%, #0a0e17 100%);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #briefing-screen.active {
+            display: flex;
+        }
+
+        .briefing-header {
+            background: rgba(10, 20, 40, 0.95);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .briefing-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3em;
+            color: var(--neon-green);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .briefing-title::before {
+            content: '📁';
+            font-size: 1.5em;
+        }
+
+        .briefing-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #8899aa;
+            font-size: 0.9em;
+        }
+
+        .briefing-progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .briefing-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            transition: width 0.3s ease;
+        }
+
+        .briefing-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .briefing-nav {
+            width: 280px;
+            background: rgba(10, 20, 40, 0.9);
+            border-right: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .briefing-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+            color: #8899aa;
+        }
+
+        .briefing-nav-item:hover {
+            background: rgba(0, 255, 136, 0.05);
+            color: var(--text);
+        }
+
+        .briefing-nav-item.active {
+            border-left-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--neon-green);
+        }
+
+        .briefing-nav-item.completed {
+            color: var(--neon-blue);
+        }
+
+        .briefing-nav-item.completed::after {
+            content: '✓';
+            margin-left: auto;
+            color: var(--neon-green);
+        }
+
+        .nav-icon {
+            font-size: 1.2em;
+            width: 30px;
+            text-align: center;
+        }
+
+        .nav-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8em;
+            background: rgba(0, 255, 136, 0.2);
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .briefing-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .briefing-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .briefing-content::-webkit-scrollbar-track {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .briefing-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 136, 0.3);
+            border-radius: 4px;
+        }
+
+        .module-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.8em;
+            color: var(--neon-green);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .module-section {
+            margin-bottom: 30px;
+        }
+
+        .module-section h3 {
+            color: var(--neon-blue);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .module-section p {
+            color: var(--text);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .stat-box {
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-box.warning {
+            background: rgba(255, 0, 128, 0.05);
+            border-color: rgba(255, 0, 128, 0.3);
+        }
+
+        .stat-highlight {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .stat-number {
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            color: var(--neon-green);
+            font-weight: bold;
+        }
+
+        .stat-box.warning .stat-number {
+            color: var(--neon-pink);
+        }
+
+        .stat-label {
+            color: #8899aa;
+            font-size: 0.95em;
+        }
+
+        .briefing-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .briefing-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .briefing-list li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+        }
+
+        .briefing-footer {
+            background: rgba(10, 20, 40, 0.95);
+            border-top: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .briefing-btn {
+            font-family: 'Space Mono', monospace;
+            padding: 12px 30px;
+            border: 2px solid var(--neon-green);
+            background: transparent;
+            color: var(--neon-green);
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .briefing-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .briefing-btn.primary {
+            background: var(--neon-green);
+            color: var(--dark-bg);
+        }
+
+        .briefing-btn.primary:hover {
+            background: var(--neon-blue);
+            border-color: var(--neon-blue);
+        }
+
+        .briefing-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-card h4 {
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .comparison-table th {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--neon-green);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        /* ==================== TERMINAL INTERACTIF ==================== */
+        .terminal-puzzle {
+            background: #0a0a0a;
+            border: 2px solid var(--neon-green);
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Space Mono', monospace;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .terminal-output {
+            color: var(--neon-green);
+            font-size: 0.9em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .terminal-output .error {
+            color: var(--neon-pink);
+        }
+
+        .terminal-output .info {
+            color: var(--neon-blue);
+        }
+
+        .terminal-output .success {
+            color: #00ff00;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-prompt {
+            color: var(--neon-blue);
+            white-space: nowrap;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9em;
+            outline: none;
+            caret-color: var(--neon-green);
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--neon-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* ==================== SMS NOTIFICATIONS ==================== */
+        .sms-notification {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            max-width: 350px;
+            background: linear-gradient(135deg, rgba(10, 20, 40, 0.98), rgba(20, 30, 60, 0.95));
+            border: 1px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 15px;
+            z-index: 900;
+            animation: slideInSMS 0.5s ease-out, pulseSMS 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+        }
+
+        @keyframes slideInSMS {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseSMS {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 212, 255, 0.6); }
+        }
+
+        .sms-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .sms-icon {
+            font-size: 1.5em;
+            animation: vibrate 0.3s ease-in-out;
+        }
+
+        @keyframes vibrate {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .sms-sender {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9em;
+            color: var(--neon-blue);
+        }
+
+        .sms-time {
+            margin-left: auto;
+            font-size: 0.75em;
+            color: #8899aa;
+        }
+
+        .sms-body {
+            color: var(--text);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .sms-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #8899aa;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .sms-close:hover {
+            color: var(--neon-pink);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .main-title { font-size: 1.8em; }
+            .inventory-bar {
+                bottom: 10px;
+                padding: 10px;
+            }
+            .inventory-slot {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3em;
+            }
+            .evidence-tracker { display: none; }
+            .mini-map { display: none; }
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+            }
+            /* Briefing responsive */
+            .briefing-nav { display: none; }
+            .briefing-content {
+                padding: 20px;
+            }
+            .module-title { font-size: 1.3em; }
+            .stat-number { font-size: 1.5em; }
+            .briefing-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .briefing-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            #skip-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ÉCRAN TITRE -->
+    <div id="title-screen">
+        <!-- Lien retour discret -->
+        <a href="modules.html" class="back-link-title" title="Retour à la liste des modules">
+            <span>←</span>
+            <span>Modules</span>
+        </a>
+        <div class="title-logo">🔐</div>
+        <h1 class="main-title">Green Infiltration</h1>
+        <p class="subtitle">Escape Game - L'Impact Environnemental de l'IA</p>
+
+        <p class="intro-text">
+            Vous êtes journaliste d'investigation. Une source anonyme vous a donné accès à un data center high-tech.
+            Votre mission : <strong>infiltrer les lieux</strong>, <strong>collecter des preuves</strong> sur l'impact environnemental de l'IA,
+            et <strong>vous échapper</strong> avant que la sécurité ne vous repère.
+        </p>
+
+        <button class="start-btn" onclick="showBriefing()">
+            Accéder au Dossier d'Infiltration
+        </button>
+
+        <div style="margin-top: 40px; opacity: 0.7;">
+            <p style="color: #8899aa; font-size: 0.85em; margin-bottom: 8px;">Une formation proposée par</p>
+            <a href="https://www.profexpress.com" target="_blank" rel="noopener">
+                <img src="images/logo-profexpress.png" alt="Prof Express" style="height: 30px; object-fit: contain;">
+            </a>
+        </div>
+    </div>
+
+    <!-- SECTION BRIEFING / COURS -->
+    <div id="briefing-screen">
+        <div class="briefing-header">
+            <div class="briefing-title">DOSSIER D'INFILTRATION - NIVEAU CONFIDENTIEL</div>
+            <div class="briefing-progress">
+                <span id="progress-text">Fichier 1/7</span>
+                <div class="briefing-progress-bar">
+                    <div class="briefing-progress-fill" id="progress-fill" style="width: 12.5%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="briefing-body">
+            <nav class="briefing-nav">
+                <!-- Lien retour vers modules -->
+                <a href="modules.html" class="back-link-sidebar" title="Retour à la liste des modules">
+                    <span class="back-arrow">←</span>
+                    <span>Tous les modules</span>
+                </a>
+
+                <div class="briefing-nav-item active" onclick="showLesson(0)">
+                    <span class="nav-icon">🎬</span>
+                    <span class="nav-number">01</span>
+                    Introduction
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(1)">
+                    <span class="nav-icon">🏢</span>
+                    <span class="nav-number">02</span>
+                    Data Centers
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(2)">
+                    <span class="nav-icon">🌡️</span>
+                    <span class="nav-number">03</span>
+                    Empreinte Carbone
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(3)">
+                    <span class="nav-icon">💧</span>
+                    <span class="nav-number">04</span>
+                    Ressources en Eau
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(4)">
+                    <span class="nav-icon">⛏️</span>
+                    <span class="nav-number">05</span>
+                    Ressources Naturelles
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(5)">
+                    <span class="nav-icon">🗑️</span>
+                    <span class="nav-number">06</span>
+                    Déchets Électroniques
+                </div>
+                <div class="briefing-nav-item" onclick="showLesson(6)">
+                    <span class="nav-icon">🌱</span>
+                    <span class="nav-number">07</span>
+                    IA Responsable
+                </div>
+                <div style="border-top:1px solid rgba(0,212,255,0.2);margin-top:15px;padding-top:15px;">
+                    <div class="briefing-nav-item" onclick="showLesson(7)">
+                        <span class="nav-icon">🎮</span>
+                        <span class="nav-number" style="background:rgba(0,255,136,0.2);color:var(--neon-green);">▶</span>
+                        Mission
+                    </div>
+                </div>
+                <div style="border-top:1px solid rgba(0,212,255,0.2);margin-top:15px;padding-top:15px;">
+                    <div class="briefing-nav-item" id="certificate-nav-item" onclick="showCertificateInFolder()" style="opacity:0.5;cursor:not-allowed;background:rgba(100,100,100,0.2);">
+                        <span class="nav-icon">🔒</span>
+                        <span class="nav-number" style="background:rgba(100,100,100,0.3);color:#888;">--</span>
+                        Attestation de réussite
+                    </div>
+                </div>
+            </nav>
+
+            <div class="briefing-content" id="briefing-content">
+                <!-- Contenu des modules chargé dynamiquement -->
+            </div>
+        </div>
+
+        <div class="briefing-footer">
+            <button class="briefing-btn" id="prev-btn" onclick="prevLesson()" disabled>
+                ← Fichier précédent
+            </button>
+            <button class="briefing-btn primary" id="next-btn" onclick="nextLesson()">
+                Fichier suivant →
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div id="game-container">
+        <!-- Vue de la salle -->
+        <div id="room-view">
+            <div class="room-background" id="room-bg"></div>
+            <div id="room-objects"></div>
+        </div>
+
+        <!-- UI OVERLAY -->
+        <div id="ui-overlay">
+            <!-- Barre supérieure -->
+            <div class="top-bar">
+                <div style="display: flex; align-items: center;">
+                    <!-- Bouton retour modules -->
+                    <a href="modules.html" class="back-btn-game" title="Retour à la liste des modules">
+                        <span>←</span>
+                        <span>Modules</span>
+                    </a>
+                    <div class="location-name">
+                        <span class="location-icon" id="location-icon">📍</span>
+                        <span id="location-name">Couloir Principal</span>
+                    </div>
+                </div>
+                <div class="alert-level">
+                    <div class="timer" id="timer">15:00</div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.7em; color: #8899aa; margin-bottom: 3px;">SUSPICION</div>
+                        <div class="suspicion-meter">
+                            <div class="suspicion-fill" id="suspicion-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracker de preuves -->
+            <div class="evidence-tracker">
+                <div class="tracker-title">📋 PREUVES À COLLECTER</div>
+                <div class="evidence-list" id="evidence-list">
+                    <!-- Dynamique -->
+                </div>
+            </div>
+
+            <!-- Mini-map -->
+            <div class="mini-map">
+                <div class="mini-map-grid" id="mini-map">
+                    <!-- Dynamique -->
+                </div>
+            </div>
+
+            <!-- Bouton Téléphone -->
+            <div class="phone-button" onclick="openPhone()">
+                📱
+                <span class="phone-indicator" id="phone-indicator" style="display:none;">0</span>
+            </div>
+
+            <!-- Inventaire -->
+            <div class="inventory-bar">
+                <div class="inventory-slot" id="inv-0"></div>
+                <div class="inventory-slot" id="inv-1"></div>
+                <div class="inventory-slot" id="inv-2"></div>
+                <div class="inventory-slot" id="inv-3"></div>
+                <div class="inventory-slot" id="inv-4"></div>
+            </div>
+
+            <!-- Flèches de navigation -->
+            <div id="nav-arrows"></div>
+        </div>
+
+        <!-- Dialogue -->
+        <div class="dialogue-box" id="dialogue-box">
+            <div class="dialogue-speaker" id="dialogue-speaker"></div>
+            <div class="dialogue-text" id="dialogue-text"></div>
+            <div class="dialogue-choices" id="dialogue-choices"></div>
+        </div>
+    </div>
+
+    <!-- MODAL POUR PUZZLES -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-content" id="modal-content">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CONFIGURATION DU JEU ====================
+        const gameConfig = {
+            timeLimit: 900, // 15 minutes en secondes
+            maxSuspicion: 100
+        };
+
+        // État du jeu
+        const gameState = {
+            currentRoom: 'corridor',
+            inventory: [],
+            evidence: {
+                energy: false,      // Consommation électrique
+                water: false,       // Consommation d'eau
+                models: false,      // Différence entre modèles
+                manufacturing: false, // Impact fabrication
+                co2: false          // Émissions CO2
+            },
+            visitedRooms: ['corridor'],
+            suspicion: 0,
+            timeLeft: gameConfig.timeLimit,
+            puzzlesSolved: {},
+            dialogueState: {},
+            gameEnded: false       // Flag pour éviter les appels multiples
+        };
+
+        // ==================== SYSTÈME DE BRIEFING ====================
+        let currentLesson = 0;
+        const completedLessons = new Set();
+
+        const briefingLessons = [
+            // Cours 1: Introduction
+            {
+                title: "🎬 Introduction : La Révolution de l'IA Générative",
+                content: `
+                    <div class="module-section">
+                        <h3>📊 Contexte de la mission</h3>
+                        <p>L'intelligence artificielle générative connaît un essor fulgurant depuis 2022. Des outils comme ChatGPT, DALL-E ou Midjourney sont utilisés par des millions de personnes. Mais derrière cette révolution technologique se cachent des réalités environnementales souvent méconnues.</p>
+
+                        <div class="stat-box">
+                            <div class="stat-highlight">
+                                <span class="stat-number">10x</span>
+                                <span class="stat-label">Une requête sur un chatbot IA consomme 10 fois plus d'énergie qu'une recherche Google classique</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🎯 Objectif de votre mission</h3>
+                        <p>En tant que journaliste d'investigation, votre mission est d'infiltrer le data center NovaTech pour collecter des preuves sur l'impact environnemental réel de l'IA. Ce dossier vous prépare à cette mission en vous donnant toutes les informations nécessaires.</p>
+
+                        <div class="info-card">
+                            <h4>💡 Ce que vous allez découvrir</h4>
+                            <ul class="briefing-list">
+                                <li>Les centres de données : cœur énergétique de l'IA</li>
+                                <li>L'empreinte carbone du numérique</li>
+                                <li>L'impact sur les ressources en eau</li>
+                                <li>L'extraction des ressources naturelles</li>
+                                <li>Les déchets électroniques</li>
+                                <li>Les pistes pour une IA plus responsable</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 2: Data Centers
+            {
+                title: "🏢 Les Centres de Données : Cœur Énergétique de l'IA",
+                content: `
+                    <div class="module-section">
+                        <h3>⚡ Fonctionnement d'un data center</h3>
+                        <p>Les centres de données sont des infrastructures qui hébergent des milliers de serveurs fonctionnant 24h/24. Ces serveurs nécessitent une alimentation électrique constante et d'importants systèmes de refroidissement.</p>
+
+                        <div class="stat-box">
+                            <div class="stat-highlight">
+                                <span class="stat-number">2%</span>
+                                <span class="stat-label">Part de la consommation électrique mondiale due aux data centers</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📈 Croissance exponentielle</h3>
+                        <p>Avec l'essor de l'IA générative, la demande en capacité de calcul explose. Les entreprises technologiques investissent massivement dans de nouveaux centres de données.</p>
+
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Entreprise</th>
+                                <th>Investissement prévu</th>
+                            </tr>
+                            <tr>
+                                <td>Microsoft</td>
+                                <td>50 milliards $ / an</td>
+                            </tr>
+                            <tr>
+                                <td>Google</td>
+                                <td>50 milliards $ / an</td>
+                            </tr>
+                            <tr>
+                                <td>Amazon</td>
+                                <td>75 milliards $ / an</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🔌 Consommation par requête</h3>
+                        <p>Chaque interaction avec une IA demande une puissance de calcul significative :</p>
+
+                        <div class="stat-box warning">
+                            <div class="stat-highlight">
+                                <span class="stat-number">0.3 Wh</span>
+                                <span class="stat-label">Énergie d'une requête simple sur ChatGPT</span>
+                            </div>
+                            <div class="stat-highlight">
+                                <span class="stat-number">vs 0.0003 Wh</span>
+                                <span class="stat-label">Énergie d'une recherche Google standard</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 3: Empreinte Carbone
+            {
+                title: "🌡️ L'Empreinte Carbone du Numérique",
+                content: `
+                    <div class="module-section">
+                        <h3>✈️ Comparaison avec le transport aérien</h3>
+                        <p>Le secteur numérique génère aujourd'hui plus d'émissions de gaz à effet de serre que l'aviation civile mondiale.</p>
+
+                        <div class="stat-box warning">
+                            <div class="stat-highlight">
+                                <span class="stat-number">3.5 - 4%</span>
+                                <span class="stat-label">Part des émissions mondiales de CO₂ due au numérique</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🤖 L'entraînement des modèles IA</h3>
+                        <p>L'entraînement d'un grand modèle de langage (LLM) nécessite des ressources colossales :</p>
+
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Modèle</th>
+                                <th>Émissions CO₂ (entraînement)</th>
+                            </tr>
+                            <tr>
+                                <td>GPT-3</td>
+                                <td>552 tonnes CO₂</td>
+                            </tr>
+                            <tr>
+                                <td>GPT-4</td>
+                                <td>Estimation : plusieurs milliers de tonnes</td>
+                            </tr>
+                            <tr>
+                                <td>Voiture (durée de vie)</td>
+                                <td>~50 tonnes CO₂</td>
+                            </tr>
+                        </table>
+
+                        <p><em>Entraîner GPT-3 équivaut aux émissions de 11 voitures pendant toute leur durée de vie.</em></p>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📱 L'usage quotidien</h3>
+                        <p>Au-delà de l'entraînement, chaque utilisation génère des émissions. Avec des millions d'utilisateurs quotidiens, l'impact cumulé est considérable.</p>
+
+                        <div class="info-card">
+                            <h4>💡 Le saviez-vous ?</h4>
+                            <p>100 millions de requêtes ChatGPT par jour = l'équivalent CO₂ de 10 000 vols Paris-New York par an.</p>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 4: Ressources en Eau
+            {
+                title: "💧 L'Impact sur les Ressources en Eau",
+                content: `
+                    <div class="module-section">
+                        <h3>❄️ Le défi du refroidissement</h3>
+                        <p>Les serveurs génèrent une chaleur intense. Pour éviter la surchauffe, les data centers utilisent d'énormes quantités d'eau pour le refroidissement.</p>
+
+                        <div class="stat-box">
+                            <div class="stat-highlight">
+                                <span class="stat-number">500 mL</span>
+                                <span class="stat-label">Eau consommée par conversation de 10-50 échanges avec ChatGPT</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🏭 Consommation des géants du numérique</h3>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Entreprise</th>
+                                <th>Consommation annuelle</th>
+                                <th>Équivalent</th>
+                            </tr>
+                            <tr>
+                                <td>Google</td>
+                                <td>20 milliards de litres</td>
+                                <td>8 000 piscines olympiques</td>
+                            </tr>
+                            <tr>
+                                <td>Microsoft</td>
+                                <td>6.4 milliards de litres</td>
+                                <td>2 500 piscines olympiques</td>
+                            </tr>
+                            <tr>
+                                <td>Meta</td>
+                                <td>5 milliards de litres</td>
+                                <td>2 000 piscines olympiques</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🌍 Conflits d'usage</h3>
+                        <p>Dans des régions déjà en stress hydrique, les data centers entrent en compétition avec les besoins agricoles et les populations locales.</p>
+
+                        <div class="stat-box warning">
+                            <h4>⚠️ Cas concret</h4>
+                            <p>En Uruguay, le data center de Google a été accusé de contribuer à des pénuries d'eau en période de sécheresse, forçant les autorités à rationner l'eau potable pour les habitants.</p>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 5: Ressources Naturelles
+            {
+                title: "⛏️ L'Extraction des Ressources Naturelles",
+                content: `
+                    <div class="module-section">
+                        <h3>💎 Les composants des serveurs</h3>
+                        <p>Chaque serveur contient des dizaines de matériaux rares dont l'extraction a un impact environnemental et social majeur.</p>
+
+                        <ul class="briefing-list">
+                            <li><strong>Lithium</strong> : batteries (Chili, Australie)</li>
+                            <li><strong>Cobalt</strong> : batteries (60% RDC - conditions de travail difficiles)</li>
+                            <li><strong>Terres rares</strong> : aimants, écrans (Chine 60%)</li>
+                            <li><strong>Cuivre</strong> : câbles, circuits</li>
+                            <li><strong>Or, argent</strong> : conducteurs</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🏔️ Impact de l'extraction minière</h3>
+                        <div class="stat-box warning">
+                            <div class="stat-highlight">
+                                <span class="stat-number">70%</span>
+                                <span class="stat-label">Du cobalt mondial provient de mines où le travail des enfants est documenté</span>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>🌿 Dégâts environnementaux</h4>
+                            <ul class="briefing-list">
+                                <li>Déforestation et destruction d'écosystèmes</li>
+                                <li>Pollution des sols et des nappes phréatiques</li>
+                                <li>Émissions de poussières toxiques</li>
+                                <li>Consommation massive d'eau et d'énergie</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📊 Besoins croissants</h3>
+                        <p>La demande en puces pour l'IA augmente de 30% par an. Cela signifie une pression accrue sur les ressources naturelles et les chaînes d'approvisionnement.</p>
+                    </div>
+                `
+            },
+            // Cours 6: Déchets Électroniques
+            {
+                title: "🗑️ Les Déchets Électroniques",
+                content: `
+                    <div class="module-section">
+                        <h3>📉 Obsolescence rapide</h3>
+                        <p>Les équipements informatiques ont une durée de vie de plus en plus courte. Les serveurs sont remplacés tous les 3-5 ans pour suivre les besoins de l'IA.</p>
+
+                        <div class="stat-box warning">
+                            <div class="stat-highlight">
+                                <span class="stat-number">50 M tonnes</span>
+                                <span class="stat-label">Déchets électroniques produits chaque année dans le monde</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>♻️ Faible taux de recyclage</h3>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Indicateur</th>
+                                <th>Valeur</th>
+                            </tr>
+                            <tr>
+                                <td>Taux de recyclage mondial</td>
+                                <td>< 20%</td>
+                            </tr>
+                            <tr>
+                                <td>E-déchets exportés illégalement</td>
+                                <td>~50%</td>
+                            </tr>
+                            <tr>
+                                <td>Valeur des matériaux perdus/an</td>
+                                <td>57 milliards €</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🌍 Exportation vers les pays du Sud</h3>
+                        <p>Une grande partie des e-déchets finissent dans des décharges en Afrique (Ghana, Nigeria) ou en Asie, où ils sont traités dans des conditions dangereuses.</p>
+
+                        <div class="info-card">
+                            <h4>☠️ Impacts sanitaires</h4>
+                            <p>Le brûlage des déchets électroniques libère des substances toxiques (plomb, mercure, cadmium) qui contaminent l'air, l'eau et les sols, causant cancers et maladies respiratoires.</p>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 7: IA Responsable
+            {
+                title: "🌱 Pistes pour une IA Plus Responsable",
+                content: `
+                    <div class="module-section">
+                        <h3>🎯 Actions individuelles</h3>
+                        <ul class="briefing-list">
+                            <li><strong>Questionner le besoin</strong> : Ai-je vraiment besoin de l'IA pour cette tâche ?</li>
+                            <li><strong>Optimiser les prompts</strong> : Des requêtes précises = moins de calculs</li>
+                            <li><strong>Éviter les usages futiles</strong> : Génération massive d'images pour le fun</li>
+                            <li><strong>Préférer les modèles légers</strong> : Quand c'est possible</li>
+                        </ul>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🏢 Actions des entreprises</h3>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Action</th>
+                                <th>Impact</th>
+                            </tr>
+                            <tr>
+                                <td>Énergies renouvelables</td>
+                                <td>Réduction jusqu'à 80% des émissions</td>
+                            </tr>
+                            <tr>
+                                <td>Refroidissement innovant</td>
+                                <td>-40% consommation d'eau</td>
+                            </tr>
+                            <tr>
+                                <td>Éco-conception des modèles</td>
+                                <td>-50 à -90% d'énergie</td>
+                            </tr>
+                            <tr>
+                                <td>Allongement durée de vie serveurs</td>
+                                <td>-25% de déchets</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📜 Régulation et transparence</h3>
+                        <div class="info-card">
+                            <h4>📋 Mesures nécessaires</h4>
+                            <ul class="briefing-list">
+                                <li>Obligation d'afficher l'empreinte carbone des services IA</li>
+                                <li>Standards d'efficacité énergétique pour les data centers</li>
+                                <li>Traçabilité des matériaux utilisés</li>
+                                <li>Réglementation sur l'exportation des e-déchets</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            // Cours 8: Mission Briefing
+            {
+                title: "🎯 Briefing de Mission : Infiltration NovaTech",
+                content: `
+                    <div class="module-section">
+                        <h3>📋 Récapitulatif de votre mission</h3>
+                        <p>Vous êtes maintenant prêt(e) pour votre infiltration du data center NovaTech. Voici les éléments clés de votre mission :</p>
+
+                        <div class="stat-box">
+                            <h4>🎯 Objectif principal</h4>
+                            <p>Collecter <strong>5 preuves documentées</strong> de l'impact environnemental de l'IA avant que la sécurité ne vous repère.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🔍 Preuves à collecter</h3>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Preuve</th>
+                                <th>Localisation probable</th>
+                            </tr>
+                            <tr>
+                                <td>⚡ Consommation électrique</td>
+                                <td>Salle des serveurs</td>
+                            </tr>
+                            <tr>
+                                <td>💧 Consommation d'eau</td>
+                                <td>Salle de refroidissement</td>
+                            </tr>
+                            <tr>
+                                <td>🤖 Impact des modèles IA</td>
+                                <td>Salle de contrôle</td>
+                            </tr>
+                            <tr>
+                                <td>🏭 Coût de fabrication</td>
+                                <td>Bureau de direction</td>
+                            </tr>
+                            <tr>
+                                <td>🌍 Émissions CO₂</td>
+                                <td>Salle de contrôle</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>⚠️ Règles d'engagement</h3>
+                        <ul class="briefing-list">
+                            <li><strong>Temps limité</strong> : Vous avez 15 minutes avant le changement de garde</li>
+                            <li><strong>Discrétion</strong> : Évitez d'éveiller les soupçons (jauge de suspicion)</li>
+                            <li><strong>Sortie</strong> : Retournez au couloir principal pour vous échapper</li>
+                        </ul>
+
+                        <div class="info-card">
+                            <h4>📱 Communication</h4>
+                            <p>Votre source anonyme vous contactera par messages durant la mission pour vous guider.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section" style="text-align: center; padding-top: 20px;">
+                        <p style="font-size: 1.2em; color: var(--neon-green); margin-bottom: 20px;">
+                            🔐 Briefing terminé. Vous êtes prêt(e) pour l'infiltration.
+                        </p>
+                    </div>
+                `
+            }
+        ];
+
+        function showBriefing() {
+            document.getElementById('title-screen').classList.add('hidden');
+            document.getElementById('briefing-screen').classList.add('active');
+            showLesson(0);
+        }
+
+        // Variable pour suivre si le quiz est réussi (session courante uniquement)
+        let certificateUnlocked = false;
+        let finalScore = 0;
+
+        // Afficher l'attestation dans le dossier
+        function showCertificateInFolder() {
+            if (!certificateUnlocked) {
+                // Attestation verrouillée
+                document.getElementById('briefing-content').innerHTML = `
+                    <h2 class="module-title" style="color:var(--neon-pink);">🔒 Attestation de réussite</h2>
+                    <div class="module-section" style="text-align:center;padding:40px 20px;">
+                        <div style="font-size:4em;margin-bottom:20px;">🔒</div>
+                        <h3 style="color:var(--neon-pink);margin-bottom:20px;">Attestation verrouillée</h3>
+                        <p style="margin-bottom:20px;">Pour obtenir votre attestation de réussite au micro-module, vous devez :</p>
+
+                        <div style="background:rgba(0,50,100,0.3);border-radius:10px;padding:25px;margin:25px auto;max-width:400px;text-align:left;">
+                            <p style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:1.2em;">1️⃣</span> Compléter la mission d'infiltration
+                            </p>
+                            <p style="margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:1.2em;">2️⃣</span> Collecter les 5 preuves environnementales
+                            </p>
+                            <p style="display:flex;align-items:center;gap:10px;">
+                                <span style="font-size:1.2em;">3️⃣</span> Réussir le quiz final (70% minimum)
+                            </p>
+                        </div>
+
+                        <p style="color:#888;font-size:0.9em;margin-top:30px;">
+                            Une fois le quiz réussi, revenez ici pour télécharger votre attestation.
+                        </p>
+                    </div>
+                `;
+            } else {
+                // Attestation débloquée
+                document.getElementById('briefing-content').innerHTML = `
+                    <h2 class="module-title" style="color:var(--neon-green);">🎓 Attestation de réussite</h2>
+                    <div class="module-section" style="text-align:center;padding:40px 20px;">
+                        <div style="font-size:4em;margin-bottom:20px;">🎓</div>
+                        <h3 style="color:var(--neon-green);margin-bottom:20px;">Félicitations !</h3>
+                        <p style="margin-bottom:10px;">Vous avez validé le micro-module</p>
+                        <p style="font-size:1.2em;color:var(--neon-cyan);margin-bottom:25px;"><strong>"Impact Environnemental de l'IA"</strong></p>
+
+                        <div style="background:rgba(0,255,136,0.1);border:2px solid var(--neon-green);border-radius:15px;padding:25px;margin:25px auto;max-width:450px;">
+                            <p style="margin-bottom:15px;">Score obtenu : <strong style="color:var(--neon-green);font-size:1.3em;">${finalScore}%</strong></p>
+
+                            <div style="margin:20px 0;">
+                                <label style="display:block;margin-bottom:8px;color:var(--neon-cyan);text-align:left;">Votre nom (pour l'attestation) :</label>
+                                <input type="text" id="certificate-name-folder" placeholder="Prénom NOM" style="
+                                    width:100%;
+                                    padding:12px 15px;
+                                    background:rgba(0,50,100,0.4);
+                                    border:2px solid rgba(0,212,255,0.4);
+                                    border-radius:8px;
+                                    color:white;
+                                    font-size:1em;
+                                    box-sizing:border-box;
+                                ">
+                            </div>
+
+                            <button class="start-btn" onclick="downloadCertificateFromFolder()" style="background:linear-gradient(135deg,rgba(0,255,136,0.3),rgba(0,212,255,0.3));margin-top:10px;">
+                                📥 Télécharger l'attestation
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Débloquer l'attestation dans le dossier
+        function unlockCertificate(score) {
+            certificateUnlocked = true;
+            finalScore = score;
+
+            // Mettre à jour l'apparence du bouton dans la nav
+            const navItem = document.getElementById('certificate-nav-item');
+            if (navItem) {
+                navItem.style.opacity = '1';
+                navItem.style.cursor = 'pointer';
+                navItem.style.background = 'rgba(0,255,136,0.15)';
+                navItem.innerHTML = `
+                    <span class="nav-icon">🎓</span>
+                    <span class="nav-number" style="background:rgba(0,255,136,0.3);color:var(--neon-green);">✓</span>
+                    Attestation de réussite
+                `;
+            }
+        }
+
+        // Télécharger l'attestation depuis le dossier
+        function downloadCertificateFromFolder() {
+            const name = document.getElementById('certificate-name-folder').value.trim() || 'Participant';
+            const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            generateCertificateHTML(name, date, finalScore);
+        }
+
+        // Aller au dossier pour récupérer l'attestation
+        function goToFolderCertificate() {
+            closeModal();
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('briefing-screen').classList.add('active');
+            showCertificateInFolder();
+        }
+
+        function showLesson(index) {
+            currentLesson = index;
+            const lesson = briefingLessons[index];
+
+            // Mettre à jour le contenu
+            document.getElementById('briefing-content').innerHTML = `
+                <h2 class="module-title">${lesson.title}</h2>
+                ${lesson.content}
+            `;
+
+            // Mettre à jour la navigation
+            const navItems = document.querySelectorAll('.briefing-nav-item');
+            navItems.forEach((item, i) => {
+                item.classList.remove('active');
+                if (i === index) item.classList.add('active');
+                if (completedLessons.has(i)) item.classList.add('completed');
+            });
+
+            // Marquer le cours comme lu
+            completedLessons.add(index);
+
+            // Mettre à jour la barre de progression
+            const progress = ((completedLessons.size) / briefingLessons.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            // Afficher "Fichier X/7" pour les fichiers, "Mission" pour la mission
+            if (index < 7) {
+                document.getElementById('progress-text').textContent = `Fichier ${index + 1}/7`;
+            } else {
+                document.getElementById('progress-text').textContent = `Mission`;
+            }
+
+            // Gérer les boutons
+            document.getElementById('prev-btn').disabled = index === 0;
+
+            const nextBtn = document.getElementById('next-btn');
+            if (index === briefingLessons.length - 1) {
+                // Sur la page Mission : bouton pour lancer le jeu
+                nextBtn.style.visibility = 'visible';
+                nextBtn.textContent = '🎮 Commencer la mission';
+                nextBtn.onclick = startGame;
+            } else if (index === 6) {
+                // Dernier fichier : masquer le bouton suivant (accès mission via menu)
+                nextBtn.style.visibility = 'hidden';
+            } else {
+                nextBtn.style.visibility = 'visible';
+                nextBtn.innerHTML = 'Fichier suivant →';
+                nextBtn.onclick = nextLesson;
+            }
+
+            // Scroll en haut
+            document.getElementById('briefing-content').scrollTop = 0;
+        }
+
+        function nextLesson() {
+            if (currentLesson < briefingLessons.length - 1) {
+                showLesson(currentLesson + 1);
+            }
+        }
+
+        function prevLesson() {
+            if (currentLesson > 0) {
+                showLesson(currentLesson - 1);
+            }
+        }
+
+        function skipToBriefing() {
+            showLesson(briefingLessons.length - 1);
+        }
+
+        // Définition des salles
+        const rooms = {
+            corridor: {
+                name: "Couloir Principal",
+                icon: "🚪",
+                bgClass: "room-corridor",
+                connections: { right: 'servers', down: 'control' },
+                objects: [
+                    {
+                        id: 'poster',
+                        type: 'examine',
+                        x: 8, y: 25,
+                        html: `<div style="width:60px;height:80px;background:rgba(26,48,80,0.8);border:2px solid #3a5070;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:8px;cursor:pointer;transition:all 0.3s;box-shadow:0 0 15px rgba(0,150,255,0.3);" onmouseover="this.style.boxShadow='0 0 25px rgba(0,200,255,0.6)'" onmouseout="this.style.boxShadow='0 0 15px rgba(0,150,255,0.3)'">
+                            <div style="font-size:1.8em;">⚡</div>
+                            <div style="font-size:0.55em;text-align:center;margin-top:3px;color:#88aacc;">ÉNERGIE</div>
+                        </div>`,
+                        action: 'showPoster'
+                    },
+                    {
+                        id: 'guard-schedule',
+                        type: 'document',
+                        x: 85, y: 70,
+                        html: `<div class="document-object" style="transform:scale(0.9);"></div>`,
+                        action: 'showSchedule'
+                    }
+                ]
+            },
+            servers: {
+                name: "Salle des Serveurs",
+                icon: "🖥️",
+                bgClass: "room-servers",
+                connections: { left: 'corridor', right: 'cooling', down: 'office' },
+                objects: [
+                    {
+                        id: 'server-rack-interactive',
+                        type: 'examine',
+                        x: 35, y: 35,
+                        html: `<div style="width:100px;height:60px;background:rgba(0,50,100,0.3);border:2px solid rgba(0,200,255,0.5);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;box-shadow:0 0 20px rgba(0,200,255,0.3);" onmouseover="this.style.boxShadow='0 0 35px rgba(0,255,200,0.6)'" onmouseout="this.style.boxShadow='0 0 20px rgba(0,200,255,0.3)'">
+                            <span style="font-size:1.5em;">🖥️</span>
+                            <span style="font-size:0.7em;margin-left:5px;color:#00d4ff;">Analyser</span>
+                        </div>`,
+                        action: 'examineServer'
+                    },
+                    {
+                        id: 'terminal-energy',
+                        type: 'puzzle',
+                        x: 75, y: 55,
+                        html: `<div class="terminal-object"><div class="terminal-screen"></div><div class="terminal-base"></div></div>`,
+                        action: 'puzzleEnergy',
+                        evidence: 'energy'
+                    },
+                    {
+                        id: 'energy-doc',
+                        type: 'document',
+                        x: 10, y: 75,
+                        html: `<div class="document-object confidential" style="transform:scale(0.85);"></div>`,
+                        action: 'showEnergyReport'
+                    }
+                ]
+            },
+            cooling: {
+                name: "Système de Refroidissement",
+                icon: "❄️",
+                bgClass: "room-cooling",
+                connections: { left: 'servers' },
+                objects: [
+                    {
+                        id: 'water-meter',
+                        type: 'puzzle',
+                        x: 65, y: 40,
+                        html: createEnergyMeter('H2O'),
+                        action: 'puzzleWater',
+                        evidence: 'water'
+                    },
+                    {
+                        id: 'valve-inspect',
+                        type: 'examine',
+                        x: 25, y: 35,
+                        html: `<div style="width:70px;height:50px;background:rgba(50,100,150,0.4);border:2px solid rgba(0,200,255,0.4);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;box-shadow:0 0 15px rgba(0,150,255,0.3);" onmouseover="this.style.boxShadow='0 0 25px rgba(0,200,255,0.6)'" onmouseout="this.style.boxShadow='0 0 15px rgba(0,150,255,0.3)'">
+                            <span style="font-size:1.3em;">🔧</span>
+                        </div>`,
+                        action: 'inspectValve'
+                    },
+                    {
+                        id: 'maintenance-log',
+                        type: 'document',
+                        x: 12, y: 72,
+                        html: `<div class="document-object" style="transform:scale(0.85);"></div>`,
+                        action: 'showWaterLog'
+                    }
+                ]
+            },
+            control: {
+                name: "Salle de Contrôle",
+                icon: "🎛️",
+                bgClass: "room-control",
+                connections: { up: 'corridor', right: 'office' },
+                objects: [
+                    {
+                        id: 'main-console',
+                        type: 'puzzle',
+                        x: 55, y: 35,
+                        html: `<div style="width:200px;height:120px;background:linear-gradient(180deg,#1a2030,#0a1020);border:3px solid #3a4a5a;border-radius:10px;padding:10px;cursor:pointer;box-shadow:0 0 20px rgba(0,255,136,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 35px rgba(0,255,136,0.6)'" onmouseout="this.style.boxShadow='0 0 20px rgba(0,255,136,0.3)'">
+                            <div style="display:flex;gap:10px;margin-bottom:10px;">
+                                <div style="width:80px;height:50px;background:#0a0a15;border:2px solid #2a3a4a;border-radius:5px;"></div>
+                                <div style="width:80px;height:50px;background:#0a0a15;border:2px solid #2a3a4a;border-radius:5px;"></div>
+                            </div>
+                            <div style="display:flex;gap:5px;justify-content:center;">
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                                <div style="width:15px;height:15px;background:#2a3a4a;border-radius:3px;"></div>
+                            </div>
+                        </div>`,
+                        action: 'puzzleModels',
+                        evidence: 'models'
+                    },
+                ]
+            },
+            office: {
+                name: "Bureau du Directeur",
+                icon: "📊",
+                bgClass: "room-office",
+                connections: { up: 'servers', left: 'control' },
+                objects: [
+                    {
+                        id: 'desk',
+                        type: 'examine',
+                        x: 35, y: 55,
+                        html: `<div style="width:100px;height:50px;background:rgba(60,50,40,0.6);border:2px solid rgba(150,120,80,0.5);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s;box-shadow:0 0 15px rgba(200,150,50,0.3);" onmouseover="this.style.boxShadow='0 0 25px rgba(200,150,50,0.6)'" onmouseout="this.style.boxShadow='0 0 15px rgba(200,150,50,0.3)'">
+                            <span style="font-size:1.3em;">🔍</span>
+                            <span style="font-size:0.65em;margin-left:5px;color:#c8a050;">Fouiller</span>
+                        </div>`,
+                        action: 'searchDesk'
+                    },
+                    {
+                        id: 'safe',
+                        type: 'puzzle',
+                        x: 78, y: 40,
+                        html: `<div style="width:70px;height:85px;background:rgba(50,50,50,0.8);border:3px solid #666;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;box-shadow:0 0 20px rgba(255,200,0,0.3);transition:all 0.3s;" onmouseover="this.style.boxShadow='0 0 35px rgba(255,200,0,0.6)'" onmouseout="this.style.boxShadow='0 0 20px rgba(255,200,0,0.3)'">
+                            <div style="font-size:1.8em;">🔒</div>
+                            <div style="font-size:0.55em;color:#aaa;margin-top:3px;">Coffre</div>
+                        </div>`,
+                        action: 'puzzleSafe',
+                        evidence: 'manufacturing'
+                    },
+                    {
+                        id: 'co2-report',
+                        type: 'document',
+                        x: 10, y: 70,
+                        html: `<div class="document-object confidential" style="transform:scale(0.85);"></div>`,
+                        action: 'puzzleCO2',
+                        evidence: 'co2'
+                    }
+                ]
+            }
+        };
+
+        // Helpers pour créer des objets
+        function createServerRack() {
+            let html = '<div class="server-rack">';
+            for (let i = 0; i < 8; i++) {
+                html += `<div class="server-unit">
+                    <div class="server-led green"></div>
+                    <div class="server-led orange"></div>
+                    <div class="server-led ${Math.random() > 0.7 ? 'red' : 'green'}"></div>
+                </div>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function createEnergyMeter(label) {
+            const bars = [60, 80, 40, 90, 70].map((h, i) =>
+                `<div class="meter-bar" style="height:${h}%;animation-delay:${i*0.2}s"></div>`
+            ).join('');
+            return `<div class="energy-meter">
+                <div class="meter-display">${label}</div>
+                <div class="meter-bars">${bars}</div>
+            </div>`;
+        }
+
+        // ==================== SYSTÈME SMS SOURCE ANONYME ====================
+        const receivedSMS = [];
+        const sentSMSForRoom = new Set();
+
+        // SMS déclenchés par salle
+        const roomSMS = {
+            corridor: {
+                condition: () => true,
+                message: "Bienvenue dans le data center. Explorez les salles pour trouver des preuves. Le terminal de la salle serveurs cache des données intéressantes..."
+            },
+            servers: {
+                condition: () => !gameState.evidence.energy,
+                message: "Ces serveurs tournent 24h/24. Le terminal cache des rapports chiffrés. Cherchez l'indice dans les fichiers, puis tapez: unlock + le mot de passe trouvé."
+            },
+            cooling: {
+                condition: () => !gameState.evidence.water,
+                message: "Le refroidissement consomme énormément d'eau. Utilisez le simulateur pour calculer l'impact d'une conversation avec l'IA."
+            },
+            control: {
+                condition: () => !gameState.evidence.models || !gameState.evidence.co2,
+                message: "La salle de contrôle contient des données sur les modèles IA et les émissions. Analysez bien les graphiques."
+            },
+            office: {
+                condition: () => !gameState.evidence.manufacturing || !gameState.evidence.co2,
+                message: "Le bureau du directeur contient DEUX sources d'info : un rapport CO₂ sur le bureau et un coffre secret. Le coffre utilise un chiffrement César - testez différents décalages."
+            }
+        };
+
+        function checkRoomSMS(roomId) {
+            const sms = roomSMS[roomId];
+            if (sms && !sentSMSForRoom.has(roomId) && sms.condition()) {
+                sentSMSForRoom.add(roomId);
+                setTimeout(() => showSMSNotification(sms.message), 1000);
+            }
+
+            // Message quand toutes les preuves sont collectées
+            if (Object.values(gameState.evidence).every(v => v) && !sentSMSForRoom.has('escape')) {
+                sentSMSForRoom.add('escape');
+                setTimeout(() => {
+                    showSMSNotification("🎯 Vous avez toutes les preuves ! Retournez au couloir principal pour vous échapper. Vite !");
+                }, 500);
+            }
+        }
+
+        function showSMSNotification(message) {
+            // Stocker le message
+            const time = new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
+            receivedSMS.push({ message, time });
+            updatePhoneIndicator();
+
+            // Supprimer le SMS précédent s'il existe
+            const existingSMS = document.querySelector('.sms-notification');
+            if (existingSMS) existingSMS.remove();
+
+            const smsEl = document.createElement('div');
+            smsEl.className = 'sms-notification';
+            smsEl.innerHTML = `
+                <button class="sms-close" onclick="closeSMS(this)">&times;</button>
+                <div class="sms-header">
+                    <span class="sms-icon">📱</span>
+                    <span class="sms-sender">Source Anonyme</span>
+                    <span class="sms-time">${time}</span>
+                </div>
+                <div class="sms-body">${message}</div>
+            `;
+
+            document.body.appendChild(smsEl);
+            smsEl.querySelector('.sms-icon').style.animation = 'vibrate 0.3s ease-in-out 3';
+
+            // Auto-fermeture après 12 secondes
+            setTimeout(() => {
+                if (smsEl.parentElement) {
+                    smsEl.style.animation = 'slideInSMS 0.3s ease-in reverse';
+                    setTimeout(() => smsEl.remove(), 300);
+                }
+            }, 12000);
+        }
+
+        function closeSMS(btn) {
+            const sms = btn.closest('.sms-notification');
+            sms.style.animation = 'slideInSMS 0.3s ease-in reverse';
+            setTimeout(() => sms.remove(), 300);
+        }
+
+        function updatePhoneIndicator() {
+            const indicator = document.getElementById('phone-indicator');
+            if (indicator) {
+                indicator.textContent = receivedSMS.length;
+                indicator.style.display = receivedSMS.length > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function openPhone() {
+            let messagesHTML = receivedSMS.length === 0
+                ? '<p style="text-align:center;color:#8899aa;">Aucun message reçu</p>'
+                : receivedSMS.map((sms, i) => `
+                    <div style="background:rgba(0,0,0,0.3);padding:15px;border-radius:10px;margin-bottom:10px;border-left:3px solid var(--neon-blue);">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                            <span style="color:var(--neon-blue);font-weight:bold;">📱 Source Anonyme</span>
+                            <span style="color:#8899aa;font-size:0.8em;">${sms.time}</span>
+                        </div>
+                        <p style="margin:0;line-height:1.5;">${sms.message}</p>
+                    </div>
+                `).reverse().join('');
+
+            showModal(`
+                <div class="modal-title">📱 Messages Reçus</div>
+                <div style="max-height:400px;overflow-y:auto;padding-right:10px;">
+                    ${messagesHTML}
+                </div>
+                <button class="start-btn" style="margin-top:20px;padding:10px 30px;" onclick="closeModal()">Fermer</button>
+            `);
+        }
+
+        // ==================== INITIALISATION ====================
+        function startGame() {
+            document.getElementById('title-screen').classList.add('hidden');
+            document.getElementById('briefing-screen').classList.remove('active');
+            document.getElementById('game-container').classList.add('active');
+
+            initializeEvidenceTracker();
+            initializeMiniMap();
+            loadRoom('corridor');
+            startTimer();
+
+            // Dialogue d'introduction
+            setTimeout(() => {
+                showDialogue({
+                    speaker: "📱 Source Anonyme",
+                    text: "Vous y êtes. Le data center NovaTech. Les preuves de leur impact environnemental sont quelque part ici. Trouvez les <strong>5 preuves clés</strong> et sortez avant que la sécurité ne vous repère. Vous avez <strong>15 minutes</strong>. Bonne chance.",
+                    choices: [
+                        { text: "Compris. Je commence l'infiltration.", action: () => closeDialogue() }
+                    ]
+                });
+            }, 500);
+        }
+
+        function initializeEvidenceTracker() {
+            const list = document.getElementById('evidence-list');
+            const evidenceInfo = {
+                energy: { icon: '⚡', name: 'Consommation électrique' },
+                water: { icon: '💧', name: 'Consommation d\'eau' },
+                models: { icon: '🤖', name: 'Impact des modèles IA' },
+                manufacturing: { icon: '🏭', name: 'Coût de fabrication' },
+                co2: { icon: '🌍', name: 'Émissions CO₂' }
+            };
+
+            list.innerHTML = '';
+            for (const [key, info] of Object.entries(evidenceInfo)) {
+                list.innerHTML += `
+                    <div class="evidence-item" id="evidence-${key}">
+                        <div class="evidence-icon">${info.icon}</div>
+                        <span>${info.name}</span>
+                    </div>
+                `;
+            }
+        }
+
+        function initializeMiniMap() {
+            const map = document.getElementById('mini-map');
+            // Disposition correcte correspondant aux connexions réelles :
+            // Row 0: [corridor] [servers] [cooling]
+            // Row 1: [control]  [office]  [empty]
+            const icons = { corridor: '🚪', servers: '🖥️', cooling: '❄️', control: '🎛️', office: '📊' };
+
+            map.innerHTML = '';
+            ['corridor', 'servers', 'cooling', 'control', 'office', ''].forEach(room => {
+                if (room) {
+                    map.innerHTML += `<div class="mini-map-room" data-room="${room}">${icons[room] || ''}</div>`;
+                } else {
+                    map.innerHTML += `<div class="mini-map-room" style="opacity:0;"></div>`;
+                }
+            });
+
+            updateMiniMap();
+        }
+
+        function updateMiniMap() {
+            document.querySelectorAll('.mini-map-room').forEach(el => {
+                const room = el.dataset.room;
+                el.classList.remove('current', 'visited');
+                if (room === gameState.currentRoom) {
+                    el.classList.add('current');
+                } else if (gameState.visitedRooms.includes(room)) {
+                    el.classList.add('visited');
+                }
+            });
+        }
+
+        // ==================== GESTION DES SALLES ====================
+        function loadRoom(roomId) {
+            const room = rooms[roomId];
+            if (!room) return;
+
+            gameState.currentRoom = roomId;
+            if (!gameState.visitedRooms.includes(roomId)) {
+                gameState.visitedRooms.push(roomId);
+            }
+
+            // Update UI
+            document.getElementById('location-name').textContent = room.name;
+            document.getElementById('location-icon').textContent = room.icon;
+
+            // Update background
+            const bg = document.getElementById('room-bg');
+            bg.className = 'room-background ' + room.bgClass;
+
+            // Load objects
+            loadRoomObjects(room);
+
+            // Update navigation
+            updateNavigation(room);
+
+            // Update minimap
+            updateMiniMap();
+
+            // Déclencher SMS contextuel
+            checkRoomSMS(roomId);
+        }
+
+        function loadRoomObjects(room) {
+            const container = document.getElementById('room-objects');
+            container.innerHTML = '';
+
+            room.objects.forEach(obj => {
+                const el = document.createElement('div');
+                el.className = 'interactive-object';
+                el.id = 'obj-' + obj.id;
+                el.style.left = obj.x + '%';
+                el.style.top = obj.y + '%';
+                el.innerHTML = obj.html;
+
+                if (obj.action) {
+                    el.onclick = () => handleObjectClick(obj);
+                    el.classList.add('pulse');
+                }
+
+                // Check if already collected
+                if (obj.evidence && gameState.evidence[obj.evidence]) {
+                    el.classList.add('collected');
+                }
+
+                container.appendChild(el);
+            });
+        }
+
+        function updateNavigation(room) {
+            const container = document.getElementById('nav-arrows');
+            container.innerHTML = '';
+
+            const arrows = {
+                left: '←',
+                right: '→',
+                up: '↑',
+                down: '↓'
+            };
+
+            for (const [dir, targetRoom] of Object.entries(room.connections)) {
+                const arrow = document.createElement('div');
+                arrow.className = 'nav-arrow ' + dir;
+                arrow.textContent = arrows[dir];
+                arrow.onclick = () => loadRoom(targetRoom);
+                container.appendChild(arrow);
+            }
+        }
+
+        // ==================== TIMER ====================
+        let timerInterval = null;
+
+        function startTimer() {
+            const timerEl = document.getElementById('timer');
+
+            timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+
+                const minutes = Math.floor(gameState.timeLeft / 60);
+                const seconds = gameState.timeLeft % 60;
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Augmentation passive de la suspicion (+1% toutes les 20 secondes)
+                if (gameState.timeLeft % 20 === 0 && gameState.timeLeft > 0) {
+                    addSuspicion(1);
+                }
+
+                if (gameState.timeLeft <= 60) {
+                    timerEl.style.color = '#ff3366';
+                }
+
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    gameOver(false);
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // ==================== SUSPICION ====================
+        function addSuspicion(amount) {
+            gameState.suspicion = Math.min(100, gameState.suspicion + amount);
+            document.getElementById('suspicion-fill').style.width = gameState.suspicion + '%';
+
+            if (gameState.suspicion >= 100) {
+                gameOver(false);
+            }
+        }
+
+        // ==================== INTERACTIONS ====================
+        function handleObjectClick(obj) {
+            if (obj.action && typeof window[obj.action] === 'function') {
+                window[obj.action](obj);
+            }
+        }
+
+        // ==================== DIALOGUES ====================
+        function showDialogue(config) {
+            const box = document.getElementById('dialogue-box');
+            document.getElementById('dialogue-speaker').innerHTML = config.speaker;
+            document.getElementById('dialogue-text').innerHTML = config.text;
+
+            const choicesContainer = document.getElementById('dialogue-choices');
+            choicesContainer.innerHTML = '';
+
+            config.choices.forEach(choice => {
+                const btn = document.createElement('div');
+                btn.className = 'dialogue-choice';
+                btn.textContent = choice.text;
+                btn.onclick = () => choice.action();
+                choicesContainer.appendChild(btn);
+            });
+
+            box.classList.add('active');
+        }
+
+        function closeDialogue() {
+            document.getElementById('dialogue-box').classList.remove('active');
+        }
+
+        // ==================== MODALS ====================
+        function showModal(content) {
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        // ==================== EVIDENCE ====================
+        function collectEvidence(type) {
+            if (!gameState.evidence[type]) {
+                gameState.evidence[type] = true;
+                document.getElementById('evidence-' + type).classList.add('found');
+
+                // Ajouter à l'inventaire
+                const emptySlot = document.querySelector('.inventory-slot:not(.filled)');
+                if (emptySlot) {
+                    const icons = { energy: '⚡', water: '💧', models: '🤖', manufacturing: '🏭', co2: '🌍' };
+                    emptySlot.textContent = icons[type];
+                    emptySlot.classList.add('filled');
+                }
+
+                // Vérifier si toutes les preuves sont collectées
+                if (Object.values(gameState.evidence).every(v => v)) {
+                    setTimeout(() => {
+                        showDialogue({
+                            speaker: "📱 Source Anonyme",
+                            text: "Excellent travail ! Vous avez toutes les preuves. Maintenant, <strong>retournez au couloir principal</strong> pour vous échapper !",
+                            choices: [
+                                { text: "Je me dirige vers la sortie.", action: () => closeDialogue() }
+                            ]
+                        });
+                    }, 500);
+                }
+            }
+        }
+
+        // ==================== ACTIONS SPÉCIFIQUES ====================
+
+        // Poster énergie
+        function showPoster() {
+            showModal(`
+                <div class="modal-title">⚡ Affiche "Économie d'Énergie"</div>
+                <div class="discovery-panel">
+                    <div class="discovery-title">💡 Information découverte</div>
+                    <p>Une affiche de communication interne. L'ironie est palpable...</p>
+                    <p style="margin-top:15px;font-style:italic;color:#88aacc;">"Pensez à éteindre les lumières ! Ensemble, économisons l'énergie."</p>
+                </div>
+                <p style="margin-top:20px;color:#ff6688;">Pendant ce temps, les serveurs derrière consomment autant qu'une petite ville...</p>
+            `);
+        }
+
+        // Planning des gardes
+        function showSchedule() {
+            showModal(`
+                <div class="modal-title">📋 Planning de Sécurité</div>
+                <div class="document-viewer">
+                    <div class="document-header">
+                        <span>NOVATECH - Planning Sécurité</span>
+                        <span class="document-stamp">INTERNE</span>
+                    </div>
+                    <p><strong>Rondes de nuit :</strong></p>
+                    <ul style="margin-left:20px;">
+                        <li>22h00 - Couloir principal</li>
+                        <li>22h15 - Salle serveurs</li>
+                        <li>22h30 - Refroidissement</li>
+                        <li>22h45 - Salle de contrôle</li>
+                        <li>23h00 - Bureau direction</li>
+                    </ul>
+                    <p style="margin-top:15px;"><strong>Note :</strong> Durée de vie des équipements = <span class="document-highlight">5 ans max</span>. Prévoir renouvellement Q3.</p>
+                </div>
+                <div class="discovery-panel">
+                    <div class="discovery-title">📖 Le saviez-vous ?</div>
+                    <p>Les équipements sont renouvelés tous les 5 ans en moyenne. Ce cycle court génère énormément de déchets électroniques (e-waste).</p>
+                </div>
+            `);
+        }
+
+        // Examiner serveur
+        function examineServer() {
+            showDialogue({
+                speaker: "🔍 Observation",
+                text: "Les serveurs tournent à plein régime. Chaque rack consomme environ <strong>10-20 kW</strong> en permanence. Vous remarquez les voyants rouges sur certaines unités - surchauffe fréquente.",
+                choices: [
+                    { text: "Intéressant. Je continue mon exploration.", action: () => closeDialogue() }
+                ]
+            });
+        }
+
+        // PUZZLE 1: Terminal Interactif - Consommation Électrique
+        let terminalState = {
+            loggedIn: false,
+            currentDir: '/home/guest',
+            history: []
+        };
+
+        const terminalFiles = {
+            '/home/guest': ['readme.txt', 'hint.txt'],
+            '/var/log': ['access.log', 'energy_report.enc'],
+            '/etc': ['passwd', 'shadow']
+        };
+
+        const terminalFileContents = {
+            'readme.txt': 'Bienvenue sur le serveur NovaTech.\nUtilisez "help" pour voir les commandes disponibles.\nLes fichiers sensibles nécessitent une authentification admin.',
+            'hint.txt': 'Note interne: Le mot de passe admin est basé sur\nla consommation annuelle des data centers en TWh.\nRappel: Les data centers = 1.5% de l\'électricité mondiale.\nCalculez: 1.5% de 27 700 TWh (conso mondiale 2023).',
+            'access.log': '[2024-09-15] admin login successful\n[2024-09-15] energy_report.enc accessed\n[2024-09-16] guest login attempt - denied\n[2024-09-17] maintenance scheduled',
+            'energy_report.enc': '[FICHIER CHIFFRÉ - Accès admin requis]\nUtilisez: unlock <mot_de_passe>',
+            'passwd': 'root:x:0:0:root:/root:/bin/bash\nadmin:x:1000:1000:Admin:/home/admin:/bin/bash\nguest:x:1001:1001:Guest:/home/guest:/bin/bash',
+            'shadow': '[ACCÈS REFUSÉ] Permissions insuffisantes'
+        };
+
+        function puzzleEnergy() {
+            if (gameState.evidence.energy) {
+                showAlreadyCollected('energy');
+                return;
+            }
+
+            terminalState = { loggedIn: false, currentDir: '/home/guest', history: [] };
+
+            showModal(`
+                <div class="modal-title">💻 Terminal de Monitoring Énergétique</div>
+                <p style="margin-bottom:15px;color:#8899aa;font-size:0.9em;">Accédez aux données confidentielles. Tapez <span style="color:var(--neon-green);">help</span> pour les commandes.</p>
+
+                <div class="terminal-puzzle" id="terminal-container">
+                    <div class="terminal-output" id="terminal-output">NovaTech Energy Monitor v3.2.1
+Copyright (c) 2024 NovaTech Industries
+═══════════════════════════════════════
+
+Connexion en tant que: <span class="info">guest</span>
+Tapez <span class="info">help</span> pour la liste des commandes.
+
+</div>
+                    <div class="terminal-input-line">
+                        <span class="terminal-prompt" id="terminal-prompt">guest@novatech:~$</span>
+                        <input type="text" class="terminal-input" id="terminal-input" autocomplete="off" spellcheck="false" onkeypress="handleTerminalKey(event)">
+                    </div>
+                </div>
+            `);
+
+            setTimeout(() => document.getElementById('terminal-input').focus(), 100);
+        }
+
+        function handleTerminalKey(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('terminal-input');
+                const cmd = input.value.trim();
+                input.value = '';
+                processTerminalCommand(cmd);
+            }
+        }
+
+        function processTerminalCommand(cmd) {
+            const output = document.getElementById('terminal-output');
+            const parts = cmd.toLowerCase().split(' ');
+            const command = parts[0];
+            const args = parts.slice(1);
+
+            // Ajouter la commande à l'historique
+            output.innerHTML += `<span class="info">guest@novatech:~$</span> ${cmd}\n`;
+
+            let result = '';
+
+            switch(command) {
+                case '':
+                    break;
+                case 'help':
+                    result = `Commandes disponibles:
+  <span class="info">ls</span>        - Liste les fichiers du répertoire
+  <span class="info">cd</span> [dir]  - Change de répertoire
+  <span class="info">cat</span> [file]- Affiche le contenu d'un fichier
+  <span class="info">pwd</span>       - Affiche le répertoire courant
+  <span class="info">unlock</span> [code] - Déverrouille avec: unlock + mot de passe
+  <span class="info">clear</span>     - Efface l'écran
+  <span class="info">exit</span>      - Ferme le terminal`;
+                    break;
+
+                case 'ls':
+                    const files = terminalFiles[terminalState.currentDir];
+                    if (files) {
+                        result = files.map(f => `<span class="info">${f}</span>`).join('  ');
+                    } else {
+                        result = '<span class="error">Répertoire vide</span>';
+                    }
+                    break;
+
+                case 'pwd':
+                    result = terminalState.currentDir;
+                    break;
+
+                case 'cd':
+                    if (!args[0] || args[0] === '~') {
+                        terminalState.currentDir = '/home/guest';
+                        result = '';
+                    } else if (args[0] === '..') {
+                        const parts = terminalState.currentDir.split('/').filter(p => p);
+                        parts.pop();
+                        terminalState.currentDir = '/' + parts.join('/') || '/';
+                    } else if (args[0].startsWith('/')) {
+                        if (terminalFiles[args[0]]) {
+                            terminalState.currentDir = args[0];
+                        } else {
+                            result = `<span class="error">cd: ${args[0]}: Répertoire introuvable</span>`;
+                        }
+                    } else {
+                        result = `<span class="error">cd: ${args[0]}: Chemin invalide</span>`;
+                    }
+                    break;
+
+                case 'cat':
+                    if (!args[0]) {
+                        result = '<span class="error">cat: argument manquant</span>';
+                    } else {
+                        const files = terminalFiles[terminalState.currentDir] || [];
+                        if (files.includes(args[0])) {
+                            result = terminalFileContents[args[0]] || '<span class="error">Fichier vide</span>';
+                        } else {
+                            result = `<span class="error">cat: ${args[0]}: Fichier introuvable</span>`;
+                        }
+                    }
+                    break;
+
+                case 'unlock':
+                    if (!args[0]) {
+                        result = '<span class="error">unlock: mot de passe requis</span>';
+                    } else if (['415', '415twh', '415.5', '415,5', '416', '416twh'].includes(args[0].toLowerCase())) {
+                        result = `<span class="success">✓ MOT DE PASSE ACCEPTÉ</span>
+
+═══════════════════════════════════════
+   RAPPORT ÉNERGÉTIQUE CONFIDENTIEL
+═══════════════════════════════════════
+
+<span class="info">Consommation mondiale des data centers:</span>
+• 2024: <span class="success">415 TWh</span> (1,5% de l'électricité mondiale)
+• 2030: 945 TWh prévu (doublement!)
+
+<span class="info">Comparaisons:</span>
+• Équivalent à la consommation du <span class="success">JAPON</span>
+• Irlande: 21% de son électricité = data centers
+• NovaTech seul: 12,5 GWh/trimestre
+
+<span class="info">Impact environnemental:</span>
+• 1 requête IA = 10x une recherche Google
+• Entraînement GPT-3 = 552 tonnes CO₂
+
+═══════════════════════════════════════
+<span class="success">PREUVE EXTRAITE AVEC SUCCÈS</span>`;
+                        terminalState.loggedIn = true;
+                        setTimeout(() => {
+                            output.innerHTML += `\n<span class="success">► Cliquez sur le bouton pour sauvegarder cette preuve</span>\n`;
+                            output.innerHTML += `<button class="start-btn" style="margin-top:15px;padding:10px 30px;font-size:0.9em;" onclick="collectEvidence('energy'); closeModal();">
+                                Sauvegarder la preuve ⚡
+                            </button>`;
+                            scrollTerminal();
+                        }, 500);
+                    } else {
+                        result = '<span class="error">✗ MOT DE PASSE INCORRECT</span>';
+                        addSuspicion(5);
+                    }
+                    break;
+
+                case 'clear':
+                    output.innerHTML = '';
+                    return;
+
+                case 'exit':
+                    closeModal();
+                    return;
+
+                default:
+                    result = `<span class="error">${command}: commande non reconnue</span>`;
+            }
+
+            if (result) {
+                output.innerHTML += result + '\n\n';
+            } else {
+                output.innerHTML += '\n';
+            }
+
+            scrollTerminal();
+        }
+
+        function scrollTerminal() {
+            const container = document.getElementById('terminal-container');
+            if (container) container.scrollTop = container.scrollHeight;
+        }
+
+        // Rapport énergie
+        function showEnergyReport() {
+            showModal(`
+                <div class="modal-title">📄 Rapport Énergétique Confidentiel</div>
+                <div class="document-viewer">
+                    <div class="document-header">
+                        <span>NOVATECH - Rapport Interne Q3 2024</span>
+                        <span class="document-stamp">CONFIDENTIEL</span>
+                    </div>
+                    <p><strong>Objet :</strong> Consommation énergétique trimestrielle</p>
+                    <p style="margin-top:15px;">Consommation totale : <span class="document-highlight">12,5 GWh</span></p>
+                    <p>Équivalent : <span class="document-highlight">4 200 foyers français</span> pendant 3 mois</p>
+                    <hr style="margin:15px 0;border-color:#ccc;">
+                    <p><strong>Note confidentielle :</strong></p>
+                    <p>La part IA a augmenté de <span class="document-highlight">+340%</span> depuis l'intégration des modèles génératifs. Prévoir expansion capacité électrique.</p>
+                    <p style="margin-top:10px;">Budget carbone dépassé de <span class="document-redacted">███████</span>.</p>
+                </div>
+            `);
+        }
+
+        // PUZZLE 2: Calculateur d'Impact Eau
+        function puzzleWater() {
+            if (gameState.evidence.water) {
+                showAlreadyCollected('water');
+                return;
+            }
+
+            showModal(`
+                <div class="modal-title">💧 Calculateur d'Impact Hydrique</div>
+                <p style="margin-bottom:15px;">Le système de refroidissement consomme d'énormes quantités d'eau. Simulez l'impact de votre utilisation de l'IA.</p>
+
+                <div class="stat-box" style="margin:20px 0;">
+                    <h4 style="color:var(--neon-blue);margin-bottom:15px;">🧮 Simulateur - Impact par conversation</h4>
+
+                    <div style="margin:15px 0;">
+                        <label style="display:block;margin-bottom:8px;">Nombre d'échanges dans une conversation :</label>
+                        <input type="range" id="calc-exchanges" min="1" max="100" value="1" style="width:100%;" oninput="updateWaterCalc()">
+                        <div style="display:flex;justify-content:space-between;color:#8899aa;font-size:0.8em;">
+                            <span>1</span>
+                            <span id="exchanges-value" style="color:var(--neon-green);font-weight:bold;">1 échange</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <div id="calc-result" style="background:rgba(0,0,0,0.3);padding:20px;border-radius:8px;margin-top:20px;">
+                        <div style="display:flex;justify-content:space-around;text-align:center;">
+                            <div>
+                                <div style="font-size:0.8em;color:#8899aa;margin-bottom:5px;">PAR CONVERSATION</div>
+                                <div id="water-conv" style="font-family:'Space Mono',monospace;font-size:2em;color:var(--neon-blue);font-weight:bold;">10 mL</div>
+                            </div>
+                            <div style="border-left:1px solid rgba(255,255,255,0.2);padding-left:30px;">
+                                <div style="font-size:0.8em;color:#8899aa;margin-bottom:5px;">SI 10 CONV./JOUR × 1 MOIS</div>
+                                <div id="water-month" style="font-family:'Space Mono',monospace;font-size:2em;color:var(--neon-pink);font-weight:bold;">3 L</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.85em;color:#8899aa;margin-top:15px;text-align:center;">
+                        📊 Base de calcul : <strong>10 mL d'eau par échange</strong> (refroidissement serveurs)
+                    </p>
+                </div>
+
+                <div class="info-card" style="margin:15px 0;">
+                    <h4>🔓 Pour débloquer les données confidentielles :</h4>
+                    <p style="margin-top:10px;">D'après le simulateur, combien de <strong>mL d'eau</strong> consomme une conversation de <strong>50 échanges</strong> ?</p>
+                    <div style="display:flex;gap:10px;margin-top:15px;">
+                        <input type="number" id="water-answer" placeholder="Réponse en mL" style="flex:1;padding:10px;background:rgba(0,0,0,0.3);border:1px solid var(--neon-green);border-radius:5px;color:var(--text);font-family:'Space Mono',monospace;">
+                        <button class="start-btn" style="padding:10px 20px;font-size:0.9em;" onclick="checkWaterCalc()">Valider</button>
+                    </div>
+                    <p style="font-size:0.85em;color:#8899aa;margin-top:10px;">💡 Regardez le résultat du simulateur avec 50 échanges !</p>
+                </div>
+
+                <div id="water-result"></div>
+            `);
+
+            updateWaterCalc();
+        }
+
+        function updateWaterCalc() {
+            const exchanges = parseInt(document.getElementById('calc-exchanges').value);
+
+            document.getElementById('exchanges-value').textContent = exchanges + ' échanges';
+
+            // Calcul: ~10mL par échange
+            const convWater = exchanges * 10; // mL pour une conversation
+            const monthlyWater = (convWater * 10 * 30) / 1000; // 10 conv/jour × 30 jours en Litres
+
+            document.getElementById('water-conv').textContent = convWater + ' mL';
+            document.getElementById('water-month').textContent = monthlyWater.toFixed(0) + ' L';
+
+            // Changer la couleur selon l'impact
+            const convEl = document.getElementById('water-conv');
+            if (convWater > 700) {
+                convEl.style.color = 'var(--neon-pink)';
+            } else if (convWater > 400) {
+                convEl.style.color = '#ffaa00';
+            } else {
+                convEl.style.color = 'var(--neon-blue)';
+            }
+        }
+
+        function checkWaterCalc() {
+            const answer = parseInt(document.getElementById('water-answer').value);
+            // 50 échanges × 10mL = 500mL
+            const correct = answer >= 450 && answer <= 550;
+
+            if (correct) {
+                document.getElementById('water-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-green);">
+                        <div class="discovery-title">✅ Accès aux données confidentielles !</div>
+                        <div class="discovery-stat">500 mL par conversation</div>
+                        <p><strong>Révélation :</strong> L'eau est une ressource critique pour les data centers !</p>
+                        <ul style="margin:15px 0 0 20px;">
+                            <li>Une conversation (50 échanges) = <strong>500 mL</strong> = 1 bouteille d'eau</li>
+                            <li><strong>1,8 litre</strong> d'eau pour refroidir 1 kWh</li>
+                            <li><strong>42%</strong> de l'eau de Microsoft vient de zones en stress hydrique</li>
+                            <li>Google: <strong>20 milliards de litres/an</strong> (8000 piscines olympiques)</li>
+                        </ul>
+                        <button class="start-btn" style="margin-top:20px;padding:10px 30px;font-size:0.9em;" onclick="collectEvidence('water'); closeModal();">
+                            Sauvegarder cette preuve 💧
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('water-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-pink);">
+                        <div class="discovery-title" style="color:var(--neon-pink);">❌ Calcul incorrect</div>
+                        <p>Regardez le simulateur : avec 50 échanges, le résultat affiché est <strong>500 mL</strong>.</p>
+                    </div>
+                `;
+                addSuspicion(5);
+            }
+        }
+
+        // Log maintenance eau
+        function showWaterLog() {
+            showModal(`
+                <div class="modal-title">📋 Journal de Maintenance - Refroidissement</div>
+                <div class="document-viewer">
+                    <p><strong>Entrée 15/03/2024 :</strong></p>
+                    <p>Remplacement pompe circuit B. Consommation eau stable à <span class="document-highlight">2.3M litres/jour</span>.</p>
+                    <hr style="margin:15px 0;border-color:#ccc;">
+                    <p><strong>Entrée 22/06/2024 :</strong></p>
+                    <p>Alerte canicule. Passage en mode refroidissement intensif. Conso portée à <span class="document-highlight">3.1M litres/jour</span>.</p>
+                    <hr style="margin:15px 0;border-color:#ccc;">
+                    <p><strong>Note technique :</strong></p>
+                    <p>Chaque serveur IA nécessite <span class="document-highlight">3x plus de refroidissement</span> qu'un serveur classique.</p>
+                </div>
+            `);
+        }
+
+        // Inspection des vannes
+        function inspectValve() {
+            showModal(`
+                <div class="modal-title">🔧 Système de Vannes</div>
+                <div class="discovery-panel">
+                    <div class="discovery-title">💡 Information découverte</div>
+                    <p>Ces vannes régulent le flux d'eau de refroidissement vers les serveurs IA.</p>
+                </div>
+                <div style="margin-top:20px;padding:15px;background:rgba(0,100,150,0.2);border-radius:8px;">
+                    <p><strong>🌡️ Température actuelle :</strong> 18°C (optimale pour les GPU)</p>
+                    <p style="margin-top:10px;"><strong>💧 Débit d'eau :</strong> 450 L/min</p>
+                    <p style="margin-top:10px;color:#ff8866;"><em>L'eau utilisée est ensuite évacuée vers la rivière voisine, réchauffant l'écosystème local de 2-3°C...</em></p>
+                </div>
+            `);
+        }
+
+        // PUZZLE 3: Analyse de Graphique - Différence entre modèles
+        function puzzleModels() {
+            if (gameState.evidence.models) {
+                showAlreadyCollected('models');
+                return;
+            }
+
+            showModal(`
+                <div class="modal-title">📊 Analyse de Performance des Modèles IA</div>
+                <p style="margin-bottom:15px;">La console affiche les données de consommation énergétique par modèle. Analysez le graphique pour trouver les informations clés.</p>
+
+                <div class="stat-box" style="margin:20px 0;padding:25px;">
+                    <h4 style="color:var(--neon-blue);margin-bottom:20px;text-align:center;">Consommation énergétique par 1000 tokens (Wh)</h4>
+
+                    <div style="display:flex;align-items:flex-end;justify-content:space-around;height:180px;padding:10px 0;border-bottom:2px solid var(--neon-green);">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+                            <div style="width:50px;background:linear-gradient(180deg, var(--neon-green), #006644);border-radius:5px 5px 0 0;height:10px;transition:height 0.5s;" id="bar1"></div>
+                            <span style="font-size:0.7em;color:#8899aa;">Llama 8B</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+                            <div style="width:50px;background:linear-gradient(180deg, var(--neon-blue), #0066aa);border-radius:5px 5px 0 0;height:30px;transition:height 0.5s;" id="bar2"></div>
+                            <span style="font-size:0.7em;color:#8899aa;">Claude 3</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+                            <div style="width:50px;background:linear-gradient(180deg, #ffaa00, #cc6600);border-radius:5px 5px 0 0;height:60px;transition:height 0.5s;" id="bar3"></div>
+                            <span style="font-size:0.7em;color:#8899aa;">GPT-3.5</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+                            <div style="width:50px;background:linear-gradient(180deg, var(--neon-pink), #990044);border-radius:5px 5px 0 0;height:160px;transition:height 0.5s;" id="bar4"></div>
+                            <span style="font-size:0.7em;color:#8899aa;">GPT-4</span>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-around;margin-top:10px;">
+                        <span style="font-size:0.8em;color:var(--neon-green);">0.5 Wh</span>
+                        <span style="font-size:0.8em;color:var(--neon-blue);">3 Wh</span>
+                        <span style="font-size:0.8em;color:#ffaa00;">15 Wh</span>
+                        <span style="font-size:0.8em;color:var(--neon-pink);">105 Wh</span>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin:15px 0;">
+                    <h4>🔍 Question d'analyse :</h4>
+                    <p style="margin:10px 0;">En observant le graphique, calculez le <strong>ratio</strong> entre le modèle le plus énergivore (GPT-4) et le plus économe (Llama 8B).</p>
+
+                    <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+                        <button class="connection-item" style="flex:1;min-width:100px;padding:12px;" onclick="checkModelsGraph(this, 12)">×12</button>
+                        <button class="connection-item" style="flex:1;min-width:100px;padding:12px;" onclick="checkModelsGraph(this, 55)">×55</button>
+                        <button class="connection-item" style="flex:1;min-width:100px;padding:12px;" onclick="checkModelsGraph(this, 210)">×210</button>
+                        <button class="connection-item" style="flex:1;min-width:100px;padding:12px;" onclick="checkModelsGraph(this, 1050)">×1050</button>
+                    </div>
+                </div>
+
+                <div id="models-result"></div>
+            `);
+
+            // Animation des barres
+            setTimeout(() => {
+                document.getElementById('bar1').style.height = '10px';
+                document.getElementById('bar2').style.height = '30px';
+                document.getElementById('bar3').style.height = '60px';
+                document.getElementById('bar4').style.height = '160px';
+            }, 100);
+        }
+
+        function checkModelsGraph(el, value) {
+            const buttons = el.parentElement.querySelectorAll('button');
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+
+            const correct = value === 210;
+            el.classList.add(correct ? 'correct' : 'incorrect');
+
+            if (correct) {
+                document.getElementById('models-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-green);">
+                        <div class="discovery-title">✅ Analyse correcte - Données extraites !</div>
+                        <div class="discovery-stat">×210 de différence</div>
+                        <p><strong>Révélation :</strong> Le choix du modèle a un impact colossal !</p>
+                        <ul style="margin:15px 0 0 20px;">
+                            <li>Llama 8B : <strong>0,5 Wh</strong> / 1000 tokens</li>
+                            <li>GPT-4 : <strong>105 Wh</strong> / 1000 tokens</li>
+                            <li>Ratio : <strong>105 ÷ 0.5 = ×210</strong></li>
+                            <li>Choisir le bon modèle = diviser par 210 son impact !</li>
+                        </ul>
+                        <button class="start-btn" style="margin-top:20px;padding:10px 30px;font-size:0.9em;" onclick="collectEvidence('models'); closeModal();">
+                            Sauvegarder cette preuve 🤖
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('models-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-pink);">
+                        <div class="discovery-title" style="color:var(--neon-pink);">❌ Calcul incorrect</div>
+                        <p>Regardez bien les valeurs : 105 Wh ÷ 0.5 Wh = <strong>×210</strong></p>
+                        <button class="start-btn" style="margin-top:15px;padding:10px 30px;font-size:0.9em;border-color:var(--neon-pink);color:var(--neon-pink);" onclick="puzzleModels();">
+                            Réessayer
+                        </button>
+                    </div>
+                `;
+                addSuspicion(5);
+            }
+        }
+
+        // Fouiller le bureau
+        function searchDesk() {
+            showModal(`
+                <div class="modal-title">🔍 Bureau du Directeur</div>
+                <p>Vous fouillez rapidement le bureau. Vous trouvez plusieurs documents intéressants.</p>
+
+                <div class="discovery-panel">
+                    <div class="discovery-title">📊 Note de service trouvée</div>
+                    <p style="margin:15px 0;">"Rappel : Notre empreinte carbone 2024 atteint <strong>180 Mt de CO₂</strong>. Prévisions 2035 : entre 300 et 500 Mt. Préparer la communication RSE en conséquence."</p>
+                </div>
+
+                <p style="margin-top:20px;">Le coffre-fort à côté semble contenir des documents plus sensibles...</p>
+            `);
+        }
+
+        // PUZZLE 4: Décryptage - Coffre-fort (Fabrication)
+        function puzzleSafe() {
+            if (gameState.evidence.manufacturing) {
+                showAlreadyCollected('manufacturing');
+                return;
+            }
+
+            showModal(`
+                <div class="modal-title">🔐 Coffre-fort Crypté du Directeur</div>
+                <p style="margin-bottom:15px;">Le coffre utilise un système de cryptage César. Déchiffrez le message pour obtenir le code.</p>
+
+                <div class="stat-box" style="margin:20px 0;">
+                    <h4 style="color:var(--neon-pink);margin-bottom:15px;">📝 Message intercepté :</h4>
+                    <div style="font-family:'Space Mono',monospace;font-size:1.3em;color:var(--neon-blue);text-align:center;padding:15px;background:rgba(0,0,0,0.3);border-radius:5px;letter-spacing:3px;">
+                        FBVKNAGR-QVK-UHVG
+                    </div>
+                    <p style="font-size:0.85em;color:#8899aa;margin-top:15px;text-align:center;">
+                        Le message cache le pourcentage d'empreinte carbone lié à la fabrication
+                    </p>
+                </div>
+
+                <div class="info-card" style="margin:15px 0;">
+                    <h4>🔧 Outil de décryptage César :</h4>
+                    <p style="margin:10px 0;">Le cryptage César décale chaque lettre de N positions dans l'alphabet. Testez différents décalages pour trouver le message en français.</p>
+
+                    <div style="margin:20px 0;">
+                        <label style="display:block;margin-bottom:8px;">Décalage (1-25) :</label>
+                        <input type="range" id="caesar-shift" min="1" max="25" value="1" style="width:100%;" oninput="updateCaesarDecrypt()">
+                        <div style="display:flex;justify-content:space-between;color:#8899aa;font-size:0.8em;">
+                            <span>1</span>
+                            <span id="shift-value" style="color:var(--neon-blue);">1</span>
+                            <span>25</span>
+                        </div>
+                    </div>
+
+                    <div style="background:rgba(0,0,0,0.3);padding:15px;border-radius:5px;margin-top:15px;">
+                        <div style="font-size:0.9em;color:#8899aa;margin-bottom:8px;">RÉSULTAT DU DÉCRYPTAGE :</div>
+                        <div id="decrypted-msg" style="font-family:'Space Mono',monospace;font-size:1.2em;color:#8899aa;letter-spacing:2px;">EAUJMZFQ-PUJ-TGUF</div>
+                    </div>
+                </div>
+
+                <div style="margin:20px 0;">
+                    <p style="margin-bottom:10px;">Entrez le code numérique (2 chiffres) correspondant au message décrypté :</p>
+                    <div style="display:flex;gap:10px;justify-content:center;">
+                        <input type="text" class="code-digit" maxlength="1" id="safe-1" oninput="moveToNext(this, 'safe-2')" style="width:50px;height:60px;text-align:center;font-size:2em;font-family:'Space Mono',monospace;background:rgba(0,0,0,0.5);border:2px solid var(--neon-green);color:var(--neon-green);border-radius:5px;">
+                        <input type="text" class="code-digit" maxlength="1" id="safe-2" oninput="checkSafeCode()" style="width:50px;height:60px;text-align:center;font-size:2em;font-family:'Space Mono',monospace;background:rgba(0,0,0,0.5);border:2px solid var(--neon-green);color:var(--neon-green);border-radius:5px;">
+                    </div>
+                    <p style="font-size:0.85em;color:#8899aa;margin-top:10px;text-align:center;">💡 Trouvez le bon décalage pour révéler un nombre en français</p>
+                </div>
+
+                <div id="safe-result"></div>
+            `);
+
+            document.getElementById('safe-1').focus();
+            updateCaesarDecrypt();
+        }
+
+        function caesarDecrypt(text, shift) {
+            return text.split('').map(char => {
+                if (char >= 'A' && char <= 'Z') {
+                    return String.fromCharCode(((char.charCodeAt(0) - 65 - shift + 26) % 26) + 65);
+                }
+                return char;
+            }).join('');
+        }
+
+        function updateCaesarDecrypt() {
+            const shift = parseInt(document.getElementById('caesar-shift').value);
+            document.getElementById('shift-value').textContent = shift;
+
+            const encrypted = 'FBVKNAGR-QVK-UHVG';
+            const decrypted = caesarDecrypt(encrypted, shift);
+            document.getElementById('decrypted-msg').textContent = decrypted;
+
+            // Couleur neutre pour ne pas révéler la réponse
+            document.getElementById('decrypted-msg').style.color = '#8899aa';
+        }
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function checkSafeCode() {
+            const code = document.getElementById('safe-1').value + document.getElementById('safe-2').value;
+
+            if (code.length === 2) {
+                if (code === '78') {
+                    document.getElementById('safe-result').innerHTML = `
+                        <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-green);">
+                            <div class="discovery-title">✅ Coffre déverrouillé - Décryptage réussi !</div>
+                            <div class="discovery-stat">78% = Fabrication</div>
+                            <p><strong>Révélation :</strong> L'impact caché de la fabrication !</p>
+                            <ul style="margin:15px 0 0 20px;">
+                                <li><strong>78%</strong> de l'empreinte carbone = fabrication</li>
+                                <li>Smartphone : <strong>50-70 kg</strong> de matières extraites</li>
+                                <li>Ordinateur portable : <strong>240 kg</strong> de ressources</li>
+                                <li>Seulement <strong>22%</strong> des e-déchets recyclés</li>
+                                <li>Durée de vie moyenne : <strong>5 ans</strong></li>
+                            </ul>
+                            <button class="start-btn" style="margin-top:20px;padding:10px 30px;font-size:0.9em;" onclick="collectEvidence('manufacturing'); closeModal();">
+                                Sauvegarder cette preuve 🏭
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('safe-result').innerHTML = `
+                        <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-pink);">
+                            <div class="discovery-title" style="color:var(--neon-pink);">❌ Code incorrect</div>
+                            <p>Continuez à chercher le bon décalage. Quand le message sera en français, vous trouverez un nombre.</p>
+                        </div>
+                    `;
+                    addSuspicion(10);
+                    document.getElementById('safe-1').value = '';
+                    document.getElementById('safe-2').value = '';
+                    document.getElementById('safe-1').focus();
+                }
+            }
+        }
+
+        // PUZZLE 5: Émissions CO2
+        function puzzleCO2() {
+            if (gameState.evidence.co2) {
+                showAlreadyCollected('co2');
+                return;
+            }
+
+            showModal(`
+                <div class="modal-title">🌍 Rapport Émissions CO₂</div>
+                <p style="margin-bottom:20px;">Ce document contient les projections d'émissions. Pour le déverrouiller, associez correctement les données.</p>
+
+                <div class="connection-puzzle">
+                    <div class="connection-column" id="co2-left">
+                        <div class="connection-item" data-pair="180" onclick="selectCO2(this, 'left')">180 Mt CO₂</div>
+                        <div class="connection-item" data-pair="500" onclick="selectCO2(this, 'left')">300-500 Mt CO₂</div>
+                        <div class="connection-item" data-pair="450" onclick="selectCO2(this, 'left')">450 millions</div>
+                    </div>
+                    <div style="display:flex;align-items:center;font-size:2em;color:var(--neon-blue);">↔️</div>
+                    <div class="connection-column" id="co2-right">
+                        <div class="connection-item" data-pair="180" onclick="selectCO2(this, 'right')">Émissions 2024</div>
+                        <div class="connection-item" data-pair="450" onclick="selectCO2(this, 'right')">Vols Paris-NY équivalents</div>
+                        <div class="connection-item" data-pair="500" onclick="selectCO2(this, 'right')">Prévision 2035</div>
+                    </div>
+                </div>
+
+                <p style="margin:20px 0;color:#88aacc;">Cliquez sur un élément à gauche, puis sur son correspondant à droite.</p>
+
+                <div id="co2-matches" style="text-align:center;margin:20px 0;"></div>
+
+                <button class="start-btn" style="padding:12px 40px;font-size:1em;" onclick="checkCO2Matches()">
+                    Valider mes associations
+                </button>
+
+                <div id="co2-result"></div>
+            `);
+
+            window.co2Selection = { left: null, right: null };
+            window.co2Matches = [];
+        }
+
+        function selectCO2(el, side) {
+            // Reset previous selection on this side
+            document.querySelectorAll(`#co2-${side} .connection-item`).forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            el.classList.add('selected');
+            window.co2Selection[side] = el.dataset.pair;
+
+            // Check if we have both sides selected
+            if (window.co2Selection.left && window.co2Selection.right) {
+                if (window.co2Selection.left === window.co2Selection.right) {
+                    // Match!
+                    window.co2Matches.push(window.co2Selection.left);
+                    document.querySelectorAll('.connection-item.selected').forEach(item => {
+                        item.classList.remove('selected');
+                        item.classList.add('correct');
+                        item.style.pointerEvents = 'none';
+                    });
+
+                    document.getElementById('co2-matches').textContent = `Associations correctes : ${window.co2Matches.length}/3`;
+                }
+
+                window.co2Selection = { left: null, right: null };
+            }
+        }
+
+        function checkCO2Matches() {
+            if (window.co2Matches.length === 3) {
+                document.getElementById('co2-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-green);">
+                        <div class="discovery-title">✅ Document déchiffré !</div>
+                        <div class="discovery-stat">180 → 500 Mt CO₂</div>
+                        <p><strong>Révélation :</strong> Les émissions vont presque tripler !</p>
+                        <ul style="margin:15px 0 0 20px;">
+                            <li>2024 : <strong>180 millions tonnes</strong> CO₂</li>
+                            <li>2035 : <strong>300-500 millions tonnes</strong> (prévision)</li>
+                            <li>Équivalent : <strong>450 millions</strong> vols Paris-New York</li>
+                            <li>Ou : <strong>110 millions</strong> voitures pendant 1 an</li>
+                        </ul>
+                        <button class="start-btn" style="margin-top:20px;padding:10px 30px;font-size:0.9em;" onclick="collectEvidence('co2'); closeModal();">
+                            Sauvegarder cette preuve 🌍
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('co2-result').innerHTML = `
+                    <div class="discovery-panel" style="margin-top:20px;border-left-color:var(--neon-pink);">
+                        <div class="discovery-title" style="color:var(--neon-pink);">⚠️ Associations incomplètes</div>
+                        <p>Vous devez associer les 3 paires correctement. (${window.co2Matches.length}/3 trouvées)</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showAlreadyCollected(type) {
+            const names = {
+                energy: 'Consommation électrique',
+                water: "Consommation d'eau",
+                models: 'Impact des modèles',
+                manufacturing: 'Coût de fabrication',
+                co2: 'Émissions CO₂'
+            };
+
+            showDialogue({
+                speaker: "🔍 Observation",
+                text: `Vous avez déjà collecté cette preuve : <strong>${names[type]}</strong>. Continuez votre exploration !`,
+                choices: [
+                    { text: "D'accord", action: () => closeDialogue() }
+                ]
+            });
+        }
+
+        // ==================== FIN DU JEU ====================
+        function checkEscape() {
+            // Ne pas vérifier si le jeu est déjà terminé
+            if (gameState.gameEnded) return;
+
+            if (gameState.currentRoom === 'corridor' && Object.values(gameState.evidence).every(v => v)) {
+                gameOver(true);
+            }
+        }
+
+        function gameOver(success) {
+            // Éviter les appels multiples
+            if (gameState.gameEnded) return;
+            gameState.gameEnded = true;
+
+            stopTimer(); // Arrêter le timer
+
+            const evidenceCount = Object.values(gameState.evidence).filter(v => v).length;
+            const timeUsed = gameConfig.timeLimit - gameState.timeLeft;
+            const minutes = Math.floor(timeUsed / 60);
+            const seconds = timeUsed % 60;
+
+            let content;
+
+            if (success) {
+                content = `
+                    <div class="final-report">
+                        <div class="final-title">🎉 MISSION ACCOMPLIE !</div>
+                        <p style="font-size:1.2em;margin-bottom:30px;">Vous avez infiltré le data center NovaTech et récupéré toutes les preuves sur l'impact environnemental de l'IA.</p>
+
+                        <div class="final-stats">
+                            <div class="final-stat">
+                                <div class="final-stat-value">${evidenceCount}/5</div>
+                                <div class="final-stat-label">Preuves collectées</div>
+                            </div>
+                            <div class="final-stat">
+                                <div class="final-stat-value">${minutes}:${seconds.toString().padStart(2, '0')}</div>
+                                <div class="final-stat-label">Temps utilisé</div>
+                            </div>
+                            <div class="final-stat">
+                                <div class="final-stat-value">${100 - gameState.suspicion}%</div>
+                                <div class="final-stat-label">Discrétion</div>
+                            </div>
+                        </div>
+
+                        <div class="discovery-panel" style="text-align:left;margin:30px 0;">
+                            <div class="discovery-title">📋 Ce que vous avez découvert :</div>
+                            <ul style="margin:15px 0 0 20px;line-height:2;">
+                                <li><strong>⚡ Électricité :</strong> 1,5% mondial, 415 TWh/an, doublement d'ici 2030</li>
+                                <li><strong>💧 Eau :</strong> +60% en Virginie, 1,8L par kWh</li>
+                                <li><strong>🤖 Modèles :</strong> Ratio ×210 entre léger et lourd</li>
+                                <li><strong>🏭 Fabrication :</strong> 78% de l'empreinte carbone</li>
+                                <li><strong>🌍 CO₂ :</strong> 180 Mt → 500 Mt d'ici 2035</li>
+                            </ul>
+                        </div>
+
+                        <div style="background:rgba(0,255,136,0.1);border:1px solid var(--neon-green);border-radius:15px;padding:25px;margin:30px 0;">
+                            <h3 style="color:var(--neon-green);margin-bottom:15px;">💡 Les 6 règles d'or pour une IA responsable :</h3>
+                            <ol style="margin-left:20px;line-height:2;">
+                                <li>Choisir le bon modèle (×210 de différence !)</li>
+                                <li>Limiter les régénérations inutiles</li>
+                                <li>Se demander si l'IA est vraiment nécessaire</li>
+                                <li>Allonger la durée de vie des appareils</li>
+                                <li>Recycler correctement ses équipements</li>
+                                <li>Exiger la transparence des fournisseurs</li>
+                            </ol>
+                        </div>
+
+                        <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                            <button class="start-btn" onclick="startCertificationQuiz()" style="background:linear-gradient(135deg,rgba(0,255,136,0.2),rgba(0,212,255,0.2));">
+                                📜 Passer le quiz d'attestation
+                            </button>
+                            <button class="start-btn" onclick="location.reload()" style="opacity:0.7;font-size:0.9em;">
+                                🔄 Rejouer
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const reason = gameState.suspicion >= 100 ? "La sécurité vous a repéré !" : "Le temps est écoulé !";
+                content = `
+                    <div class="final-report">
+                        <div class="final-title" style="background:linear-gradient(90deg,var(--neon-pink),var(--warning));-webkit-background-clip:text;background-clip:text;">
+                            ❌ MISSION ÉCHOUÉE
+                        </div>
+                        <p style="font-size:1.2em;margin-bottom:30px;">${reason}</p>
+
+                        <div class="final-stats">
+                            <div class="final-stat">
+                                <div class="final-stat-value">${evidenceCount}/5</div>
+                                <div class="final-stat-label">Preuves collectées</div>
+                            </div>
+                        </div>
+
+                        ${evidenceCount > 0 ? `
+                        <div class="discovery-panel" style="text-align:left;margin:30px 0;">
+                            <div class="discovery-title">📋 Ce que vous avez tout de même appris :</div>
+                            <ul style="margin:15px 0 0 20px;line-height:2;">
+                                ${gameState.evidence.energy ? '<li>⚡ Les data centers consomment 1,5% de l\'électricité mondiale</li>' : ''}
+                                ${gameState.evidence.water ? '<li>💧 +60% de consommation d\'eau en Virginie</li>' : ''}
+                                ${gameState.evidence.models ? '<li>🤖 Ratio ×210 entre modèles IA</li>' : ''}
+                                ${gameState.evidence.manufacturing ? '<li>🏭 78% de l\'impact = fabrication</li>' : ''}
+                                ${gameState.evidence.co2 ? '<li>🌍 180 Mt CO₂ en 2024, jusqu\'à 500 Mt en 2035</li>' : ''}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        <button class="start-btn" style="border-color:var(--neon-pink);color:var(--neon-pink);" onclick="location.reload()">
+                            Réessayer
+                        </button>
+                    </div>
+                `;
+            }
+
+            showModal(content);
+            document.querySelector('.modal-close').style.display = 'none';
+        }
+
+        // Vérification périodique pour l'évasion
+        setInterval(checkEscape, 1000);
+
+        // ==================== QUIZ DE CERTIFICATION ====================
+        const quizQuestions = [
+            {
+                question: "Quelle part de l'électricité mondiale est consommée par les data centers ?",
+                options: ["0,5%", "1,5%", "5%", "10%"],
+                correct: 1
+            },
+            {
+                question: "Quel est le ratio de consommation énergétique entre le modèle IA le plus léger et le plus lourd ?",
+                options: ["×12", "×55", "×210", "×1050"],
+                correct: 2
+            },
+            {
+                question: "Quelle part de l'empreinte carbone d'un équipement numérique est liée à sa fabrication ?",
+                options: ["22%", "50%", "78%", "95%"],
+                correct: 2
+            },
+            {
+                question: "De combien la consommation d'eau a-t-elle augmenté dans les comtés de Virginie abritant des data centers ?",
+                options: ["+20%", "+40%", "+60%", "+80%"],
+                correct: 2
+            },
+            {
+                question: "Quelle quantité de CO₂ le secteur numérique pourrait-il émettre d'ici 2035 ?",
+                options: ["100 Mt", "250 Mt", "500 Mt", "1000 Mt"],
+                correct: 2
+            },
+            {
+                question: "Quelle est la première action pour réduire l'impact environnemental de l'IA ?",
+                options: [
+                    "Utiliser toujours le modèle le plus puissant",
+                    "Choisir le modèle adapté à ses besoins",
+                    "Multiplier les régénérations pour avoir le meilleur résultat",
+                    "Changer d'appareil chaque année"
+                ],
+                correct: 1
+            },
+            {
+                question: "Combien de litres d'eau sont nécessaires pour produire 1 kWh dans un data center ?",
+                options: ["0,5L", "1,8L", "5L", "10L"],
+                correct: 1
+            },
+            {
+                question: "Quelle devrait être la consommation électrique des data centers d'ici 2030 ?",
+                options: ["415 TWh", "600 TWh", "800 TWh", "1000 TWh"],
+                correct: 2
+            }
+        ];
+
+        let quizState = {
+            currentQuestion: 0,
+            score: 0,
+            answers: []
+        };
+
+        function startCertificationQuiz() {
+            quizState = { currentQuestion: 0, score: 0, answers: [] };
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const q = quizQuestions[quizState.currentQuestion];
+            const progress = ((quizState.currentQuestion) / quizQuestions.length * 100).toFixed(0);
+
+            const content = `
+                <div class="final-report" style="max-width:700px;">
+                    <div class="final-title" style="font-size:1.5em;">📜 Quiz d'Attestation</div>
+                    <p style="color:var(--neon-cyan);margin-bottom:20px;">Impact Environnemental de l'IA</p>
+
+                    <div style="background:rgba(0,212,255,0.1);border-radius:10px;padding:3px;margin-bottom:25px;">
+                        <div style="background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan));height:8px;border-radius:8px;width:${progress}%;transition:width 0.5s;"></div>
+                    </div>
+
+                    <p style="color:#888;margin-bottom:10px;">Question ${quizState.currentQuestion + 1} / ${quizQuestions.length}</p>
+
+                    <div style="background:rgba(0,50,100,0.3);border:1px solid rgba(0,212,255,0.3);border-radius:15px;padding:25px;margin-bottom:25px;">
+                        <p style="font-size:1.15em;line-height:1.6;">${q.question}</p>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:12px;" id="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <button class="quiz-option" onclick="selectQuizAnswer(${i})" style="
+                                background:rgba(20,40,60,0.8);
+                                border:2px solid rgba(0,212,255,0.3);
+                                border-radius:10px;
+                                padding:15px 20px;
+                                color:white;
+                                font-size:1em;
+                                cursor:pointer;
+                                transition:all 0.3s;
+                                text-align:left;
+                            " onmouseover="this.style.borderColor='var(--neon-cyan)';this.style.background='rgba(0,100,150,0.4)'"
+                               onmouseout="this.style.borderColor='rgba(0,212,255,0.3)';this.style.background='rgba(20,40,60,0.8)'">
+                                <span style="color:var(--neon-cyan);margin-right:10px;font-weight:bold;">${String.fromCharCode(65 + i)}.</span>
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            showModal(content);
+            document.querySelector('.modal-close').style.display = 'none';
+        }
+
+        function selectQuizAnswer(index) {
+            const q = quizQuestions[quizState.currentQuestion];
+            const isCorrect = index === q.correct;
+
+            if (isCorrect) {
+                quizState.score++;
+            }
+            quizState.answers.push({ question: quizState.currentQuestion, selected: index, correct: isCorrect });
+
+            // Afficher feedback
+            const options = document.querySelectorAll('#quiz-options button');
+            options.forEach((btn, i) => {
+                btn.style.pointerEvents = 'none';
+                if (i === q.correct) {
+                    btn.style.borderColor = 'var(--neon-green)';
+                    btn.style.background = 'rgba(0,255,136,0.2)';
+                } else if (i === index && !isCorrect) {
+                    btn.style.borderColor = 'var(--neon-pink)';
+                    btn.style.background = 'rgba(255,51,102,0.2)';
+                }
+            });
+
+            // Passer à la question suivante
+            setTimeout(() => {
+                quizState.currentQuestion++;
+                if (quizState.currentQuestion < quizQuestions.length) {
+                    showQuizQuestion();
+                } else {
+                    showQuizResults();
+                }
+            }, 1200);
+        }
+
+        function showQuizResults() {
+            const percentage = Math.round((quizState.score / quizQuestions.length) * 100);
+            const passed = percentage >= 70;
+
+            // Débloquer l'attestation si réussi
+            if (passed) {
+                unlockCertificate(percentage);
+            }
+
+            const content = `
+                <div class="final-report" style="max-width:600px;">
+                    <div class="final-title" style="font-size:1.5em;">
+                        ${passed ? '🎓 Attestation Obtenue !' : '📚 Continuez à apprendre'}
+                    </div>
+
+                    <div class="final-stats" style="margin:30px 0;">
+                        <div class="final-stat">
+                            <div class="final-stat-value" style="color:${passed ? 'var(--neon-green)' : 'var(--neon-pink)'};">${quizState.score}/${quizQuestions.length}</div>
+                            <div class="final-stat-label">Bonnes réponses</div>
+                        </div>
+                        <div class="final-stat">
+                            <div class="final-stat-value" style="color:${passed ? 'var(--neon-green)' : 'var(--neon-pink)'};">${percentage}%</div>
+                            <div class="final-stat-label">Score</div>
+                        </div>
+                    </div>
+
+                    ${passed ? `
+                        <div style="background:rgba(0,255,136,0.1);border:2px solid var(--neon-green);border-radius:15px;padding:25px;margin:25px 0;">
+                            <p style="font-size:1.1em;margin-bottom:15px;">🎉 Félicitations ! Vous avez validé le micro-module <strong>"Impact Environnemental de l'IA"</strong>.</p>
+                            <p style="color:#aaa;">Votre attestation de réussite est maintenant disponible dans le dossier d'infiltration.</p>
+                        </div>
+
+                        <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                            <button class="start-btn" onclick="goToFolderCertificate()" style="background:linear-gradient(135deg,rgba(0,255,136,0.3),rgba(0,212,255,0.3));">
+                                📂 Récupérer l'attestation
+                            </button>
+                            <button class="start-btn" onclick="location.reload()" style="opacity:0.7;font-size:0.9em;">
+                                🔄 Rejouer
+                            </button>
+                        </div>
+                    ` : `
+                        <div style="background:rgba(255,51,102,0.1);border:2px solid var(--neon-pink);border-radius:15px;padding:25px;margin:25px 0;">
+                            <p style="font-size:1.1em;margin-bottom:15px;">Vous devez obtenir au moins <strong>70%</strong> pour valider le module.</p>
+                            <p style="color:#aaa;">Rejouez pour réviser les concepts et retentez le quiz !</p>
+                        </div>
+
+                        <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                            <button class="start-btn" onclick="startCertificationQuiz()" style="border-color:var(--neon-cyan);">
+                                🔄 Retenter le quiz
+                            </button>
+                            <button class="start-btn" onclick="location.reload()" style="opacity:0.7;font-size:0.9em;">
+                                🎮 Rejouer la mission
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `;
+
+            showModal(content);
+            document.querySelector('.modal-close').style.display = 'none';
+        }
+
+        // ==================== ATTESTATION ====================
+        function downloadCertificate() {
+            const name = document.getElementById('certificate-name').value.trim() || 'Participant';
+            const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+            const score = Math.round((quizState.score / quizQuestions.length) * 100);
+            generateCertificateHTML(name, date, score);
+        }
+
+        function generateCertificateHTML(name, date, score) {
+
+            const certificateHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Attestation - Impact Environnemental de l'IA</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap');
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body {
+                            font-family: 'Open Sans', sans-serif;
+                            background: linear-gradient(135deg, #0a1628 0%, #1a2d4a 100%);
+                            min-height: 100vh;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 20px;
+                        }
+                        .certificate {
+                            background: linear-gradient(180deg, #0d1f35 0%, #162840 100%);
+                            border: 3px solid #00ff88;
+                            border-radius: 20px;
+                            padding: 50px 60px;
+                            max-width: 800px;
+                            width: 100%;
+                            position: relative;
+                            box-shadow: 0 0 60px rgba(0,255,136,0.3), inset 0 0 60px rgba(0,212,255,0.1);
+                        }
+                        .certificate::before {
+                            content: '';
+                            position: absolute;
+                            top: 15px; left: 15px; right: 15px; bottom: 15px;
+                            border: 1px solid rgba(0,212,255,0.3);
+                            border-radius: 15px;
+                            pointer-events: none;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 40px;
+                        }
+                        .logo {
+                            font-size: 3em;
+                            margin-bottom: 10px;
+                        }
+                        .title {
+                            font-family: 'Playfair Display', serif;
+                            font-size: 2.5em;
+                            background: linear-gradient(90deg, #00ff88, #00d4ff);
+                            -webkit-background-clip: text;
+                            background-clip: text;
+                            color: transparent;
+                            margin-bottom: 5px;
+                        }
+                        .subtitle {
+                            color: #00d4ff;
+                            font-size: 1.1em;
+                            letter-spacing: 3px;
+                            text-transform: uppercase;
+                        }
+                        .content {
+                            text-align: center;
+                            color: #e0e0e0;
+                            line-height: 1.8;
+                        }
+                        .certifies {
+                            font-size: 1.1em;
+                            margin: 30px 0 15px;
+                        }
+                        .name {
+                            font-family: 'Playfair Display', serif;
+                            font-size: 2.2em;
+                            color: #ffffff;
+                            margin: 20px 0;
+                            padding: 15px 0;
+                            border-top: 1px solid rgba(0,212,255,0.3);
+                            border-bottom: 1px solid rgba(0,212,255,0.3);
+                        }
+                        .module {
+                            background: rgba(0,255,136,0.1);
+                            border: 1px solid rgba(0,255,136,0.3);
+                            border-radius: 10px;
+                            padding: 20px;
+                            margin: 30px 0;
+                        }
+                        .module-title {
+                            color: #00ff88;
+                            font-size: 1.3em;
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                        }
+                        .score {
+                            display: inline-block;
+                            background: linear-gradient(135deg, #00ff88, #00d4ff);
+                            color: #0a1628;
+                            padding: 8px 25px;
+                            border-radius: 20px;
+                            font-weight: 600;
+                            margin-top: 10px;
+                        }
+                        .footer {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 40px;
+                            padding-top: 30px;
+                            border-top: 1px solid rgba(0,212,255,0.2);
+                        }
+                        .footer-item {
+                            text-align: center;
+                        }
+                        .footer-label {
+                            color: #888;
+                            font-size: 0.85em;
+                            margin-bottom: 5px;
+                        }
+                        .footer-value {
+                            color: #00d4ff;
+                            font-weight: 600;
+                        }
+                        .skills {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                            justify-content: center;
+                            margin-top: 15px;
+                        }
+                        .skill {
+                            background: rgba(0,212,255,0.1);
+                            border: 1px solid rgba(0,212,255,0.3);
+                            padding: 5px 15px;
+                            border-radius: 15px;
+                            font-size: 0.85em;
+                            color: #00d4ff;
+                        }
+                        @media print {
+                            body { background: white; }
+                            .certificate { box-shadow: none; border-width: 2px; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="certificate">
+                        <div class="header">
+                            <div class="logo">🌿🤖</div>
+                            <div class="title">Attestation de Réussite</div>
+                            <div class="subtitle">Formation IA Responsable</div>
+                        </div>
+
+                        <div class="content">
+                            <p class="certifies">Cette attestation certifie que</p>
+                            <div class="name">${name}</div>
+                            <p>a complété avec succès le micro-module</p>
+
+                            <div class="module">
+                                <div class="module-title">🌍 Impact Environnemental de l'Intelligence Artificielle</div>
+                                <p>via la simulation immersive "Green Infiltration"</p>
+                                <div class="score">Score : ${score}%</div>
+                            </div>
+
+                            <p>Compétences validées :</p>
+                            <div class="skills">
+                                <span class="skill">⚡ Consommation énergétique</span>
+                                <span class="skill">💧 Impact hydrique</span>
+                                <span class="skill">🤖 Choix des modèles IA</span>
+                                <span class="skill">🏭 Cycle de vie</span>
+                                <span class="skill">🌍 Empreinte carbone</span>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <div class="footer-item">
+                                <div class="footer-label">Date d'obtention</div>
+                                <div class="footer-value">${date}</div>
+                            </div>
+                            <div class="footer-item">
+                                <div class="footer-label">Référence</div>
+                                <div class="footer-value">IA-ENV-${Date.now().toString(36).toUpperCase()}</div>
+                            </div>
+                            <div class="footer-item">
+                                <div class="footer-label">Validité</div>
+                                <div class="footer-value">Permanente</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:30px;padding-top:20px;border-top:1px solid rgba(0,212,255,0.2);text-align:center;">
+                            <p style="color:#8899aa;font-size:0.85em;margin-bottom:10px;">Une formation proposée par</p>
+                            <a href="https://www.profexpress.com" target="_blank" style="display:inline-block;">
+                                <img src="images/logo-profexpress.png" alt="Prof Express" style="height:35px;object-fit:contain;">
+                            </a>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            // Télécharger le fichier HTML
+            const blob = new Blob([certificateHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Attestation_IA_Environnement_${name.replace(/\s+/g, '_')}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
