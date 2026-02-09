@@ -1049,6 +1049,843 @@
             .comparison-grid { grid-template-columns: 1fr; }
             .hud-items { font-size: 0.8em; }
         }
+
+        /* ==================== IMMERSIVE ENHANCEMENTS ==================== */
+
+        /* Particle System */
+        #particles-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+            box-shadow: 0 0 6px var(--neon-blue);
+        }
+
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(100vh) translateX(0); }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(-10vh) translateX(var(--drift, 30px)); }
+        }
+
+        /* Scanline Overlay */
+        .scanline-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 212, 255, 0.012) 2px,
+                rgba(0, 212, 255, 0.012) 4px
+            );
+        }
+
+        .scanline-overlay::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(0, 212, 255, 0.04) 50%,
+                transparent 100%
+            );
+            animation: scanMove 5s linear infinite;
+        }
+
+        @keyframes scanMove {
+            from { top: -80px; }
+            to { top: 100vh; }
+        }
+
+        /* Evidence Inspection Modal */
+        .evidence-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 5, 15, 0.92);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .evidence-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .evidence-modal {
+            background: linear-gradient(135deg, rgba(10, 20, 50, 0.98), rgba(5, 15, 35, 0.98));
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 20px;
+            max-width: 680px;
+            width: 90vw;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow:
+                0 0 60px rgba(0, 212, 255, 0.25),
+                0 0 120px rgba(0, 212, 255, 0.08),
+                inset 0 1px 0 rgba(0, 212, 255, 0.15);
+            transform: scale(0.85) translateY(30px);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .evidence-modal-overlay.active .evidence-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .evidence-modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(0, 40, 80, 0.4), transparent);
+        }
+
+        .evidence-modal-header h3 {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .evidence-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 0, 128, 0.35);
+            background: rgba(255, 0, 128, 0.08);
+            color: var(--neon-pink);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .evidence-modal-close:hover {
+            background: rgba(255, 0, 128, 0.25);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.25);
+        }
+
+        .evidence-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 55vh;
+        }
+
+        .evidence-modal-image {
+            width: 100%;
+            height: 160px;
+            background: url('images/evidence_hologram.png') center/cover no-repeat;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .evidence-modal-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 10, 30, 0.3) 0%, rgba(0, 10, 30, 0.7) 100%);
+        }
+
+        .evidence-modal-image .evidence-type-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            z-index: 1;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(0, 10, 30, 0.85);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: var(--neon-purple);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .evidence-document {
+            position: relative;
+            padding: 20px;
+            background: rgba(0, 10, 20, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .evidence-document::before {
+            content: 'PIÈCE À CONVICTION';
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: rgba(10, 20, 50, 1);
+            padding: 2px 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68em;
+            color: var(--neon-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            letter-spacing: 2px;
+        }
+
+        .evidence-document p {
+            color: #c0d0e0;
+            line-height: 1.8;
+            margin-top: 8px;
+        }
+
+        .evidence-hint-box {
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.06), rgba(0, 212, 255, 0.04));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+        }
+
+        .evidence-hint-box strong {
+            color: var(--neon-green);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        .evidence-hint-box p {
+            color: #a0c0d0;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .evidence-modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid rgba(0, 212, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 15, 30, 0.5);
+        }
+
+        .evidence-points-badge {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 1.1em;
+            animation: pointsPulse 1s ease-in-out;
+        }
+
+        @keyframes pointsPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        }
+
+        /* Phase Transition Overlay */
+        .phase-transition-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 5, 15, 0.97);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .phase-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .phase-transition-overlay .phase-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: phaseIconPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes phaseIconPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.12); filter: brightness(1.4) drop-shadow(0 0 25px rgba(0, 212, 255, 0.5)); }
+        }
+
+        .phase-transition-overlay .phase-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: glitchIn 0.4s ease-out;
+        }
+
+        @keyframes glitchIn {
+            0% { transform: translateX(-8px); opacity: 0; clip-path: inset(0 100% 0 0); }
+            30% { transform: translateX(4px); clip-path: inset(0 0 0 0); }
+            60% { transform: translateX(-2px); }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .phase-transition-overlay .phase-subtitle {
+            color: #8899aa;
+            font-size: 1.1em;
+            margin-top: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .phase-transition-overlay .phase-line {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            margin: 20px 0;
+            animation: lineExpand 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes lineExpand {
+            from { width: 0; opacity: 0; }
+            to { width: 200px; opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Case Intro Scene */
+        .case-intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s ease;
+            overflow: hidden;
+        }
+
+        .case-intro-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .case-intro-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .case-intro-bg.nexus-bg {
+            background:
+                radial-gradient(ellipse at 30% 40%, rgba(100, 50, 200, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(0, 100, 200, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #050812 0%, #0a1225 50%, #080d1a 100%);
+        }
+
+        .case-intro-bg.medica-bg {
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(0, 180, 150, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 70%, rgba(200, 50, 50, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #050812 0%, #0a1520 50%, #080d1a 100%);
+        }
+
+        .case-intro-bg.creditia-bg {
+            background:
+                radial-gradient(ellipse at 40% 50%, rgba(200, 150, 0, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse at 60% 30%, rgba(0, 100, 200, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #050812 0%, #12150a 50%, #080d1a 100%);
+        }
+
+        .case-intro-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+            padding: 0 20px;
+        }
+
+        .case-intro-icon {
+            font-size: 5em;
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+        }
+
+        .case-intro-code {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85em;
+            color: var(--neon-purple);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .case-intro-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.2em;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: glitchIn 0.5s ease-out 0.4s both;
+        }
+
+        .case-intro-scene {
+            color: #8899aa;
+            font-size: 1.15em;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .case-intro-stats {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
+        }
+
+        .case-intro-stat {
+            text-align: center;
+            padding: 14px 24px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 30, 60, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .case-intro-stat .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4em;
+            color: var(--neon-blue);
+        }
+
+        .case-intro-stat .stat-label {
+            color: #8899aa;
+            font-size: 0.82em;
+            margin-top: 4px;
+        }
+
+        .case-intro-enter-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1em;
+            padding: 16px 50px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            animation: fadeInUp 0.6s ease-out 1s both;
+        }
+
+        .case-intro-enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .case-intro-enter-btn:hover::before { left: 100%; }
+        .case-intro-enter-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Typewriter Effect */
+        .dialogue-box {
+            position: relative;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(0, 30, 60, 0.6), rgba(0, 20, 40, 0.4));
+            border-left: 3px solid var(--neon-blue);
+            border-radius: 0 14px 14px 0;
+            margin: 14px 0;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+        }
+
+        .dialogue-box .speaker {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-weight: 700;
+            font-size: 0.88em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dialogue-box .speaker-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            object-fit: cover;
+        }
+
+        .dialogue-box .dialogue-text {
+            color: #d0e0f0;
+            line-height: 1.65;
+        }
+
+        .tw-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--neon-green);
+            margin-left: 2px;
+            animation: cursorBlink 0.7s steps(2) infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Floating Score Popup */
+        .score-float {
+            position: fixed;
+            z-index: 5000;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5em;
+            font-weight: 700;
+            pointer-events: none;
+            animation: scoreUp 1.8s ease-out forwards;
+        }
+
+        .score-float.positive { color: var(--neon-green); text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .score-float.negative { color: var(--neon-pink); text-shadow: 0 0 20px rgba(255, 0, 128, 0.5); }
+
+        @keyframes scoreUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            30% { opacity: 1; transform: translateY(-30px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-90px) scale(0.7); }
+        }
+
+        /* Gavel Animation */
+        .gavel-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .gavel-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .gavel-icon {
+            font-size: 7em;
+            animation: gavelStrike 0.7s ease-out;
+        }
+
+        @keyframes gavelStrike {
+            0% { transform: rotate(-45deg) translateY(-50px) scale(0.5); opacity: 0; }
+            40% { transform: rotate(5deg) translateY(0) scale(1.2); opacity: 1; }
+            60% { transform: rotate(-3deg) scale(1.05); }
+            80% { transform: rotate(1deg) scale(1); }
+            100% { transform: rotate(0) scale(1); }
+        }
+
+        .gavel-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.6em;
+            color: var(--neon-green);
+            margin-top: 20px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        /* Screen Shake */
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-3px, -2px); }
+            20% { transform: translate(3px, 2px); }
+            30% { transform: translate(-2px, 3px); }
+            40% { transform: translate(2px, -3px); }
+            50% { transform: translate(-3px, 1px); }
+            60% { transform: translate(3px, -1px); }
+            70% { transform: translate(-1px, 2px); }
+            80% { transform: translate(1px, -2px); }
+            90% { transform: translate(-2px, -1px); }
+        }
+
+        .shake { animation: screenShake 0.4s ease-in-out; }
+
+        /* Sound Toggle */
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 6000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: rgba(10, 20, 40, 0.9);
+            color: var(--neon-blue);
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .sound-toggle:hover {
+            background: rgba(0, 212, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .sound-toggle.muted {
+            color: #555;
+            border-color: rgba(100, 100, 100, 0.3);
+        }
+
+        /* Enhanced evidence cards with hologram */
+        .evidence {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evidence::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(0, 212, 255, 0.04) 90deg,
+                transparent 180deg,
+                rgba(0, 255, 136, 0.04) 270deg,
+                transparent 360deg
+            );
+            animation: holoRotate 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes holoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .evidence.collected {
+            border-color: rgba(0, 255, 136, 0.35) !important;
+            background: rgba(0, 255, 136, 0.06) !important;
+        }
+
+        .evidence.collected::after {
+            content: '✓ COLLECTÉE';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68em;
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 2px 10px;
+            border-radius: 4px;
+            background: rgba(0, 255, 136, 0.08);
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        /* Case card icons */
+        .case-card-icon {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            display: block;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.3));
+        }
+
+        /* Case card scene image */
+        .case-scene-img {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            object-fit: cover;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .case-scene-gradient {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-scene-gradient.nexus {
+            background: linear-gradient(135deg, #1a0a30 0%, #0a1530 50%, #0a0a20 100%);
+        }
+
+        .case-scene-gradient.nexus::before {
+            content: '💼📊📋';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            letter-spacing: 15px;
+            opacity: 0.3;
+        }
+
+        .case-scene-gradient.medica {
+            background: linear-gradient(135deg, #0a1520 0%, #0a2020 50%, #0a1515 100%);
+        }
+
+        .case-scene-gradient.medica::before {
+            content: '🏥💉🩺';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            letter-spacing: 15px;
+            opacity: 0.3;
+        }
+
+        .case-scene-gradient.creditia {
+            background: linear-gradient(135deg, #15120a 0%, #1a1a0a 50%, #0a0f15 100%);
+        }
+
+        .case-scene-gradient.creditia::before {
+            content: '🏦💳📈';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            letter-spacing: 15px;
+            opacity: 0.3;
+        }
+
+        /* Ambient glow on game container */
+        #game-container.active::before {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Better credibility meter animation */
+        .meter > div {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Verdict dramatic reveal */
+        .verdict-reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.6s ease;
+        }
+
+        .verdict-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Immersive evidence icon */
+        .evidence-icon-large {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.4));
+        }
+
+        /* Case status bar in side panel */
+        .case-status-bar {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .case-status-step {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(0, 212, 255, 0.15);
+            transition: background 0.5s;
+        }
+
+        .case-status-step.done {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+        }
+
+        .case-status-step.current {
+            background: var(--neon-blue);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+            animation: stepPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes stepPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
@@ -1212,6 +2049,47 @@
 
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
+
+    <!-- PARTICLE BACKGROUND -->
+    <div id="particles-bg"></div>
+
+    <!-- SCANLINE OVERLAY -->
+    <div class="scanline-overlay"></div>
+
+    <!-- EVIDENCE MODAL -->
+    <div class="evidence-modal-overlay" id="evidenceModalOverlay">
+        <div class="evidence-modal" id="evidenceModal">
+            <div class="evidence-modal-header">
+                <h3 id="evidenceModalTitle">📄 Pièce à conviction</h3>
+                <button class="evidence-modal-close" onclick="closeEvidenceModal()">✕</button>
+            </div>
+            <div class="evidence-modal-body" id="evidenceModalBody"></div>
+            <div class="evidence-modal-footer" id="evidenceModalFooter"></div>
+        </div>
+    </div>
+
+    <!-- PHASE TRANSITION OVERLAY -->
+    <div class="phase-transition-overlay" id="phaseTransition">
+        <div class="phase-icon" id="phaseIcon"></div>
+        <div class="phase-line"></div>
+        <div class="phase-title" id="phaseTitle"></div>
+        <div class="phase-subtitle" id="phaseSubtitle"></div>
+    </div>
+
+    <!-- CASE INTRO OVERLAY -->
+    <div class="case-intro-overlay" id="caseIntroOverlay">
+        <div class="case-intro-bg" id="caseIntroBg"></div>
+        <div class="case-intro-content" id="caseIntroContent"></div>
+    </div>
+
+    <!-- GAVEL ANIMATION -->
+    <div class="gavel-overlay" id="gavelOverlay">
+        <div class="gavel-icon">🔨</div>
+        <div class="gavel-text">Verdict enregistré</div>
+    </div>
+
+    <!-- SOUND TOGGLE -->
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Son on/off">🔊</button>
 
     <script>
         // ==================== STATE ====================
@@ -1561,6 +2439,40 @@
             }
         };
 
+        // ==================== CASE INTRO DATA ====================
+        const caseIntroData = {
+            NEXUS: {
+                icon: '💼',
+                bgClass: 'nexus-bg',
+                scene: 'Dans les serveurs de NEXUS Corp, une IA de recrutement filtre des milliers de CV chaque jour. Des candidates qualifiées sont systématiquement écartées. L\'entreprise parle d\'« optimisation »...',
+                stats: [
+                    { value: '2,847', label: 'Candidates écartées' },
+                    { value: 'Emploi', label: 'Secteur' },
+                    { value: 'Élevé', label: 'Niveau de risque' }
+                ]
+            },
+            MEDICA: {
+                icon: '🏥',
+                bgClass: 'medica-bg',
+                scene: 'À l\'hôpital Saint-Digital, un système d\'aide au diagnostic a recommandé un traitement inadapté. Le clinicien a suivi la recommandation en 12 secondes. Le patient en subit les conséquences...',
+                stats: [
+                    { value: '1', label: 'Patient lésé' },
+                    { value: 'Santé', label: 'Secteur' },
+                    { value: 'Critique', label: 'Niveau de risque' }
+                ]
+            },
+            CREDITIA: {
+                icon: '🏦',
+                bgClass: 'creditia-bg',
+                scene: 'Dans les algorithmes de CREDITIA Bank, un score automatisé refuse silencieusement des prêts immobiliers. Une candidate perd son logement sans explication. La banque invoque le secret commercial...',
+                stats: [
+                    { value: '12,340', label: 'Refus automatisés' },
+                    { value: 'Finances', label: 'Secteur' },
+                    { value: 'Élevé', label: 'Niveau de risque' }
+                ]
+            }
+        };
+
         // ==================== UTILITIES ====================
         function $(id) { return document.getElementById(id); }
         function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
@@ -1570,6 +2482,289 @@
             t.classList.add('show');
             clearTimeout(t._timer);
             t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ==================== SOUND SYSTEM ====================
+        const SFX = {
+            ctx: null,
+            enabled: true,
+            init() {
+                if (this.ctx) return;
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) { this.enabled = false; }
+            },
+            play(type) {
+                if (!this.enabled || !this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                switch (type) {
+                    case 'click':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(800, now);
+                        osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+                        gain.gain.setValueAtTime(0.08, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                        break;
+                    case 'collect':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(500, now);
+                        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                        osc.start(now);
+                        osc.stop(now + 0.2);
+                        break;
+                    case 'success':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(600, now);
+                        osc.frequency.setValueAtTime(800, now + 0.1);
+                        osc.frequency.setValueAtTime(1000, now + 0.2);
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                        break;
+                    case 'error':
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                        gain.gain.setValueAtTime(0.06, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                        osc.start(now);
+                        osc.stop(now + 0.25);
+                        break;
+                    case 'gavel':
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                        gain.gain.setValueAtTime(0.15, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                        break;
+                    case 'transition':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(200, now);
+                        osc.frequency.exponentialRampToValueAtTime(600, now + 0.5);
+                        gain.gain.setValueAtTime(0.06, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                        osc.start(now);
+                        osc.stop(now + 0.6);
+                        break;
+                    case 'ambient':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(80, now);
+                        gain.gain.setValueAtTime(0.015, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 3);
+                        osc.start(now);
+                        osc.stop(now + 3);
+                        break;
+                }
+            }
+        };
+
+        function toggleSound() {
+            SFX.enabled = !SFX.enabled;
+            const btn = $('soundToggle');
+            btn.textContent = SFX.enabled ? '🔊' : '🔇';
+            btn.classList.toggle('muted', !SFX.enabled);
+        }
+
+        // ==================== PARTICLE SYSTEM ====================
+        function initParticles() {
+            const container = $('particles-bg');
+            if (!container) return;
+            for (let i = 0; i < 35; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                p.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+                p.style.width = (Math.random() * 2 + 1) + 'px';
+                p.style.height = p.style.width;
+                if (Math.random() > 0.6) {
+                    p.style.background = 'var(--neon-green)';
+                    p.style.boxShadow = '0 0 6px var(--neon-green)';
+                }
+                container.appendChild(p);
+            }
+        }
+
+        // ==================== FLOATING SCORE POPUP ====================
+        function floatScore(amount, ev) {
+            const el = document.createElement('div');
+            el.className = 'score-float ' + (amount >= 0 ? 'positive' : 'negative');
+            el.textContent = (amount >= 0 ? '+' : '') + amount + ' pts';
+
+            let x = window.innerWidth / 2, y = window.innerHeight / 2;
+            if (ev) {
+                const rect = ev.target ? ev.target.getBoundingClientRect() : null;
+                if (rect) { x = rect.left + rect.width / 2; y = rect.top; }
+            }
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2000);
+        }
+
+        // ==================== EVIDENCE MODAL ====================
+        function showEvidenceModal(evidence, isNew) {
+            SFX.init();
+            SFX.play(isNew ? 'collect' : 'click');
+
+            $('evidenceModalTitle').innerHTML = `📄 ${evidence.k}`;
+            $('evidenceModalBody').innerHTML = `
+                <div class="evidence-modal-image">
+                    <div class="evidence-type-badge">Pièce à conviction</div>
+                </div>
+                <div class="evidence-document">
+                    <p>${evidence.v}</p>
+                </div>
+                <div class="evidence-hint-box">
+                    <strong>🔍 Indice clé :</strong>
+                    <p>${evidence.hint}</p>
+                </div>
+            `;
+            $('evidenceModalFooter').innerHTML = isNew
+                ? `<span class="evidence-points-badge">+${evidence.points} points</span><span class="muted" style="font-size:0.85em">Preuve ajoutée au dossier</span>`
+                : `<span class="muted" style="font-size:0.85em">Preuve déjà collectée</span><span class="tag">Dans le dossier ✓</span>`;
+
+            $('evidenceModalOverlay').classList.add('active');
+        }
+
+        function closeEvidenceModal() {
+            $('evidenceModalOverlay').classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'evidenceModalOverlay') closeEvidenceModal();
+        });
+
+        // ==================== PHASE TRANSITION ====================
+        function showPhaseTransition(icon, title, subtitle) {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('transition');
+                $('phaseIcon').textContent = icon;
+                $('phaseTitle').textContent = title;
+                $('phaseSubtitle').textContent = subtitle;
+                $('phaseTransition').classList.add('active');
+                setTimeout(() => {
+                    $('phaseTransition').classList.remove('active');
+                    resolve();
+                }, 1800);
+            });
+        }
+
+        // ==================== CASE INTRO CINEMATIC ====================
+        function showCaseIntro(code) {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('transition');
+                const c = cases[code];
+                const intro = caseIntroData[code];
+                const overlay = $('caseIntroOverlay');
+                const bg = $('caseIntroBg');
+                const content = $('caseIntroContent');
+
+                bg.className = 'case-intro-bg ' + intro.bgClass;
+
+                // Scene-specific SVG diagrams
+                const sceneSVGs = {
+                    NEXUS: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="80" height="90" rx="4" fill="none" stroke="#6040c0" stroke-width="1"/><rect x="15" y="25" width="70" height="50" rx="2" fill="#1a0a40" stroke="#8060e0" stroke-width="0.5"/><text x="50" y="55" text-anchor="middle" fill="#8060e0" font-size="8" font-family="monospace">CV SCAN</text><line x1="20" y1="80" x2="80" y2="80" stroke="#6040c0" stroke-width="0.5"/><line x1="20" y1="86" x2="65" y2="86" stroke="#6040c0" stroke-width="0.5"/><line x1="20" y1="92" x2="75" y2="92" stroke="#6040c0" stroke-width="0.5"/><rect x="120" y="10" width="160" height="100" rx="6" fill="none" stroke="#00d4ff" stroke-width="1"/><text x="200" y="35" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="monospace">NEXUS AI ENGINE</text><rect x="135" y="45" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="45" width="95" height="8" rx="2" fill="#6040c0" opacity="0.6"/><rect x="135" y="58" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="58" width="40" height="8" rx="2" fill="#ff0080" opacity="0.6"/><rect x="135" y="71" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="71" width="110" height="8" rx="2" fill="#6040c0" opacity="0.6"/><text x="200" y="95" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">⚠ BIAS DETECTED</text><rect x="310" y="20" width="80" height="90" rx="4" fill="none" stroke="#00ff88" stroke-width="1"/><text x="350" y="45" text-anchor="middle" fill="#00ff88" font-size="7" font-family="monospace">ACCEPTED</text><circle cx="350" cy="65" r="12" fill="none" stroke="#00ff88" stroke-width="1"/><text x="350" y="68" text-anchor="middle" fill="#00ff88" font-size="8">✓</text><text x="350" y="95" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">REJECTED</text><line x1="90" y1="60" x2="120" y2="60" stroke="#6040c0" stroke-width="1" stroke-dasharray="4"/><line x1="280" y1="60" x2="310" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`,
+                    MEDICA: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="15" width="100" height="95" rx="6" fill="none" stroke="#00b896" stroke-width="1"/><text x="60" y="35" text-anchor="middle" fill="#00b896" font-size="8" font-family="monospace">PATIENT DATA</text><line x1="20" y1="42" x2="100" y2="42" stroke="#00b896" stroke-width="0.5" opacity="0.5"/><polyline points="20,70 35,55 50,75 65,50 80,65 95,45" fill="none" stroke="#00b896" stroke-width="1.5"/><text x="60" y="95" text-anchor="middle" fill="#00b896" font-size="7" font-family="monospace">ECG / VITALS</text><rect x="140" y="10" width="120" height="100" rx="8" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="200" y="32" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">MEDICA AI</text><line x1="155" y1="40" x2="245" y2="40" stroke="#00d4ff" stroke-width="0.5"/><text x="200" y="58" text-anchor="middle" fill="#fff" font-size="8" font-family="monospace">DIAGNOSTIC:</text><rect x="155" y="64" width="90" height="12" rx="3" fill="#ff0080" opacity="0.3" stroke="#ff0080" stroke-width="0.5"/><text x="200" y="73" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">CONFIANCE: 97%</text><text x="200" y="95" text-anchor="middle" fill="#ff8c00" font-size="7" font-family="monospace">⚠ INTERFACE TROMPEUSE</text><rect x="290" y="25" width="100" height="80" rx="6" fill="none" stroke="#ff6060" stroke-width="1"/><text x="340" y="52" text-anchor="middle" fill="#ff6060" font-size="20">⏱</text><text x="340" y="75" text-anchor="middle" fill="#ff6060" font-size="14" font-family="monospace">12s</text><text x="340" y="95" text-anchor="middle" fill="#ff6060" font-size="6" font-family="monospace">TEMPS DE VALIDATION</text><line x1="110" y1="60" x2="140" y2="60" stroke="#00b896" stroke-width="1" stroke-dasharray="4"/><line x1="260" y1="60" x2="290" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`,
+                    CREDITIA: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="90" height="85" rx="5" fill="none" stroke="#c89600" stroke-width="1"/><text x="55" y="40" text-anchor="middle" fill="#c89600" font-size="8" font-family="monospace">DEMANDE</text><text x="55" y="60" text-anchor="middle" fill="#c89600" font-size="16">🏠</text><text x="55" y="78" text-anchor="middle" fill="#c89600" font-size="7" font-family="monospace">PRÊT IMMOBILIER</text><line x1="20" y1="84" x2="90" y2="84" stroke="#c89600" stroke-width="0.5" opacity="0.5"/><text x="55" y="98" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">DOSSIER #12340</text><rect x="130" y="10" width="140" height="100" rx="6" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="200" y="30" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">SCORING ENGINE</text><line x1="145" y1="38" x2="255" y2="38" stroke="#00d4ff" stroke-width="0.5"/><rect x="145" y="45" width="110" height="10" rx="2" fill="#0a1530"/><rect x="145" y="45" width="35" height="10" rx="2" fill="#ff0080" opacity="0.6"/><text x="200" y="53" text-anchor="middle" fill="#ff0080" font-size="6" font-family="monospace">SCORE: 380/900</text><text x="200" y="75" text-anchor="middle" fill="#ff0080" font-size="10" font-family="monospace">REFUSÉ</text><text x="200" y="92" text-anchor="middle" fill="#ff8c00" font-size="6" font-family="monospace">PROXY VARIABLES DÉTECTÉES</text><text x="200" y="102" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">Aucune explication fournie</text><rect x="300" y="25" width="90" height="80" rx="5" fill="none" stroke="#ff0080" stroke-width="1"/><text x="345" y="55" text-anchor="middle" fill="#ff0080" font-size="20">🚫</text><text x="345" y="75" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">PAS DE RECOURS</text><text x="345" y="95" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">Formulaire auto.</text><line x1="100" y1="60" x2="130" y2="60" stroke="#c89600" stroke-width="1" stroke-dasharray="4"/><line x1="270" y1="60" x2="300" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`
+                };
+
+                content.innerHTML = `
+                    <div class="case-intro-icon">${intro.icon}</div>
+                    <div class="case-intro-code">Dossier ${code}</div>
+                    <div class="case-intro-title">${c.title.split('—')[1] || c.title}</div>
+                    ${sceneSVGs[code] || ''}
+                    <div class="case-intro-scene">${intro.scene}</div>
+                    <div class="case-intro-stats">
+                        ${intro.stats.map(s => `
+                            <div class="case-intro-stat">
+                                <div class="stat-value">${s.value}</div>
+                                <div class="stat-label">${s.label}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="case-intro-enter-btn" id="caseIntroEnterBtn">▶ Ouvrir le dossier</button>
+                `;
+
+                overlay.classList.add('active');
+
+                $('caseIntroEnterBtn').addEventListener('click', () => {
+                    SFX.play('click');
+                    overlay.classList.remove('active');
+                    setTimeout(resolve, 400);
+                }, { once: true });
+            });
+        }
+
+        // ==================== GAVEL ANIMATION ====================
+        function showGavelAnimation() {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('gavel');
+                const overlay = $('gavelOverlay');
+                overlay.classList.add('active');
+
+                // Screen shake
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 500);
+
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    resolve();
+                }, 1800);
+            });
+        }
+
+        // ==================== TYPEWRITER EFFECT ====================
+        function typewriterDialogue(container, speaker, text, avatarSrc) {
+            return new Promise(resolve => {
+                const box = document.createElement('div');
+                box.className = 'dialogue-box';
+                box.innerHTML = `
+                    <div class="speaker">
+                        ${avatarSrc ? `<img class="speaker-avatar" src="${avatarSrc}" alt="${speaker}">` : ''}
+                        ${speaker}
+                    </div>
+                    <div class="dialogue-text"><span class="tw-cursor"></span></div>
+                `;
+                container.appendChild(box);
+
+                const textEl = box.querySelector('.dialogue-text');
+                const cursor = box.querySelector('.tw-cursor');
+                let i = 0;
+                const speed = 18;
+
+                function typeChar() {
+                    if (i < text.length) {
+                        textEl.insertBefore(document.createTextNode(text[i]), cursor);
+                        i++;
+                        setTimeout(typeChar, speed);
+                    } else {
+                        setTimeout(() => {
+                            cursor.remove();
+                            resolve();
+                        }, 400);
+                    }
+                }
+                typeChar();
+            });
         }
 
         // ==================== BRIEFING NAVIGATION ====================
@@ -1710,7 +2905,8 @@
         }
 
         // ==================== GAME FLOW ====================
-        function startGame() {
+        async function startGame() {
+            SFX.init();
             $('briefing-screen').classList.remove('active');
             $('game-container').classList.add('active');
             state.game.active = true;
@@ -1719,6 +2915,11 @@
             state.game.caseId = null;
             state.game.casePoints = 0;
             state.game.evidenceFound = new Set();
+
+            // Dramatic entry
+            await showPhaseTransition('⚖️', 'Le Tribunal', 'La séance est ouverte');
+            SFX.play('ambient');
+
             updateHUD();
             renderCaseSelection();
             renderDossierSide();
@@ -1822,10 +3023,7 @@
                     <h2 class="mono">Phase 1 — Ouverture du dossier</h2>
                     <span class="tag">Choisissez une affaire</span>
                 </div>
-                <div class="muted" style="line-height:1.5;margin-bottom:10px">
-                    Le greffier présente les dossiers. Vous devez juger <strong>3 affaires</strong>.
-                    Chaque affaire : <strong>8 minutes</strong>.
-                </div>
+                <div id="caseSelectionDialogue"></div>
 
                 <div class="case-grid">
                     ${renderCaseCard(cases.NEXUS)}
@@ -1854,6 +3052,15 @@
             state.game.evidenceFound = new Set();
             state.game.casePoints = 0;
             updateHUD();
+
+            // Typewriter for case selection
+            const caseDialogue = $('caseSelectionDialogue');
+            if (caseDialogue) {
+                const remaining = 3 - state.game.casesDone.size;
+                if (remaining > 0) {
+                    typewriterDialogue(caseDialogue, 'Greffier', `Le tribunal a ${remaining} affaire${remaining > 1 ? 's' : ''} à juger. Choisissez un dossier. Vous disposez de 8 minutes par affaire.`, null);
+                }
+            }
         }
 
         function renderCaseCard(c) {
@@ -1861,9 +3068,13 @@
             const badge = done ? `<span class="badge">Jugée ✓</span>` : `<span class="badge">À juger</span>`;
             const disabled = done ? 'style="opacity:.55; cursor:not-allowed;"' : '';
             const onclick = done ? '' : `onclick="selectCase('${c.code}')"`;
+            const intro = caseIntroData[c.code];
+            const sceneClass = c.code.toLowerCase();
             return `
                 <div class="case" ${onclick} ${disabled}>
                     ${badge}
+                    <div class="case-scene-gradient ${sceneClass}"></div>
+                    <span class="case-card-icon">${intro ? intro.icon : '📁'}</span>
                     <h3>${c.title}</h3>
                     <p>${c.teaser}</p>
                     <div class="hr"></div>
@@ -1875,12 +3086,26 @@
         function renderDossierSide() {
             const side = $('stageSide');
             const c = state.game.caseId ? cases[state.game.caseId] : null;
+            const phase = state.game.casePhase;
+            const phaseLabels = ['Sélection', 'Preuves', 'Puzzle', 'Verdict', 'Quiz'];
 
             const list = [...state.game.evidenceFound].map(id => {
                 const ev = c ? c.evidence.find(x => x.id === id) : null;
                 if (!ev) return "";
                 return `<div class="item"><strong>${ev.k}</strong><small>${ev.hint}</small></div>`;
             }).join('');
+
+            const statusBar = c ? `
+                <div style="margin: 8px 0 4px;">
+                    <div class="muted" style="font-size:0.75em;margin-bottom:4px">Progression : ${phaseLabels[phase] || '—'}</div>
+                    <div class="case-status-bar">
+                        <div class="case-status-step ${phase > 0 ? 'done' : phase === 0 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 1 ? 'done' : phase === 1 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 2 ? 'done' : phase === 2 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 3 ? 'done' : phase === 3 ? 'current' : ''}"></div>
+                    </div>
+                </div>
+            ` : '';
 
             side.innerHTML = `
                 <div class="judge-avatar">
@@ -1895,6 +3120,9 @@
                     <h2 class="mono">Dossier du juré</h2>
                     <span class="tag">${c ? c.code : '—'}</span>
                 </div>
+
+                ${statusBar}
+
                 <div class="dossier">
                     <div class="item">
                         <strong>Statut</strong>
@@ -1910,40 +3138,52 @@
         }
 
         // ==================== EVIDENCE PHASE ====================
-        function selectCase(code) {
+        async function selectCase(code) {
             if (state.game.casesDone.has(code)) return;
+            SFX.init();
+            SFX.play('click');
+
+            // Show cinematic case intro
+            await showCaseIntro(code);
+
             state.game.caseId = code;
             state.game.casePhase = 1;
             state.game.evidenceFound = new Set();
             state.game.casePoints = 0;
+
+            // Phase transition
+            await showPhaseTransition('🔍', 'Examen des preuves', `Dossier ${code} — Accès aux archives autorisé`);
+
             startTimer();
             renderEvidencePhase();
             renderDossierSide();
-            toast(`Greffier : Dossier ${code} ouvert. Accès aux archives autorisé.`);
             updateHUD();
         }
 
         function renderEvidencePhase() {
             const c = cases[state.game.caseId];
-            $('stageMain').innerHTML = `
+            const main = $('stageMain');
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Phase 2 — Examen des preuves</h2>
                     <span class="tag">${c.code}</span>
                 </div>
 
-                <div class="callout">
-                    <strong>Greffier :</strong> ${c.clerkIntro}
-                </div>
+                <div id="clerkDialogueArea"></div>
 
                 <div class="muted" style="margin-top:10px">Cliquez sur les pièces à conviction pour les analyser.</div>
 
                 <div class="evidence-grid">
-                    ${c.evidence.map(e => `
-                        <div class="evidence" onclick="inspectEvidence('${e.id}')">
+                    ${c.evidence.map(e => {
+                        const collected = state.game.evidenceFound.has(e.id);
+                        return `
+                        <div class="evidence ${collected ? 'collected' : ''}" onclick="inspectEvidence('${e.id}', event)">
+                            <div class="evidence-icon-large">📄</div>
                             <div class="k">📄 ${e.k}</div>
                             <div class="v">${e.v}</div>
                         </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
 
                 <div class="hr"></div>
@@ -1952,6 +3192,11 @@
                     <button class="btn" onclick="renderCaseSelection()"><span>←</span> Changer d'affaire</button>
                 </div>
             `;
+
+            // Typewriter dialogue for clerk
+            const dialogueArea = $('clerkDialogueArea');
+            typewriterDialogue(dialogueArea, 'Greffier', c.clerkIntro, null);
+
             updateToPuzzleBtn();
         }
 
@@ -1961,27 +3206,30 @@
             btn.disabled = state.game.evidenceFound.size < 3;
         }
 
-        function inspectEvidence(eid) {
+        function inspectEvidence(eid, ev) {
             const c = cases[state.game.caseId];
             const e = c.evidence.find(x => x.id === eid);
             if (!e) return;
 
-            if (!state.game.evidenceFound.has(eid)) {
+            const isNew = !state.game.evidenceFound.has(eid);
+            if (isNew) {
                 state.game.evidenceFound.add(eid);
                 state.game.casePoints += e.points;
-                toast(`+${e.points} pts • Indice : ${e.hint}`);
+                floatScore(e.points, ev);
                 renderDossierSide();
-            } else {
-                toast(`Indice déjà collecté : ${e.hint}`);
+                // Update the card to show collected state
+                renderEvidencePhase();
             }
+
+            showEvidenceModal(e, isNew);
             updateHUD();
             updateToPuzzleBtn();
         }
 
         // ==================== PUZZLE PHASE ====================
-        function goToPuzzle() {
+        async function goToPuzzle() {
             state.game.casePhase = 2;
-            toast("Greffier : Reconstituez maintenant la chaîne de responsabilité.");
+            await showPhaseTransition('🧩', 'Chaîne de responsabilité', 'Reconstituez les manquements de chaque acteur');
             renderPuzzlePhase();
         }
 
@@ -1994,9 +3242,10 @@
                     <h2 class="mono">Phase 3 — Chaîne de responsabilité</h2>
                     <span class="tag">${c.code}</span>
                 </div>
-                <div class="muted" style="line-height:1.5">
+                <div id="puzzleDialogueArea"></div>
+                <div class="muted" style="line-height:1.5;margin-top:8px">
                     Glissez-déposez les <strong>3 manquements</strong> sur le bon acteur.
-                    Vert = cohérent, rose = incohérent.
+                    <span style="color:var(--neon-green)">Vert</span> = cohérent, <span style="color:var(--neon-pink)">rose</span> = incohérent.
                 </div>
 
                 <div class="puzzle">
@@ -2030,6 +3279,12 @@
             `;
 
             wireDragDrop(c.puzzleCorrect);
+
+            // Typewriter instruction
+            const puzzleDialogue = $('puzzleDialogueArea');
+            if (puzzleDialogue) {
+                typewriterDialogue(puzzleDialogue, 'Greffier', 'Reconstituez la chaîne de responsabilité en associant chaque manquement à l\'acteur concerné.', null);
+            }
         }
 
         function resetPuzzle() {
@@ -2059,11 +3314,17 @@
                 drop.classList.add(ok ? 'good' : 'bad');
 
                 if (ok) {
+                    SFX.play('success');
                     toast(`✓ Cohérent : ${actor} ↔ ${key} (+6 pts)`);
                     state.game.casePoints += 6;
+                    floatScore(6);
                 } else {
+                    SFX.play('error');
                     toast(`✗ Incohérent : ${actor} ↔ ${key} (-crédibilité)`);
                     setCredibility(-6);
+                    floatScore(-6);
+                    document.body.classList.add('shake');
+                    setTimeout(() => document.body.classList.remove('shake'), 500);
                 }
                 updateHUD();
 
@@ -2122,16 +3383,17 @@
         }
 
         // ==================== VERDICT PHASE ====================
-        function goToVerdict() {
+        async function goToVerdict() {
             state.game.casePhase = 3;
-            toast("Greffier : Le tribunal attend votre décision.");
+            await showPhaseTransition('⚖️', 'Verdict', 'Le tribunal attend votre décision');
             renderVerdictPhase(false);
         }
 
         function renderVerdictPhase(fromTimeout) {
             const c = cases[state.game.caseId];
+            const main = $('stageMain');
 
-            $('stageMain').innerHTML = `
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Phase 4 — Verdict</h2>
                     <span class="tag">${c.code}</span>
@@ -2139,19 +3401,17 @@
 
                 ${fromTimeout ? `<div class="callout pink"><strong>Temps écoulé :</strong> verdict précipité → crédibilité fragile.</div><div class="hr"></div>` : ''}
 
-                <div class="muted" style="line-height:1.55">
-                    Sélectionnez le(s) responsable(s) et les sanctions adaptées.
-                </div>
+                <div id="verdictIntroDialogue"></div>
 
                 <div class="choices">
                     <div class="choice">
-                        <h4>Responsables principaux</h4>
+                        <h4>⚖️ Responsables principaux</h4>
                         ${["Concepteur", "Déployeur", "Décideur"].map(x => `
                             <label><input type="checkbox" name="resp" value="${x}"> <span>${x}</span></label>
                         `).join('')}
                     </div>
                     <div class="choice">
-                        <h4>Sanctions / mesures</h4>
+                        <h4>📋 Sanctions / mesures</h4>
                         ${[
                             "Amende proportionnée",
                             "Retrait temporaire du système",
@@ -2167,23 +3427,34 @@
                 </div>
 
                 <div class="hr"></div>
-                <button class="btn primary" onclick="submitVerdict()"><span>✅</span> Enregistrer le verdict</button>
+                <button class="btn primary" onclick="submitVerdict()"><span>🔨</span> Prononcer le verdict</button>
             `;
 
+            // Typewriter for judge instruction
+            const dialogueArea = $('verdictIntroDialogue');
+            typewriterDialogue(dialogueArea, 'Juge ARIA-7', 'Les preuves ont été examinées. Sélectionnez les responsables et les sanctions que vous jugez adaptées à cette affaire.', 'images/ai_judge_avatar.png');
+
             $('stageSide').innerHTML = `
+                <div class="judge-avatar">
+                    <img src="images/ai_judge_avatar.png" alt="Juge" onerror="this.style.display='none'">
+                    <div class="judge-info">
+                        <div class="judge-name">Juge ARIA-7</div>
+                        <div class="judge-role">Présidente du tribunal</div>
+                    </div>
+                </div>
                 <div class="stage-title">
                     <h2 class="mono">Conseiller juridique</h2>
                     <span class="tag">Aide</span>
                 </div>
                 <div class="dossier">
-                    <div class="item"><strong>À vérifier</strong><small>Impact élevé → supervision humaine réelle, transparence, recours, documentation.</small></div>
-                    <div class="item"><strong>Indices collectés</strong><small>${state.game.evidenceFound.size} preuve(s).</small></div>
-                    <div class="item"><strong>Attention</strong><small>Cocher "tout le monde responsable" sans justification = pénalité de crédibilité.</small></div>
+                    <div class="item"><strong>⚠️ À vérifier</strong><small>Impact élevé → supervision humaine réelle, transparence, recours, documentation.</small></div>
+                    <div class="item"><strong>🔍 Indices collectés</strong><small>${state.game.evidenceFound.size} preuve(s) dans le dossier.</small></div>
+                    <div class="item"><strong>🚨 Attention</strong><small>Cocher "tout le monde responsable" sans justification = pénalité de crédibilité.</small></div>
                 </div>
             `;
         }
 
-        function submitVerdict() {
+        async function submitVerdict() {
             const c = cases[state.game.caseId];
             const chosenResp = [...document.querySelectorAll('input[name="resp"]:checked')].map(x => x.value);
             const chosenSan = [...document.querySelectorAll('input[name="san"]:checked')].map(x => x.value);
@@ -2214,8 +3485,17 @@
             state.game.casesDone.add(c.code);
             state.game.totalPoints += Math.max(0, state.game.casePoints);
 
-            toast(`Greffier : Verdict enregistré • +${Math.max(0, pts)} pts`);
             stopTimer();
+
+            // Gavel animation
+            await showGavelAnimation();
+
+            if (pts > 0) {
+                SFX.play('success');
+                floatScore(pts);
+            } else {
+                SFX.play('error');
+            }
 
             // Build detailed breakdown
             const respRows = ["Concepteur", "Déployeur", "Décideur"].map(r => {
@@ -2242,35 +3522,46 @@
                 </tr>`;
             }).join('');
 
-            $('stageMain').innerHTML = `
+            const main = $('stageMain');
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Verdict enregistré</h2>
                     <span class="tag">${c.code}</span>
                 </div>
-                <div class="callout">
-                    <strong>Analyse attendue :</strong> ${c.verdict.rationale}
-                </div>
 
-                <div class="hr"></div>
-                <div class="muted" style="margin-bottom:6px"><strong>Détail — Responsables</strong></div>
-                <table class="verdict-table">
-                    <tr><th>Acteur</th><th>Attendu</th><th>Votre choix</th><th></th></tr>
-                    ${respRows}
-                </table>
+                <div id="verdictDialogueArea"></div>
 
-                <div class="muted" style="margin-bottom:6px;margin-top:12px"><strong>Détail — Sanctions</strong></div>
-                <table class="verdict-table">
-                    <tr><th>Mesure</th><th>Attendue</th><th>Votre choix</th><th></th></tr>
-                    ${sanRows}
-                </table>
+                <div class="verdict-reveal" id="verdictDetails">
+                    <div class="hr"></div>
+                    <div class="muted" style="margin-bottom:6px"><strong>Détail — Responsables</strong></div>
+                    <table class="verdict-table">
+                        <tr><th>Acteur</th><th>Attendu</th><th>Votre choix</th><th></th></tr>
+                        ${respRows}
+                    </table>
 
-                <div class="hr"></div>
-                <div class="muted"><strong>Score d'affaire :</strong> ${state.game.casePoints} pts • <strong>Crédibilité :</strong> ${state.game.credibility}/100</div>
-                <div class="hr"></div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                    <button class="btn primary" onclick="nextAfterCase()"><span>→</span> Continuer</button>
+                    <div class="muted" style="margin-bottom:6px;margin-top:12px"><strong>Détail — Sanctions</strong></div>
+                    <table class="verdict-table">
+                        <tr><th>Mesure</th><th>Attendue</th><th>Votre choix</th><th></th></tr>
+                        ${sanRows}
+                    </table>
+
+                    <div class="hr"></div>
+                    <div class="muted"><strong>Score d'affaire :</strong> ${state.game.casePoints} pts • <strong>Crédibilité :</strong> ${state.game.credibility}/100</div>
+                    <div class="hr"></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn primary" onclick="nextAfterCase()"><span>→</span> Continuer</button>
+                    </div>
                 </div>
             `;
+
+            // Typewriter for verdict rationale, then reveal details
+            const dialogueArea = $('verdictDialogueArea');
+            await typewriterDialogue(dialogueArea, 'Juge ARIA-7', c.verdict.rationale, 'images/ai_judge_avatar.png');
+
+            // Dramatic reveal of details
+            setTimeout(() => {
+                $('verdictDetails').classList.add('visible');
+            }, 300);
 
             renderDossierSide();
             updateHUD();
@@ -2308,9 +3599,10 @@
         }
 
         // ==================== FINAL QUIZ ====================
-        function renderFinalQuiz() {
+        async function renderFinalQuiz() {
             state.game.casePhase = 4;
             stopTimer();
+            await showPhaseTransition('🧾', 'Quiz Final', 'Certification — 10 questions');
 
             $('stageMain').innerHTML = `
                 <div class="stage-title">
@@ -2729,6 +4021,15 @@
 
         // ==================== INIT ====================
         showLesson(0);
+        initParticles();
+
+        // Initialize sound on first user interaction
+        document.addEventListener('click', () => SFX.init(), { once: true });
+
+        // Ambient sound pulse every 30 seconds when game is active
+        setInterval(() => {
+            if (state.game.active && SFX.enabled) SFX.play('ambient');
+        }, 30000);
     </script>
 </body>
 </html>
