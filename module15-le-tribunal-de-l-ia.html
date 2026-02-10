@@ -1079,41 +1079,6 @@
             100% { opacity: 0; transform: translateY(-10vh) translateX(var(--drift, 30px)); }
         }
 
-        /* Scanline Overlay */
-        .scanline-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 212, 255, 0.012) 2px,
-                rgba(0, 212, 255, 0.012) 4px
-            );
-        }
-
-        .scanline-overlay::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(
-                180deg,
-                transparent 0%,
-                rgba(0, 212, 255, 0.04) 50%,
-                transparent 100%
-            );
-            animation: scanMove 5s linear infinite;
-        }
-
-        @keyframes scanMove {
-            from { top: -80px; }
-            to { top: 100vh; }
-        }
-
         /* Evidence Inspection Modal */
         .evidence-modal-overlay {
             position: fixed;
@@ -1944,7 +1909,7 @@
                 <div class="briefing-nav-item" onclick="showLesson(5)">
                     <span class="nav-icon">🧑‍⚖️</span>
                     <span class="nav-number">06</span>
-                    Human-in-the-loop
+                    Supervision humaine
                 </div>
                 <div class="briefing-nav-item" onclick="showLesson(6)">
                     <span class="nav-icon">🧩</span>
@@ -2032,9 +1997,6 @@
     <!-- PARTICLE BACKGROUND -->
     <div id="particles-bg"></div>
 
-    <!-- SCANLINE OVERLAY -->
-    <div class="scanline-overlay"></div>
-
     <!-- EVIDENCE MODAL -->
     <div class="evidence-modal-overlay" id="evidenceModalOverlay">
         <div class="evidence-modal" id="evidenceModal">
@@ -2097,33 +2059,32 @@
         // ==================== LESSON CONTENT ====================
         const briefingLessons = [
             {
-                title: "🧠 Introduction : Responsabilité & Intelligence Artificielle",
+                title: "🧠 Introduction : Quand l'IA prend des décisions",
                 content: `
                     <div class="module-section">
-                        <h3>📊 Contexte</h3>
-                        <p>Quand une IA est utilisée dans un processus décisionnel, la responsabilité <strong>ne disparaît pas</strong>.
-                        Au contraire, elle doit être <strong>rendue explicite</strong> : qui a conçu, qui a déployé, qui a validé, qui supervise ?</p>
+                        <h3>📊 De quoi parle-t-on ?</h3>
+                        <p>Aujourd'hui, des intelligences artificielles aident à prendre des décisions qui ont un vrai impact sur la vie des gens : elles trient des CV pour un emploi, recommandent des traitements médicaux, ou décident si une personne peut obtenir un prêt bancaire.</p>
+                        <p>Mais quand une de ces IA se trompe ou agit de manière injuste, <strong>qui est responsable ?</strong> L'IA elle-même ? La personne qui l'a programmée ? L'entreprise qui l'utilise ? Le salarié qui a cliqué sur « valider » ?</p>
 
                         <div class="stat-box">
-                            <h4>💡 Idée-clé</h4>
-                            <p>L'IA ne « dilue » pas la responsabilité humaine — elle complexifie la chaîne. Le droit et l'éthique cherchent à
-                            empêcher l'effet <em>"personne n'est responsable"</em>.</p>
+                            <h4>💡 L'idée centrale de ce module</h4>
+                            <p>Une IA ne « remplace » pas la responsabilité humaine. Au contraire, quand on utilise une IA pour prendre des décisions importantes, il faut être encore <strong>plus vigilant</strong> et s'assurer que des humains vérifient, comprennent et contrôlent ce que fait la machine.</p>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>🎯 Objectif de votre mission</h3>
-                        <p>En tant que juré expert, vous allez analyser 3 affaires impliquant des IA défaillantes.
-                        Ce dossier vous prépare en vous donnant les clés juridiques et éthiques nécessaires.</p>
+                        <h3>🎯 Votre mission</h3>
+                        <p>Dans ce module, vous allez jouer le rôle d'un <strong>juré dans un tribunal spécialisé</strong>. Trois affaires vous seront présentées, chacune impliquant une IA qui a causé un préjudice. Votre mission sera d'analyser les preuves, de comprendre qui a failli, et de rendre un verdict juste.</p>
+                        <p>Mais avant d'entrer dans la salle d'audience, vous allez d'abord vous préparer en découvrant les notions essentielles :</p>
 
                         <div class="info-card">
                             <h4>📋 Ce que vous allez apprendre</h4>
                             <ul class="briefing-list">
-                                <li>La chaîne de responsabilité (conception → déploiement → usage)</li>
-                                <li>Les principes éthiques fondamentaux</li>
-                                <li>L'AI Act européen et les cadres internationaux</li>
-                                <li>Le rôle du Human-in-the-loop (HITL)</li>
-                                <li>Les bonnes pratiques de gouvernance IA</li>
+                                <li>Qui est responsable quand une IA prend une mauvaise décision (la <em>chaîne de responsabilité</em>)</li>
+                                <li>Les grands principes éthiques qui encadrent l'IA</li>
+                                <li>La loi européenne sur l'IA (l'<em>AI Act</em>)</li>
+                                <li>Pourquoi la <em>supervision humaine</em> est indispensable</li>
+                                <li>Comment construire une IA plus juste et plus responsable</li>
                             </ul>
                         </div>
                     </div>
@@ -2133,224 +2094,245 @@
                 title: "🔗 La Chaîne de Responsabilité",
                 content: `
                     <div class="module-section">
-                        <h3>🏗️ Raisonner par cycle de vie</h3>
-                        <p>Dans la plupart des cadres, on raisonne par <strong>cycle de vie</strong> de l'IA :</p>
-
-                        <ul class="briefing-list">
-                            <li><strong>Concepteurs / développeurs</strong> : conception, tests, documentation, limites connues, gestion des biais.</li>
-                            <li><strong>Fournisseurs / déployeurs</strong> : choix du cas d'usage, configuration, conformité, formation, supervision.</li>
-                            <li><strong>Décideurs / utilisateurs</strong> : décision finale, usage proportionné, vigilance, contestation possible.</li>
-                        </ul>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>⚖️ Ce qu'on cherche dans un procès</h3>
-                        <div class="stat-box purple">
-                            <p>On identifie trois types de manquements :</p>
-                            <ul class="briefing-list">
-                                <li><strong>Manquement technique</strong> : données biaisées, tests insuffisants</li>
-                                <li><strong>Manquement organisationnel</strong> : gouvernance absente, pas d'audit</li>
-                                <li><strong>Manquement humain</strong> : validation aveugle, absence de contrôle</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🤝 Éthique de l'Intelligence Artificielle",
-                content: `
-                    <div class="module-section">
-                        <h3>🛡️ Les piliers de l'éthique IA</h3>
-                        <p>L'éthique de l'IA vise à protéger les individus et la société. Quatre principes fondamentaux :</p>
+                        <h3>🏗️ Trois acteurs, trois responsabilités</h3>
+                        <p>Quand une IA cause un problème, on ne peut pas simplement dire « c'est la faute de la machine ». En réalité, une IA passe par <strong>plusieurs mains</strong> avant d'agir, et chacune de ces mains porte une part de responsabilité.</p>
+                        <p>On distingue trois grands acteurs :</p>
 
                         <div class="comparison-grid">
                             <div>
-                                <h4>Droits & dignité</h4>
-                                <p>Respect des personnes, prévention des préjudices, proportionnalité.</p>
+                                <h4>🔧 Le concepteur</h4>
+                                <p>C'est l'équipe qui crée l'IA : les développeurs et les data scientists. Ce sont eux qui choisissent les données d'entraînement, conçoivent l'algorithme et testent le système. S'il y a un biais dans les données ou un défaut de conception, c'est leur responsabilité.</p>
                             </div>
                             <div>
-                                <h4>Transparence</h4>
-                                <p>Informez quand l'IA intervient, expliquez de façon compréhensible.</p>
-                            </div>
-                            <div>
-                                <h4>Équité</h4>
-                                <p>Limiter biais, discrimination, effets d'exclusion.</p>
-                            </div>
-                            <div>
-                                <h4>Supervision (HITL)</h4>
-                                <p>Humain compétent qui peut <strong>intervenir</strong> et <strong>renverser</strong> la décision.</p>
+                                <h4>🏢 Le déployeur</h4>
+                                <p>C'est l'entreprise ou l'organisation qui décide d'utiliser cette IA dans un contexte précis. Par exemple, une entreprise qui installe une IA de recrutement. C'est elle qui doit vérifier que l'IA est adaptée, la surveiller et former ses employés à bien l'utiliser.</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="module-section">
                         <div class="stat-box">
-                            <h4>🌐 UNESCO</h4>
-                            <p>Recommandation mondiale sur l'éthique de l'IA, fondée notamment sur droits humains, transparence, non-discrimination et responsabilité.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🇪🇺 L'AI Act Européen",
-                content: `
-                    <div class="module-section">
-                        <h3>📜 Règlement (UE) 2024/1689</h3>
-                        <p>Premier cadre complet au monde, basé sur une <strong>classification par niveaux de risque</strong>.</p>
-
-                        <div class="stat-box">
-                            <h4>📊 4 niveaux de risque</h4>
-                            <p>Du risque minimal au haut risque → obligations croissantes : documentation, transparence, gestion des risques, supervision humaine, conformité.</p>
+                            <h4>👤 Le décideur humain</h4>
+                            <p>C'est la personne qui, au bout de la chaîne, valide ou applique la décision de l'IA. Par exemple, un recruteur qui accepte ou refuse un candidat sur la base du score donné par l'IA. Cette personne a le devoir de <strong>ne pas suivre aveuglément</strong> la machine et de vérifier que la décision est juste.</p>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>💰 Sanctions</h3>
-                        <div class="stat-box warning">
-                            <p>Jusqu'à <strong style="color:var(--neon-pink);font-size:1.3em;">35 M€</strong> ou <strong style="color:var(--neon-pink);font-size:1.3em;">7% du CA</strong> pour les violations graves et pratiques interdites.</p>
-                        </div>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>📅 Calendrier</h3>
-                        <div class="info-card">
-                            <ul class="briefing-list">
-                                <li>Entrée en vigueur : <strong>01/08/2024</strong></li>
-                                <li>Pratiques interdites + AI literacy : dès <strong>02/02/2025</strong></li>
-                                <li>Obligations GPAI : à partir de <strong>02/08/2025</strong></li>
-                                <li>Systèmes haut risque : transition jusqu'à <strong>02/08/2027</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🌍 Cadres Internationaux",
-                content: `
-                    <div class="module-section">
-                        <h3>🏛️ Au-delà des frontières</h3>
-                        <p>Plusieurs instruments internationaux encadrent l'IA au niveau mondial.</p>
-
+                        <h3>⚖️ Quand quelque chose tourne mal</h3>
+                        <p>En cas de problème, on cherche à identifier quel type d'erreur a été commis :</p>
                         <div class="stat-box purple">
-                            <h4>Conseil de l'Europe</h4>
-                            <p>Convention-cadre sur l'IA et les droits humains, la démocratie et l'État de droit —
-                            ouverte à signature le <strong>05/09/2024</strong>. Objectif : garantir que l'IA respecte ces principes tout au long de son cycle de vie.</p>
-                        </div>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>🗺️ Approches nationales</h3>
-                        <div class="info-card">
-                            <h4>📋 Exemples</h4>
-                            <p>Obligations professionnelles de vérification humaine,
-                            codes de conduite, audits, et responsabilités renforcées dans les domaines sensibles.</p>
+                            <p><strong>Erreur technique :</strong> les données utilisées pour entraîner l'IA étaient biaisées, ou le système n'a pas été assez testé avant d'être mis en service.</p>
+                            <p style="margin-top:10px"><strong>Erreur d'organisation :</strong> personne n'a vérifié que l'IA fonctionnait correctement, il n'y avait pas de procédure de contrôle ni d'audit.</p>
+                            <p style="margin-top:10px"><strong>Erreur humaine :</strong> la personne en charge a validé la décision de l'IA sans la vérifier, ou il n'existait aucun moyen de contester la décision.</p>
                         </div>
                     </div>
                 `
             },
             {
-                title: "🧑‍⚖️ Human-in-the-Loop (HITL)",
+                title: "🤝 L'éthique de l'Intelligence Artificielle",
                 content: `
                     <div class="module-section">
-                        <h3>🚫 Ce que HITL ne veut PAS dire</h3>
-                        <p>"Human-in-the-loop" ne veut pas dire « un humain clique sur OK ».</p>
-
-                        <div class="stat-box">
-                            <h4>✅ HITL robuste</h4>
-                            <p>Un humain compétent qui :</p>
-                            <ul class="briefing-list">
-                                <li>comprend le résultat (et ses limites),</li>
-                                <li>peut demander des informations supplémentaires,</li>
-                                <li>peut contester / renverser la recommandation,</li>
-                                <li>dispose de temps, outils, formation et responsabilité.</li>
-                            </ul>
-                        </div>
+                        <h3>🛡️ Pourquoi l'éthique est-elle importante ?</h3>
+                        <p>L'IA peut rendre d'immenses services, mais elle peut aussi causer du tort si elle est mal utilisée. Par exemple, une IA peut discriminer certaines personnes sans que personne ne s'en rende compte, simplement parce qu'elle a appris à partir de données déjà injustes.</p>
+                        <p>C'est pour éviter ce genre de situation que des <strong>principes éthiques</strong> ont été définis au niveau mondial. Ils servent de boussole pour s'assurer que l'IA reste au service des humains, et non l'inverse.</p>
                     </div>
 
                     <div class="module-section">
-                        <h3>📖 RGPD (art. 22)</h3>
-                        <div class="info-card">
-                            <p>Prévoit notamment le droit de ne pas être soumis à une décision fondée uniquement sur un traitement automatisé
-                            produisant des effets juridiques (ou significatifs) — avec exceptions encadrées.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🧩 Vers une IA Responsable",
-                content: `
-                    <div class="module-section">
-                        <h3>🏗️ La responsabilité se construit</h3>
-                        <p>La responsabilité se construit par la gouvernance et la preuve :</p>
-
+                        <h3>📐 Les quatre grands principes</h3>
                         <div class="comparison-grid">
                             <div>
-                                <h4>Documentation & traçabilité</h4>
-                                <p>Datasets, hypothèses, limites, logs, évaluations, versions.</p>
+                                <h4>1. Respect des droits</h4>
+                                <p>L'IA ne doit jamais porter atteinte à la dignité des personnes. Elle doit être utilisée de manière proportionnée, c'est-à-dire que le bénéfice doit justifier les risques éventuels.</p>
                             </div>
                             <div>
-                                <h4>Audit & tests</h4>
-                                <p>Biais, robustesse, sécurité, performance, dérive.</p>
+                                <h4>2. Transparence</h4>
+                                <p>Quand une IA intervient dans une décision, les personnes concernées doivent en être informées. De plus, on doit pouvoir leur expliquer comment la décision a été prise, dans un langage compréhensible.</p>
                             </div>
                             <div>
-                                <h4>Supervision & recours</h4>
-                                <p>Procédures d'escalade, contestation, correction.</p>
+                                <h4>3. Équité</h4>
+                                <p>L'IA ne doit pas favoriser ou défavoriser certaines personnes en raison de leur genre, origine, âge ou situation sociale. Il faut activement vérifier et corriger les biais.</p>
                             </div>
                             <div>
-                                <h4>Formation</h4>
-                                <p>Compétences humaines : comprendre, questionner, décider.</p>
+                                <h4>4. Supervision humaine</h4>
+                                <p>Un être humain compétent doit toujours pouvoir <strong>intervenir</strong>, <strong>corriger</strong> ou <strong>annuler</strong> une décision prise par l'IA, surtout quand elle a un impact important sur la vie de quelqu'un.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="module-section">
                         <div class="stat-box">
-                            <h4>🏆 Règle d'or</h4>
-                            <p>Si la décision a un impact élevé, le contrôle humain doit être réel, documenté et proportionné.</p>
+                            <h4>🌐 Un effort mondial</h4>
+                            <p>En 2021, l'<strong>UNESCO</strong> a adopté une recommandation sur l'éthique de l'IA, signée par 193 pays. Elle insiste sur le respect des droits humains, la transparence, la non-discrimination et la responsabilité de ceux qui conçoivent et utilisent ces systèmes.</p>
                         </div>
                     </div>
                 `
             },
             {
-                title: "🎯 Briefing de Mission : Le Tribunal",
+                title: "🇪🇺 L'AI Act : la loi européenne sur l'IA",
                 content: `
                     <div class="module-section">
-                        <h3>📋 Récapitulatif de votre mission</h3>
-                        <p>Vous êtes maintenant prêt(e) pour siéger au tribunal. Voici les éléments clés :</p>
+                        <h3>📜 Une première mondiale</h3>
+                        <p>En 2024, l'Union européenne a adopté l'<strong>AI Act</strong>, la toute première loi au monde qui encadre de manière complète l'intelligence artificielle. Son principe est simple : <strong>plus une IA est risquée, plus les règles sont strictes</strong>.</p>
+                    </div>
 
-                        <div class="stat-box">
-                            <h4>🎯 Objectif principal</h4>
-                            <p>Juger <strong>3 affaires</strong> (recrutement, médical, crédit). Pour chaque affaire :</p>
-                            <ul class="briefing-list">
-                                <li>Ouvrir le dossier (choisir l'affaire)</li>
-                                <li>Examiner les preuves (gagner des indices et des points)</li>
-                                <li>Reconstituer la chaîne de responsabilité (puzzle)</li>
-                                <li>Rendre un verdict (responsables + sanctions)</li>
-                            </ul>
+                    <div class="module-section">
+                        <h3>📊 Une classification par niveaux de risque</h3>
+                        <p>L'AI Act classe les systèmes d'IA en quatre niveaux :</p>
+                        <div class="comparison-grid">
+                            <div>
+                                <h4>🟢 Risque minimal</h4>
+                                <p>La grande majorité des IA du quotidien : filtres photo, correcteurs orthographiques, recommandations de musique... Très peu de contraintes.</p>
+                            </div>
+                            <div>
+                                <h4>🟡 Risque limité</h4>
+                                <p>Les chatbots ou systèmes qui interagissent directement avec les gens. Obligation principale : <strong>prévenir l'utilisateur qu'il parle à une IA</strong>.</p>
+                            </div>
+                            <div>
+                                <h4>🟠 Haut risque</h4>
+                                <p>IA utilisées dans le recrutement, la santé, la justice, l'éducation ou le crédit bancaire. Obligations fortes : documentation, tests, supervision humaine, transparence.</p>
+                            </div>
+                            <div>
+                                <h4>🔴 Risque inacceptable</h4>
+                                <p>Certaines utilisations sont tout simplement <strong>interdites</strong> : notation sociale des citoyens, manipulation des comportements, surveillance biométrique de masse...</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>⚠️ Règles d'engagement</h3>
+                        <h3>💰 Des sanctions sérieuses</h3>
                         <div class="stat-box warning">
-                            <ul class="briefing-list">
-                                <li><strong>8 minutes</strong> par affaire</li>
-                                <li>La <em>crédibilité</em> baisse si verdict incohérent ou sanction inadaptée</li>
-                                <li>Si la crédibilité tombe à 0 : session échouée</li>
-                                <li>Objectif final : <strong>≥ 70%</strong> au quiz final pour obtenir l'attestation</li>
-                            </ul>
+                            <p>Les entreprises qui ne respectent pas la loi risquent de très lourdes amendes : jusqu'à <strong style="color:var(--neon-pink);font-size:1.3em;">35 millions d'euros</strong> ou <strong style="color:var(--neon-pink);font-size:1.3em;">7 % de leur chiffre d'affaires</strong> mondial. L'objectif est clair : la loi veut être prise au sérieux.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📅 Quand est-ce que ça s'applique ?</h3>
+                        <p>La loi entre en vigueur progressivement :</p>
+                        <div class="info-card">
+                            <p>Depuis <strong>février 2025</strong>, les pratiques les plus dangereuses sont déjà interdites. Les obligations pour les systèmes à haut risque se mettent en place jusqu'en <strong>2027</strong>.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🌍 Et dans le reste du monde ?",
+                content: `
+                    <div class="module-section">
+                        <h3>🏛️ L'IA, un enjeu planétaire</h3>
+                        <p>L'Europe n'est pas la seule à se préoccuper de l'IA. Partout dans le monde, des gouvernements et des organisations internationales travaillent à encadrer ces technologies, car <strong>une IA mal conçue dans un pays peut causer des dégâts partout</strong> — pensez aux réseaux sociaux ou aux systèmes bancaires internationaux.</p>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🤝 Le Conseil de l'Europe</h3>
+                        <div class="stat-box purple">
+                            <p>En septembre 2024, le <strong>Conseil de l'Europe</strong> (qui regroupe 46 pays, dont la France) a ouvert à la signature une convention internationale sur l'IA. Son objectif : s'assurer que l'IA respecte les <strong>droits humains</strong>, la <strong>démocratie</strong> et l'<strong>État de droit</strong> tout au long de son cycle de vie, de sa conception à son utilisation quotidienne.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🗺️ Des approches différentes selon les pays</h3>
+                        <div class="info-card">
+                            <p>Chaque pays avance à son rythme. Certains misent sur des <strong>lois strictes</strong> (comme l'Europe avec l'AI Act), d'autres préfèrent des <strong>codes de bonne conduite</strong> volontaires (comme les États-Unis ou le Japon). Mais tous partagent une même préoccupation : quand l'IA touche à des domaines sensibles comme la santé, l'emploi ou la justice, il faut des <strong>règles claires</strong> et une <strong>vérification humaine</strong>.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🧑‍⚖️ La supervision humaine : pourquoi c'est essentiel",
+                content: `
+                    <div class="module-section">
+                        <h3>🚫 Cliquer sur « OK » ne suffit pas</h3>
+                        <p>On entend souvent dire qu'il faut « un humain dans la boucle » (en anglais : <em>human in the loop</em>). Mais attention : cela ne veut pas dire qu'il suffit de placer quelqu'un devant un écran pour qu'il clique sur « valider » sans réfléchir.</p>
+                        <p>Une vraie supervision humaine, c'est bien plus que ça. C'est s'assurer que la personne qui contrôle la décision de l'IA a <strong>le temps</strong>, <strong>les compétences</strong> et <strong>les moyens</strong> de le faire correctement.</p>
+
+                        <div class="stat-box">
+                            <h4>✅ Une supervision humaine digne de ce nom, c'est quand...</h4>
+                            <p>La personne responsable <strong>comprend</strong> ce que l'IA recommande et connaît ses limites. Elle peut <strong>demander des informations complémentaires</strong> si quelque chose lui paraît étrange. Elle a le pouvoir de <strong>refuser</strong> ou de <strong>modifier</strong> la recommandation de l'IA. Et surtout, elle dispose du <strong>temps nécessaire</strong> pour prendre une décision éclairée — pas 12 secondes entre deux dossiers.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📖 Ce que dit la loi (RGPD, article 22)</h3>
+                        <div class="info-card">
+                            <p>Le Règlement Général sur la Protection des Données (RGPD), qui s'applique dans toute l'Europe, prévoit un droit important : <strong>personne ne devrait subir une décision importante prise uniquement par une machine</strong>. Par exemple, si une IA refuse un prêt ou rejette une candidature, la personne concernée a le droit de demander qu'un humain réexamine son dossier.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="stat-box warning">
+                            <h4>⚠️ Un exemple concret</h4>
+                            <p>Imaginez un médecin qui utilise une IA pour diagnostiquer une maladie. Si l'IA affiche « confiance : 97 % » et que le médecin valide en 12 secondes sans vérifier, est-ce vraiment une supervision humaine ? Non. Le médecin a la responsabilité de croiser les informations, de consulter le dossier du patient et, si besoin, de demander un second avis.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🧩 Construire une IA responsable",
+                content: `
+                    <div class="module-section">
+                        <h3>🏗️ La responsabilité ne s'improvise pas</h3>
+                        <p>Utiliser une IA de manière responsable, ce n'est pas juste avoir de bonnes intentions. C'est mettre en place des pratiques concrètes, à chaque étape de la vie du système. Voici les quatre piliers d'une IA responsable :</p>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="comparison-grid">
+                            <div>
+                                <h4>📝 Tout documenter</h4>
+                                <p>D'où viennent les données ? Quelles hypothèses ont été faites ? Quelles sont les limites connues du système ? Une IA responsable laisse une trace écrite de chaque choix, pour que tout puisse être vérifié après coup.</p>
+                            </div>
+                            <div>
+                                <h4>🔍 Tester et auditer</h4>
+                                <p>Avant de mettre une IA en service, il faut la tester en profondeur : est-elle juste envers tous les groupes de personnes ? Est-elle fiable ? Et après son déploiement, il faut continuer à la surveiller pour détecter d'éventuels problèmes.</p>
+                            </div>
+                            <div>
+                                <h4>👁️ Superviser et permettre les recours</h4>
+                                <p>Il doit toujours y avoir un moyen de contester une décision prise par l'IA. Si quelqu'un pense avoir été traité injustement, il doit pouvoir demander à un humain de réexaminer son cas.</p>
+                            </div>
+                            <div>
+                                <h4>🎓 Former les utilisateurs</h4>
+                                <p>Les personnes qui utilisent l'IA au quotidien doivent comprendre comment elle fonctionne, quelles sont ses limites, et quand il est important de ne pas se fier aveuglément à ses recommandations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="stat-box">
+                            <h4>🏆 La règle d'or à retenir</h4>
+                            <p>Plus une décision a un impact important sur la vie d'une personne (emploi, santé, finances, justice...), plus le contrôle humain doit être <strong>réel</strong>, <strong>documenté</strong> et <strong>proportionné</strong>. On ne traite pas une IA qui trie des photos de vacances comme une IA qui décide de l'avenir professionnel de quelqu'un.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🎯 Briefing de mission : Le Tribunal",
+                content: `
+                    <div class="module-section">
+                        <h3>📋 Vous êtes prêt(e) !</h3>
+                        <p>Vous avez maintenant toutes les clés en main pour siéger au tribunal. Récapitulons ce que vous allez devoir faire.</p>
+
+                        <div class="stat-box">
+                            <h4>🎯 Votre mission en tant que juré</h4>
+                            <p>Vous allez juger <strong>3 affaires</strong> différentes. Dans chacune, une IA a causé un préjudice à des personnes. Pour chaque affaire, voici les étapes à suivre :</p>
+                            <p style="margin-top:10px"><strong>1.</strong> D'abord, vous <strong>examinerez les preuves</strong> : des documents, des témoignages, des rapports techniques. Chaque preuve vous donne des indices et des points.</p>
+                            <p style="margin-top:6px"><strong>2.</strong> Ensuite, vous devrez <strong>reconstituer la chaîne de responsabilité</strong> : quel acteur (concepteur, déployeur, décideur) a commis quel manquement ? C'est un puzzle à résoudre.</p>
+                            <p style="margin-top:6px"><strong>3.</strong> Enfin, vous <strong>rendrez votre verdict</strong> : qui est responsable, et quelles sanctions sont appropriées ?</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>⚠️ Les règles du jeu</h3>
+                        <div class="stat-box warning">
+                            <p>Vous disposez de <strong>8 minutes par affaire</strong>. Prenez le temps de bien lire les preuves, mais ne traînez pas trop !</p>
+                            <p style="margin-top:8px">Votre <strong>crédibilité</strong> est votre atout le plus précieux. Elle baisse si vos verdicts sont incohérents ou vos sanctions inadaptées. Si elle tombe à zéro, c'est l'échec.</p>
+                            <p style="margin-top:8px">Après les trois affaires, un <strong>quiz de 10 questions</strong> vous attend. Il faut obtenir au moins <strong>70 %</strong> pour valider le module et obtenir votre attestation.</p>
                         </div>
 
                         <div class="info-card">
-                            <h4>💡 Conseil de juré</h4>
-                            <p>Avant de trancher, cherchez systématiquement une preuve de <em>biais</em>,
-                            une preuve de <em>supervision</em> (ou d'absence), et une preuve de <em>recours</em>.</p>
+                            <h4>💡 Un conseil avant de commencer</h4>
+                            <p>Pour chaque affaire, posez-vous systématiquement trois questions : <strong>Y a-t-il un biais</strong> dans les données ou le système ? <strong>Y avait-il une supervision humaine</strong> digne de ce nom ? Et <strong>la personne concernée pouvait-elle contester</strong> la décision ? Ces trois questions vous guideront vers le bon verdict.</p>
                         </div>
                     </div>
 
                     <div class="module-section" style="text-align: center; padding-top: 20px;">
                         <p style="font-size: 1.2em; color: var(--neon-green); margin-bottom: 20px;">
-                            ⚖️ Briefing terminé. Vous êtes prêt(e) pour le tribunal.
+                            ⚖️ Briefing terminé. La séance est sur le point de commencer.
                         </p>
                     </div>
                 `
@@ -2387,10 +2369,10 @@
                 evidence: [
                     {id:"md_card", k:"Notice clinique", v:"Le fournisseur mentionne 'aide', mais l'interface affiche une recommandation 'fortement sûre' sans incertitude.", points:8, hint:"Design trompeur / surconfiance"},
                     {id:"md_perf", k:"Évaluation de performance", v:"Performance faible sur certains sous-groupes (âge/ethnie) dans les tests. Non communiqué aux utilisateurs.", points:10, hint:"Transparence + équité"},
-                    {id:"md_workflow", k:"Procédure d'usage", v:"Aucun protocole clair de second avis, ni de contrôle contradictoire. Formation minimale.", points:10, hint:"HITL insuffisant"},
+                    {id:"md_workflow", k:"Procédure d'usage", v:"Aucun protocole clair de second avis, ni de contrôle contradictoire. Formation minimale.", points:10, hint:"Supervision humaine insuffisante"},
                     {id:"md_log", k:"Journal de décision", v:"Le clinicien a validé en 12 secondes, sans consulter les alternatives. Pression de temps.", points:8, hint:"Organisation + responsabilité humaine"},
                 ],
-                puzzleCorrect: { "Concepteur": "Interface trompeuse", "Déployeur": "Procédure HITL insuffisante", "Décideur": "Absence de second avis" },
+                puzzleCorrect: { "Concepteur": "Interface trompeuse", "Déployeur": "Supervision humaine insuffisante", "Décideur": "Absence de second avis" },
                 verdict: {
                     responsibles: ["Déployeur", "Concepteur", "Décideur"],
                     sanctions: ["Retrait temporaire du système", "Audit externe", "Formation obligatoire", "Mise à jour interface + incertitudes"],
@@ -3603,7 +3585,7 @@
                 </div>
                 <div class="dossier">
                     <div class="item"><strong>AI Act</strong><small>Approche par niveaux de risque + obligations. Sanctions jusqu'à 35 M€ ou 7% CA.</small></div>
-                    <div class="item"><strong>HITL</strong><small>Humain compétent qui peut contester et renverser la recommandation.</small></div>
+                    <div class="item"><strong>Supervision humaine</strong><small>Un humain compétent doit pouvoir contester et corriger la décision de l'IA.</small></div>
                     <div class="item"><strong>RGPD (art. 22)</strong><small>Droit de ne pas être soumis à une décision fondée uniquement sur un traitement automatisé.</small></div>
                 </div>
             `;
@@ -3612,76 +3594,77 @@
         function quizHTML() {
             return `
                 <div class="q">
-                    <h4>Q1. Responsabilité humaine (QCM)</h4>
-                    <div class="muted">Quelle affirmation décrit le mieux la responsabilité humaine quand une IA est utilisée dans une décision à fort impact ?</div>
-                    <label><input type="radio" name="q1" value="a"> L'IA est entièrement responsable.</label>
-                    <label><input type="radio" name="q1" value="b"> L'humain qui définit l'objectif et valide la décision reste responsable.</label>
-                    <label><input type="radio" name="q1" value="c"> Le développeur est seul responsable.</label>
-                    <label><input type="radio" name="q1" value="d"> Aucun responsable n'est nécessaire.</label>
+                    <h4>Q1. Qui est responsable ?</h4>
+                    <div class="muted">Quand une IA est utilisée pour prendre une décision importante (embauche, prêt, diagnostic...), qui porte la responsabilité ?</div>
+                    <label><input type="radio" name="q1" value="a"> C'est l'IA qui est responsable, puisque c'est elle qui décide.</label>
+                    <label><input type="radio" name="q1" value="b"> Ce sont les humains qui ont conçu, déployé et validé la décision qui restent responsables.</label>
+                    <label><input type="radio" name="q1" value="c"> Seul le développeur qui a programmé l'IA est responsable.</label>
+                    <label><input type="radio" name="q1" value="d"> Personne n'est responsable, c'est juste une machine.</label>
                 </div>
                 <div class="q">
-                    <h4>Q2. Cas où la responsabilité est la plus difficile (QCM)</h4>
-                    <label><input type="radio" name="q2" value="a"> IA médicale recommandant un traitement sur données biaisées.</label>
-                    <label><input type="radio" name="q2" value="b"> IA de traduction avec erreur sans conséquence majeure.</label>
-                    <label><input type="radio" name="q2" value="c"> IA générant une image inattendue.</label>
-                    <label><input type="radio" name="q2" value="d"> IA d'astuces ménagères inutiles.</label>
+                    <h4>Q2. Quelle situation est la plus grave ?</h4>
+                    <div class="muted">Dans quel cas les conséquences d'une erreur de l'IA sont-elles les plus sérieuses ?</div>
+                    <label><input type="radio" name="q2" value="a"> Une IA médicale qui recommande un mauvais traitement à cause de données biaisées.</label>
+                    <label><input type="radio" name="q2" value="b"> Une IA de traduction qui fait une erreur sans conséquence grave.</label>
+                    <label><input type="radio" name="q2" value="c"> Une IA qui génère une image bizarre.</label>
+                    <label><input type="radio" name="q2" value="d"> Une IA de recettes de cuisine qui donne un mauvais conseil.</label>
                 </div>
                 <div class="q">
-                    <h4>Q3. AI Act & transparence (Vrai/Faux)</h4>
-                    <div class="muted">« Selon l'AI Act, toute décision prise par une IA doit être transparente pour l'utilisateur final. »</div>
+                    <h4>Q3. Vrai ou Faux ?</h4>
+                    <div class="muted">« D'après l'AI Act européen, toute décision prise par une IA doit être expliquée de manière transparente à la personne concernée. »</div>
                     <label><input type="radio" name="q3" value="v"> Vrai</label>
-                    <label><input type="radio" name="q3" value="f"> Faux</label>
+                    <label><input type="radio" name="q3" value="f"> Faux — l'AI Act impose la transparence surtout pour les IA à haut risque, pas pour toutes les IA.</label>
                 </div>
                 <div class="q">
-                    <h4>Q4. Mécanisme protecteur (QCM)</h4>
-                    <div class="muted">Quel mécanisme protège généralement l'utilisateur quand une IA influence une décision importante ?</div>
-                    <label><input type="radio" name="q4" value="a"> Immunité totale pour l'entreprise</label>
-                    <label><input type="radio" name="q4" value="b"> Obligation de human-in-the-loop</label>
-                    <label><input type="radio" name="q4" value="c"> Aucune responsabilité</label>
-                    <label><input type="radio" name="q4" value="d"> Audit aléatoire après 10 ans</label>
+                    <h4>Q4. Comment protéger les utilisateurs ?</h4>
+                    <div class="muted">Quand une IA influence une décision importante dans la vie de quelqu'un, quel mécanisme permet de protéger cette personne ?</div>
+                    <label><input type="radio" name="q4" value="a"> Donner une immunité totale à l'entreprise qui utilise l'IA.</label>
+                    <label><input type="radio" name="q4" value="b"> Imposer qu'un humain compétent supervise et puisse corriger la décision.</label>
+                    <label><input type="radio" name="q4" value="c"> Ne prévoir aucune responsabilité particulière.</label>
+                    <label><input type="radio" name="q4" value="d"> Faire un audit une seule fois, 10 ans plus tard.</label>
                 </div>
                 <div class="q">
-                    <h4>Q5. Éthique (cases à cocher)</h4>
-                    <div class="muted">Cochez toutes les responsabilités qui s'appliquent dans un cadre éthique :</div>
-                    <label><input type="checkbox" name="q5" value="a"> Transparence sur l'usage de l'IA</label>
-                    <label><input type="checkbox" name="q5" value="b"> Droit à une explication compréhensible</label>
-                    <label><input type="checkbox" name="q5" value="c"> Suppression automatique de toutes les données</label>
-                    <label><input type="checkbox" name="q5" value="d"> Intervention humaine si risque élevé</label>
+                    <h4>Q5. Les principes éthiques (plusieurs réponses possibles)</h4>
+                    <div class="muted">Parmi les propositions suivantes, lesquelles font partie des principes éthiques de l'IA ? Cochez toutes les bonnes réponses.</div>
+                    <label><input type="checkbox" name="q5" value="a"> Informer les gens quand une IA est utilisée pour prendre une décision les concernant.</label>
+                    <label><input type="checkbox" name="q5" value="b"> Pouvoir expliquer à une personne pourquoi l'IA a pris telle ou telle décision.</label>
+                    <label><input type="checkbox" name="q5" value="c"> Effacer automatiquement toutes les données, même celles qui sont utiles.</label>
+                    <label><input type="checkbox" name="q5" value="d"> Permettre à un humain d'intervenir quand l'IA prend une décision risquée.</label>
                 </div>
                 <div class="q">
-                    <h4>Q6. Responsabilité malgré usage non prévu (Vrai/Faux)</h4>
-                    <div class="muted">« Une entreprise peut être tenue responsable si un système IA cause un dommage, même si l'algorithme n'était pas prévu pour cette tâche. »</div>
-                    <label><input type="radio" name="q6" value="v"> Vrai</label>
+                    <h4>Q6. Vrai ou Faux ?</h4>
+                    <div class="muted">« Une entreprise peut être tenue responsable si son IA cause un dommage, même si l'IA a été utilisée d'une manière que l'entreprise n'avait pas prévue. »</div>
+                    <label><input type="radio" name="q6" value="v"> Vrai — l'entreprise a la responsabilité de prévoir les usages possibles et de protéger les utilisateurs.</label>
                     <label><input type="radio" name="q6" value="f"> Faux</label>
                 </div>
                 <div class="q">
-                    <h4>Q7. Diligence maximale (QCM)</h4>
-                    <div class="muted">Quelle situation nécessite le plus haut niveau de diligence humaine ?</div>
-                    <label><input type="radio" name="q7" value="a"> IA triant des livres</label>
-                    <label><input type="radio" name="q7" value="b"> IA recommandant des diagnostics médicaux</label>
-                    <label><input type="radio" name="q7" value="c"> IA générant des slogans</label>
-                    <label><input type="radio" name="q7" value="d"> IA triant des photos</label>
+                    <h4>Q7. Quand faut-il être le plus vigilant ?</h4>
+                    <div class="muted">Dans quelle situation la supervision humaine doit-elle être la plus rigoureuse ?</div>
+                    <label><input type="radio" name="q7" value="a"> Une IA qui classe des livres par genre littéraire.</label>
+                    <label><input type="radio" name="q7" value="b"> Une IA qui aide un médecin à poser un diagnostic.</label>
+                    <label><input type="radio" name="q7" value="c"> Une IA qui invente des slogans publicitaires.</label>
+                    <label><input type="radio" name="q7" value="d"> Une IA qui trie des photos de vacances.</label>
                 </div>
                 <div class="q">
-                    <h4>Q8. Question ouverte courte</h4>
-                    <div class="muted">Donnez deux raisons pour lesquelles l'éthique est importante dans les décisions assistées par IA (1–2 phrases).</div>
-                    <textarea id="q8" placeholder="Votre réponse…"></textarea>
+                    <h4>Q8. À vous de réfléchir</h4>
+                    <div class="muted">Expliquez en une ou deux phrases pourquoi il est important de respecter des principes éthiques quand on utilise l'IA pour prendre des décisions.</div>
+                    <textarea id="q8" placeholder="Écrivez votre réponse ici…"></textarea>
                 </div>
                 <div class="q">
-                    <h4>Q9. Cas pratique (QCM)</h4>
-                    <div class="muted">Une IA d'octroi de prêt rejette un dossier sans explication ; la candidate perd son logement. Quel problème est le plus probable ?</div>
-                    <label><input type="radio" name="q9" value="a"> L'IA avait suffisamment de données</label>
-                    <label><input type="radio" name="q9" value="b"> La transparence est insuffisante</label>
-                    <label><input type="radio" name="q9" value="c"> L'IA a été trop lente</label>
-                    <label><input type="radio" name="q9" value="d"> C'est forcément une erreur de code</label>
+                    <h4>Q9. Un cas concret</h4>
+                    <div class="muted">Une banque utilise une IA pour décider qui a droit à un prêt immobilier. L'IA refuse le dossier d'une cliente sans lui donner aucune explication. La cliente perd son logement. Quel est le problème principal ?</div>
+                    <label><input type="radio" name="q9" value="a"> L'IA avait suffisamment de données, donc la décision est forcément juste.</label>
+                    <label><input type="radio" name="q9" value="b"> Le manque de transparence : la cliente n'a reçu aucune explication et n'a pas pu contester.</label>
+                    <label><input type="radio" name="q9" value="c"> L'IA a pris trop de temps à répondre.</label>
+                    <label><input type="radio" name="q9" value="d"> C'est forcément un bug dans le code de l'IA.</label>
                 </div>
                 <div class="q">
-                    <h4>Q10. Obligations possibles (cases à cocher)</h4>
-                    <div class="muted">Cochez toutes les obligations potentielles pour une entreprise dans un cadre réglementaire IA :</div>
-                    <label><input type="checkbox" name="q10" value="a"> Documentation complète des jeux de données</label>
-                    <label><input type="checkbox" name="q10" value="b"> Suppression de toutes les données client sans exception</label>
-                    <label><input type="checkbox" name="q10" value="c"> Démontrer la supervision humaine dans les décisions à risque</label>
-                    <label><input type="checkbox" name="q10" value="d"> Ne tester que des modèles non documentés</label>
+                    <h4>Q10. Les obligations des entreprises (plusieurs réponses possibles)</h4>
+                    <div class="muted">Que doit faire une entreprise qui utilise une IA à haut risque, selon la réglementation ? Cochez toutes les bonnes réponses.</div>
+                    <label><input type="checkbox" name="q10" value="a"> Documenter précisément les données utilisées et le fonctionnement du système.</label>
+                    <label><input type="checkbox" name="q10" value="b"> Supprimer toutes les données de ses clients sans exception.</label>
+                    <label><input type="checkbox" name="q10" value="c"> Prouver qu'un humain supervise les décisions à risque.</label>
+                    <label><input type="checkbox" name="q10" value="d"> Utiliser uniquement des modèles non documentés pour plus de sécurité.</label>
                 </div>
             `;
         }
@@ -3719,7 +3702,7 @@
                 ["biais", "discrimination", "équité", "justice"],
                 ["transparence", "explication", "compréhensible"],
                 ["préjudice", "dommage", "sécurité"],
-                ["responsabilité", "supervision", "contrôle", "hitl"]
+                ["responsabilité", "supervision", "contrôle", "humain"]
             ];
             let hits = 0;
             kw.forEach(group => { if (group.some(w => ans8.includes(w))) hits++; });
@@ -3959,7 +3942,7 @@
                 <span class="skill">🔗 Chaîne de responsabilité</span>
                 <span class="skill">🇪🇺 AI Act</span>
                 <span class="skill">🤝 Éthique de l'IA</span>
-                <span class="skill">🧑‍⚖️ Human-in-the-loop</span>
+                <span class="skill">🧑‍⚖️ Supervision humaine</span>
                 <span class="skill">🧠 Analyse critique</span>
             </div>
         </div>
