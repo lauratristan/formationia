@@ -513,8 +513,8 @@
             inset: 0;
             z-index: 50;
             background:
-                linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.78)),
-                url('images/tribunal_ia_bg.png') center/cover no-repeat;
+                linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.75)),
+                url('images/tribunal-courtroom.png') center/cover no-repeat;
         }
 
         #game-container.active {
@@ -1049,6 +1049,787 @@
             .comparison-grid { grid-template-columns: 1fr; }
             .hud-items { font-size: 0.8em; }
         }
+
+        /* ==================== IMMERSIVE ENHANCEMENTS ==================== */
+
+        /* Particle System */
+        #particles-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat linear infinite;
+            box-shadow: 0 0 6px var(--neon-blue);
+        }
+
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(100vh) translateX(0); }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(-10vh) translateX(var(--drift, 30px)); }
+        }
+
+        /* Evidence Inspection Modal */
+        .evidence-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 5, 15, 0.92);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .evidence-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .evidence-modal {
+            background: linear-gradient(135deg, rgba(10, 20, 50, 0.98), rgba(5, 15, 35, 0.98));
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            border-radius: 20px;
+            max-width: 680px;
+            width: 90vw;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow:
+                0 0 60px rgba(0, 212, 255, 0.25),
+                0 0 120px rgba(0, 212, 255, 0.08),
+                inset 0 1px 0 rgba(0, 212, 255, 0.15);
+            transform: scale(0.85) translateY(30px);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .evidence-modal-overlay.active .evidence-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .evidence-modal-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(0, 40, 80, 0.4), transparent);
+        }
+
+        .evidence-modal-header h3 {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .evidence-modal-close {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 0, 128, 0.35);
+            background: rgba(255, 0, 128, 0.08);
+            color: var(--neon-pink);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .evidence-modal-close:hover {
+            background: rgba(255, 0, 128, 0.25);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.25);
+        }
+
+        .evidence-modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: 55vh;
+        }
+
+        .evidence-modal-image {
+            width: 100%;
+            height: 160px;
+            background: url('images/evidence-inspect.png') center/cover no-repeat;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .evidence-modal-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 10, 30, 0.3) 0%, rgba(0, 10, 30, 0.7) 100%);
+        }
+
+        .evidence-modal-image .evidence-type-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            z-index: 1;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75em;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(0, 10, 30, 0.85);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: var(--neon-purple);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .evidence-document {
+            position: relative;
+            padding: 20px;
+            background: rgba(0, 10, 20, 0.6);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .evidence-document::before {
+            content: 'PIÈCE À CONVICTION';
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: rgba(10, 20, 50, 1);
+            padding: 2px 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68em;
+            color: var(--neon-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 4px;
+            letter-spacing: 2px;
+        }
+
+        .evidence-document p {
+            color: #c0d0e0;
+            line-height: 1.8;
+            margin-top: 8px;
+        }
+
+        .evidence-hint-box {
+            margin-top: 16px;
+            padding: 14px 16px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.06), rgba(0, 212, 255, 0.04));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 10px;
+        }
+
+        .evidence-hint-box strong {
+            color: var(--neon-green);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85em;
+        }
+
+        .evidence-hint-box p {
+            color: #a0c0d0;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .evidence-modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid rgba(0, 212, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 15, 30, 0.5);
+        }
+
+        .evidence-points-badge {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-size: 1.1em;
+            animation: pointsPulse 1s ease-in-out;
+        }
+
+        @keyframes pointsPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        }
+
+        /* Phase Transition Overlay */
+        .phase-transition-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 5, 15, 0.97);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+
+        .phase-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .phase-transition-overlay .phase-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            animation: phaseIconPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes phaseIconPulse {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.12); filter: brightness(1.4) drop-shadow(0 0 25px rgba(0, 212, 255, 0.5)); }
+        }
+
+        .phase-transition-overlay .phase-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2em;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: glitchIn 0.4s ease-out;
+        }
+
+        @keyframes glitchIn {
+            0% { transform: translateX(-8px); opacity: 0; clip-path: inset(0 100% 0 0); }
+            30% { transform: translateX(4px); clip-path: inset(0 0 0 0); }
+            60% { transform: translateX(-2px); }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .phase-transition-overlay .phase-subtitle {
+            color: #8899aa;
+            font-size: 1.1em;
+            margin-top: 10px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .phase-transition-overlay .phase-line {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            margin: 20px 0;
+            animation: lineExpand 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes lineExpand {
+            from { width: 0; opacity: 0; }
+            to { width: 200px; opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Case Intro Scene */
+        .case-intro-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s ease;
+            overflow: hidden;
+        }
+
+        .case-intro-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .case-intro-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .case-intro-bg.nexus-bg {
+            background:
+                linear-gradient(180deg, rgba(5, 8, 18, 0.55) 0%, rgba(10, 18, 37, 0.75) 100%),
+                url('images/scene-nexus.png') center/cover no-repeat;
+        }
+
+        .case-intro-bg.medica-bg {
+            background:
+                linear-gradient(180deg, rgba(5, 8, 18, 0.5) 0%, rgba(10, 21, 32, 0.7) 100%),
+                url('images/scene-medica.png') center/cover no-repeat;
+        }
+
+        .case-intro-bg.creditia-bg {
+            background:
+                linear-gradient(180deg, rgba(5, 8, 18, 0.5) 0%, rgba(18, 15, 10, 0.7) 100%),
+                url('images/scene-creditia.png') center/cover no-repeat;
+        }
+
+        .case-intro-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+            padding: 0 20px;
+        }
+
+        .case-intro-icon {
+            font-size: 5em;
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.3));
+        }
+
+        .case-intro-code {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85em;
+            color: var(--neon-purple);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .case-intro-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.2em;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            animation: glitchIn 0.5s ease-out 0.4s both;
+        }
+
+        .case-intro-scene {
+            color: #8899aa;
+            font-size: 1.15em;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .case-intro-stats {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out 0.8s both;
+        }
+
+        .case-intro-stat {
+            text-align: center;
+            padding: 14px 24px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 30, 60, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .case-intro-stat .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.4em;
+            color: var(--neon-blue);
+        }
+
+        .case-intro-stat .stat-label {
+            color: #8899aa;
+            font-size: 0.82em;
+            margin-top: 4px;
+        }
+
+        .case-intro-enter-btn {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1em;
+            padding: 16px 50px;
+            background: transparent;
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            animation: fadeInUp 0.6s ease-out 1s both;
+        }
+
+        .case-intro-enter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .case-intro-enter-btn:hover::before { left: 100%; }
+        .case-intro-enter-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Typewriter Effect */
+        .dialogue-box {
+            position: relative;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(0, 30, 60, 0.6), rgba(0, 20, 40, 0.4));
+            border-left: 3px solid var(--neon-blue);
+            border-radius: 0 14px 14px 0;
+            margin: 14px 0;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+        }
+
+        .dialogue-box .speaker {
+            font-family: 'Space Mono', monospace;
+            color: var(--neon-green);
+            font-weight: 700;
+            font-size: 0.88em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dialogue-box .speaker-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            object-fit: cover;
+        }
+
+        .dialogue-box .dialogue-text {
+            color: #d0e0f0;
+            line-height: 1.65;
+        }
+
+        .tw-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--neon-green);
+            margin-left: 2px;
+            animation: cursorBlink 0.7s steps(2) infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Floating Score Popup */
+        .score-float {
+            position: fixed;
+            z-index: 5000;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5em;
+            font-weight: 700;
+            pointer-events: none;
+            animation: scoreUp 1.8s ease-out forwards;
+        }
+
+        .score-float.positive { color: var(--neon-green); text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .score-float.negative { color: var(--neon-pink); text-shadow: 0 0 20px rgba(255, 0, 128, 0.5); }
+
+        @keyframes scoreUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            30% { opacity: 1; transform: translateY(-30px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-90px) scale(0.7); }
+        }
+
+        /* Gavel Animation */
+        .gavel-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .gavel-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .gavel-icon {
+            font-size: 7em;
+            animation: gavelStrike 0.7s ease-out;
+        }
+
+        @keyframes gavelStrike {
+            0% { transform: rotate(-45deg) translateY(-50px) scale(0.5); opacity: 0; }
+            40% { transform: rotate(5deg) translateY(0) scale(1.2); opacity: 1; }
+            60% { transform: rotate(-3deg) scale(1.05); }
+            80% { transform: rotate(1deg) scale(1); }
+            100% { transform: rotate(0) scale(1); }
+        }
+
+        .gavel-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.6em;
+            color: var(--neon-green);
+            margin-top: 20px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        /* Screen Shake */
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0); }
+            10% { transform: translate(-3px, -2px); }
+            20% { transform: translate(3px, 2px); }
+            30% { transform: translate(-2px, 3px); }
+            40% { transform: translate(2px, -3px); }
+            50% { transform: translate(-3px, 1px); }
+            60% { transform: translate(3px, -1px); }
+            70% { transform: translate(-1px, 2px); }
+            80% { transform: translate(1px, -2px); }
+            90% { transform: translate(-2px, -1px); }
+        }
+
+        .shake { animation: screenShake 0.4s ease-in-out; }
+
+        /* Sound Toggle */
+        .sound-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 6000;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            background: rgba(10, 20, 40, 0.9);
+            color: var(--neon-blue);
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .sound-toggle:hover {
+            background: rgba(0, 212, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .sound-toggle.muted {
+            color: #555;
+            border-color: rgba(100, 100, 100, 0.3);
+        }
+
+        /* Enhanced evidence cards with hologram */
+        .evidence {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .evidence::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(0, 212, 255, 0.04) 90deg,
+                transparent 180deg,
+                rgba(0, 255, 136, 0.04) 270deg,
+                transparent 360deg
+            );
+            animation: holoRotate 10s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes holoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .evidence.collected {
+            border-color: rgba(0, 255, 136, 0.35) !important;
+            background: rgba(0, 255, 136, 0.06) !important;
+        }
+
+        .evidence.collected::after {
+            content: '✓ COLLECTÉE';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.68em;
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 2px 10px;
+            border-radius: 4px;
+            background: rgba(0, 255, 136, 0.08);
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        /* Case card icons */
+        .case-card-icon {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            display: block;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.3));
+        }
+
+        /* Case card scene image */
+        .case-scene-img {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            object-fit: cover;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+        }
+
+        .case-scene-gradient {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-scene-gradient.nexus {
+            background:
+                linear-gradient(180deg, rgba(26, 10, 48, 0.4), rgba(10, 21, 48, 0.6)),
+                url('images/scene-nexus.png') center/cover no-repeat;
+        }
+
+        .case-scene-gradient.nexus::before {
+            content: none;
+        }
+
+        .case-scene-gradient.medica {
+            background:
+                linear-gradient(180deg, rgba(10, 21, 32, 0.4), rgba(10, 32, 32, 0.6)),
+                url('images/scene-medica.png') center/cover no-repeat;
+        }
+
+        .case-scene-gradient.medica::before {
+            content: none;
+        }
+
+        .case-scene-gradient.creditia {
+            background:
+                linear-gradient(180deg, rgba(21, 18, 10, 0.4), rgba(10, 15, 21, 0.6)),
+                url('images/scene-creditia.png') center/cover no-repeat;
+        }
+
+        .case-scene-gradient.creditia::before {
+            content: none;
+        }
+
+        /* Ambient glow on game container */
+        #game-container.active::before {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(0, 212, 255, 0.04) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Better credibility meter animation */
+        .meter > div {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Verdict dramatic reveal */
+        .verdict-reveal {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.6s ease;
+        }
+
+        .verdict-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Immersive evidence icon */
+        .evidence-icon-large {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.4));
+        }
+
+        /* Case status bar in side panel */
+        .case-status-bar {
+            display: flex;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .case-status-step {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(0, 212, 255, 0.15);
+            transition: background 0.5s;
+        }
+
+        .case-status-step.done {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+        }
+
+        .case-status-step.current {
+            background: var(--neon-blue);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+            animation: stepPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes stepPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
@@ -1128,7 +1909,7 @@
                 <div class="briefing-nav-item" onclick="showLesson(5)">
                     <span class="nav-icon">🧑‍⚖️</span>
                     <span class="nav-number">06</span>
-                    Human-in-the-loop
+                    Supervision humaine
                 </div>
                 <div class="briefing-nav-item" onclick="showLesson(6)">
                     <span class="nav-icon">🧩</span>
@@ -1213,6 +1994,44 @@
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
+    <!-- PARTICLE BACKGROUND -->
+    <div id="particles-bg"></div>
+
+    <!-- EVIDENCE MODAL -->
+    <div class="evidence-modal-overlay" id="evidenceModalOverlay">
+        <div class="evidence-modal" id="evidenceModal">
+            <div class="evidence-modal-header">
+                <h3 id="evidenceModalTitle">📄 Pièce à conviction</h3>
+                <button class="evidence-modal-close" onclick="closeEvidenceModal()">✕</button>
+            </div>
+            <div class="evidence-modal-body" id="evidenceModalBody"></div>
+            <div class="evidence-modal-footer" id="evidenceModalFooter"></div>
+        </div>
+    </div>
+
+    <!-- PHASE TRANSITION OVERLAY -->
+    <div class="phase-transition-overlay" id="phaseTransition">
+        <div class="phase-icon" id="phaseIcon"></div>
+        <div class="phase-line"></div>
+        <div class="phase-title" id="phaseTitle"></div>
+        <div class="phase-subtitle" id="phaseSubtitle"></div>
+    </div>
+
+    <!-- CASE INTRO OVERLAY -->
+    <div class="case-intro-overlay" id="caseIntroOverlay">
+        <div class="case-intro-bg" id="caseIntroBg"></div>
+        <div class="case-intro-content" id="caseIntroContent"></div>
+    </div>
+
+    <!-- GAVEL ANIMATION -->
+    <div class="gavel-overlay" id="gavelOverlay">
+        <div class="gavel-icon">🔨</div>
+        <div class="gavel-text">Verdict enregistré</div>
+    </div>
+
+    <!-- SOUND TOGGLE -->
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" title="Son on/off">🔊</button>
+
     <script>
         // ==================== STATE ====================
         const state = {
@@ -1240,33 +2059,32 @@
         // ==================== LESSON CONTENT ====================
         const briefingLessons = [
             {
-                title: "🧠 Introduction : Responsabilité & Intelligence Artificielle",
+                title: "🧠 Introduction : Quand l'IA prend des décisions",
                 content: `
                     <div class="module-section">
-                        <h3>📊 Contexte</h3>
-                        <p>Quand une IA est utilisée dans un processus décisionnel, la responsabilité <strong>ne disparaît pas</strong>.
-                        Au contraire, elle doit être <strong>rendue explicite</strong> : qui a conçu, qui a déployé, qui a validé, qui supervise ?</p>
+                        <h3>📊 De quoi parle-t-on ?</h3>
+                        <p>Aujourd'hui, des intelligences artificielles aident à prendre des décisions qui ont un vrai impact sur la vie des gens : elles trient des CV pour un emploi, recommandent des traitements médicaux, ou décident si une personne peut obtenir un prêt bancaire.</p>
+                        <p>Mais quand une de ces IA se trompe ou agit de manière injuste, <strong>qui est responsable ?</strong> L'IA elle-même ? La personne qui l'a programmée ? L'entreprise qui l'utilise ? Le salarié qui a cliqué sur « valider » ?</p>
 
                         <div class="stat-box">
-                            <h4>💡 Idée-clé</h4>
-                            <p>L'IA ne « dilue » pas la responsabilité humaine — elle complexifie la chaîne. Le droit et l'éthique cherchent à
-                            empêcher l'effet <em>"personne n'est responsable"</em>.</p>
+                            <h4>💡 L'idée centrale de ce module</h4>
+                            <p>Une IA ne « remplace » pas la responsabilité humaine. Au contraire, quand on utilise une IA pour prendre des décisions importantes, il faut être encore <strong>plus vigilant</strong> et s'assurer que des humains vérifient, comprennent et contrôlent ce que fait la machine.</p>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>🎯 Objectif de votre mission</h3>
-                        <p>En tant que juré expert, vous allez analyser 3 affaires impliquant des IA défaillantes.
-                        Ce dossier vous prépare en vous donnant les clés juridiques et éthiques nécessaires.</p>
+                        <h3>🎯 Votre mission</h3>
+                        <p>Dans ce module, vous allez jouer le rôle d'un <strong>juré dans un tribunal spécialisé</strong>. Trois affaires vous seront présentées, chacune impliquant une IA qui a causé un préjudice. Votre mission sera d'analyser les preuves, de comprendre qui a failli, et de rendre un verdict juste.</p>
+                        <p>Mais avant d'entrer dans la salle d'audience, vous allez d'abord vous préparer en découvrant les notions essentielles :</p>
 
                         <div class="info-card">
                             <h4>📋 Ce que vous allez apprendre</h4>
                             <ul class="briefing-list">
-                                <li>La chaîne de responsabilité (conception → déploiement → usage)</li>
-                                <li>Les principes éthiques fondamentaux</li>
-                                <li>L'AI Act européen et les cadres internationaux</li>
-                                <li>Le rôle du Human-in-the-loop (HITL)</li>
-                                <li>Les bonnes pratiques de gouvernance IA</li>
+                                <li>Qui est responsable quand une IA prend une mauvaise décision (la <em>chaîne de responsabilité</em>)</li>
+                                <li>Les grands principes éthiques qui encadrent l'IA</li>
+                                <li>La loi européenne sur l'IA (l'<em>AI Act</em>)</li>
+                                <li>Pourquoi la <em>supervision humaine</em> est indispensable</li>
+                                <li>Comment construire une IA plus juste et plus responsable</li>
                             </ul>
                         </div>
                     </div>
@@ -1276,224 +2094,245 @@
                 title: "🔗 La Chaîne de Responsabilité",
                 content: `
                     <div class="module-section">
-                        <h3>🏗️ Raisonner par cycle de vie</h3>
-                        <p>Dans la plupart des cadres, on raisonne par <strong>cycle de vie</strong> de l'IA :</p>
-
-                        <ul class="briefing-list">
-                            <li><strong>Concepteurs / développeurs</strong> : conception, tests, documentation, limites connues, gestion des biais.</li>
-                            <li><strong>Fournisseurs / déployeurs</strong> : choix du cas d'usage, configuration, conformité, formation, supervision.</li>
-                            <li><strong>Décideurs / utilisateurs</strong> : décision finale, usage proportionné, vigilance, contestation possible.</li>
-                        </ul>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>⚖️ Ce qu'on cherche dans un procès</h3>
-                        <div class="stat-box purple">
-                            <p>On identifie trois types de manquements :</p>
-                            <ul class="briefing-list">
-                                <li><strong>Manquement technique</strong> : données biaisées, tests insuffisants</li>
-                                <li><strong>Manquement organisationnel</strong> : gouvernance absente, pas d'audit</li>
-                                <li><strong>Manquement humain</strong> : validation aveugle, absence de contrôle</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🤝 Éthique de l'Intelligence Artificielle",
-                content: `
-                    <div class="module-section">
-                        <h3>🛡️ Les piliers de l'éthique IA</h3>
-                        <p>L'éthique de l'IA vise à protéger les individus et la société. Quatre principes fondamentaux :</p>
+                        <h3>🏗️ Trois acteurs, trois responsabilités</h3>
+                        <p>Quand une IA cause un problème, on ne peut pas simplement dire « c'est la faute de la machine ». En réalité, une IA passe par <strong>plusieurs mains</strong> avant d'agir, et chacune de ces mains porte une part de responsabilité.</p>
+                        <p>On distingue trois grands acteurs :</p>
 
                         <div class="comparison-grid">
                             <div>
-                                <h4>Droits & dignité</h4>
-                                <p>Respect des personnes, prévention des préjudices, proportionnalité.</p>
+                                <h4>🔧 Le concepteur</h4>
+                                <p>C'est l'équipe qui crée l'IA : les développeurs et les data scientists. Ce sont eux qui choisissent les données d'entraînement, conçoivent l'algorithme et testent le système. S'il y a un biais dans les données ou un défaut de conception, c'est leur responsabilité.</p>
                             </div>
                             <div>
-                                <h4>Transparence</h4>
-                                <p>Informez quand l'IA intervient, expliquez de façon compréhensible.</p>
-                            </div>
-                            <div>
-                                <h4>Équité</h4>
-                                <p>Limiter biais, discrimination, effets d'exclusion.</p>
-                            </div>
-                            <div>
-                                <h4>Supervision (HITL)</h4>
-                                <p>Humain compétent qui peut <strong>intervenir</strong> et <strong>renverser</strong> la décision.</p>
+                                <h4>🏢 Le déployeur</h4>
+                                <p>C'est l'entreprise ou l'organisation qui décide d'utiliser cette IA dans un contexte précis. Par exemple, une entreprise qui installe une IA de recrutement. C'est elle qui doit vérifier que l'IA est adaptée, la surveiller et former ses employés à bien l'utiliser.</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="module-section">
                         <div class="stat-box">
-                            <h4>🌐 UNESCO</h4>
-                            <p>Recommandation mondiale sur l'éthique de l'IA, fondée notamment sur droits humains, transparence, non-discrimination et responsabilité.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🇪🇺 L'AI Act Européen",
-                content: `
-                    <div class="module-section">
-                        <h3>📜 Règlement (UE) 2024/1689</h3>
-                        <p>Premier cadre complet au monde, basé sur une <strong>classification par niveaux de risque</strong>.</p>
-
-                        <div class="stat-box">
-                            <h4>📊 4 niveaux de risque</h4>
-                            <p>Du risque minimal au haut risque → obligations croissantes : documentation, transparence, gestion des risques, supervision humaine, conformité.</p>
+                            <h4>👤 Le décideur humain</h4>
+                            <p>C'est la personne qui, au bout de la chaîne, valide ou applique la décision de l'IA. Par exemple, un recruteur qui accepte ou refuse un candidat sur la base du score donné par l'IA. Cette personne a le devoir de <strong>ne pas suivre aveuglément</strong> la machine et de vérifier que la décision est juste.</p>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>💰 Sanctions</h3>
-                        <div class="stat-box warning">
-                            <p>Jusqu'à <strong style="color:var(--neon-pink);font-size:1.3em;">35 M€</strong> ou <strong style="color:var(--neon-pink);font-size:1.3em;">7% du CA</strong> pour les violations graves et pratiques interdites.</p>
-                        </div>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>📅 Calendrier</h3>
-                        <div class="info-card">
-                            <ul class="briefing-list">
-                                <li>Entrée en vigueur : <strong>01/08/2024</strong></li>
-                                <li>Pratiques interdites + AI literacy : dès <strong>02/02/2025</strong></li>
-                                <li>Obligations GPAI : à partir de <strong>02/08/2025</strong></li>
-                                <li>Systèmes haut risque : transition jusqu'à <strong>02/08/2027</strong></li>
-                            </ul>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🌍 Cadres Internationaux",
-                content: `
-                    <div class="module-section">
-                        <h3>🏛️ Au-delà des frontières</h3>
-                        <p>Plusieurs instruments internationaux encadrent l'IA au niveau mondial.</p>
-
+                        <h3>⚖️ Quand quelque chose tourne mal</h3>
+                        <p>En cas de problème, on cherche à identifier quel type d'erreur a été commis :</p>
                         <div class="stat-box purple">
-                            <h4>Conseil de l'Europe</h4>
-                            <p>Convention-cadre sur l'IA et les droits humains, la démocratie et l'État de droit —
-                            ouverte à signature le <strong>05/09/2024</strong>. Objectif : garantir que l'IA respecte ces principes tout au long de son cycle de vie.</p>
-                        </div>
-                    </div>
-
-                    <div class="module-section">
-                        <h3>🗺️ Approches nationales</h3>
-                        <div class="info-card">
-                            <h4>📋 Exemples</h4>
-                            <p>Obligations professionnelles de vérification humaine,
-                            codes de conduite, audits, et responsabilités renforcées dans les domaines sensibles.</p>
+                            <p><strong>Erreur technique :</strong> les données utilisées pour entraîner l'IA étaient biaisées, ou le système n'a pas été assez testé avant d'être mis en service.</p>
+                            <p style="margin-top:10px"><strong>Erreur d'organisation :</strong> personne n'a vérifié que l'IA fonctionnait correctement, il n'y avait pas de procédure de contrôle ni d'audit.</p>
+                            <p style="margin-top:10px"><strong>Erreur humaine :</strong> la personne en charge a validé la décision de l'IA sans la vérifier, ou il n'existait aucun moyen de contester la décision.</p>
                         </div>
                     </div>
                 `
             },
             {
-                title: "🧑‍⚖️ Human-in-the-Loop (HITL)",
+                title: "🤝 L'éthique de l'Intelligence Artificielle",
                 content: `
                     <div class="module-section">
-                        <h3>🚫 Ce que HITL ne veut PAS dire</h3>
-                        <p>"Human-in-the-loop" ne veut pas dire « un humain clique sur OK ».</p>
-
-                        <div class="stat-box">
-                            <h4>✅ HITL robuste</h4>
-                            <p>Un humain compétent qui :</p>
-                            <ul class="briefing-list">
-                                <li>comprend le résultat (et ses limites),</li>
-                                <li>peut demander des informations supplémentaires,</li>
-                                <li>peut contester / renverser la recommandation,</li>
-                                <li>dispose de temps, outils, formation et responsabilité.</li>
-                            </ul>
-                        </div>
+                        <h3>🛡️ Pourquoi l'éthique est-elle importante ?</h3>
+                        <p>L'IA peut rendre d'immenses services, mais elle peut aussi causer du tort si elle est mal utilisée. Par exemple, une IA peut discriminer certaines personnes sans que personne ne s'en rende compte, simplement parce qu'elle a appris à partir de données déjà injustes.</p>
+                        <p>C'est pour éviter ce genre de situation que des <strong>principes éthiques</strong> ont été définis au niveau mondial. Ils servent de boussole pour s'assurer que l'IA reste au service des humains, et non l'inverse.</p>
                     </div>
 
                     <div class="module-section">
-                        <h3>📖 RGPD (art. 22)</h3>
-                        <div class="info-card">
-                            <p>Prévoit notamment le droit de ne pas être soumis à une décision fondée uniquement sur un traitement automatisé
-                            produisant des effets juridiques (ou significatifs) — avec exceptions encadrées.</p>
-                        </div>
-                    </div>
-                `
-            },
-            {
-                title: "🧩 Vers une IA Responsable",
-                content: `
-                    <div class="module-section">
-                        <h3>🏗️ La responsabilité se construit</h3>
-                        <p>La responsabilité se construit par la gouvernance et la preuve :</p>
-
+                        <h3>📐 Les quatre grands principes</h3>
                         <div class="comparison-grid">
                             <div>
-                                <h4>Documentation & traçabilité</h4>
-                                <p>Datasets, hypothèses, limites, logs, évaluations, versions.</p>
+                                <h4>1. Respect des droits</h4>
+                                <p>L'IA ne doit jamais porter atteinte à la dignité des personnes. Elle doit être utilisée de manière proportionnée, c'est-à-dire que le bénéfice doit justifier les risques éventuels.</p>
                             </div>
                             <div>
-                                <h4>Audit & tests</h4>
-                                <p>Biais, robustesse, sécurité, performance, dérive.</p>
+                                <h4>2. Transparence</h4>
+                                <p>Quand une IA intervient dans une décision, les personnes concernées doivent en être informées. De plus, on doit pouvoir leur expliquer comment la décision a été prise, dans un langage compréhensible.</p>
                             </div>
                             <div>
-                                <h4>Supervision & recours</h4>
-                                <p>Procédures d'escalade, contestation, correction.</p>
+                                <h4>3. Équité</h4>
+                                <p>L'IA ne doit pas favoriser ou défavoriser certaines personnes en raison de leur genre, origine, âge ou situation sociale. Il faut activement vérifier et corriger les biais.</p>
                             </div>
                             <div>
-                                <h4>Formation</h4>
-                                <p>Compétences humaines : comprendre, questionner, décider.</p>
+                                <h4>4. Supervision humaine</h4>
+                                <p>Un être humain compétent doit toujours pouvoir <strong>intervenir</strong>, <strong>corriger</strong> ou <strong>annuler</strong> une décision prise par l'IA, surtout quand elle a un impact important sur la vie de quelqu'un.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="module-section">
                         <div class="stat-box">
-                            <h4>🏆 Règle d'or</h4>
-                            <p>Si la décision a un impact élevé, le contrôle humain doit être réel, documenté et proportionné.</p>
+                            <h4>🌐 Un effort mondial</h4>
+                            <p>En 2021, l'<strong>UNESCO</strong> a adopté une recommandation sur l'éthique de l'IA, signée par 193 pays. Elle insiste sur le respect des droits humains, la transparence, la non-discrimination et la responsabilité de ceux qui conçoivent et utilisent ces systèmes.</p>
                         </div>
                     </div>
                 `
             },
             {
-                title: "🎯 Briefing de Mission : Le Tribunal",
+                title: "🇪🇺 L'AI Act : la loi européenne sur l'IA",
                 content: `
                     <div class="module-section">
-                        <h3>📋 Récapitulatif de votre mission</h3>
-                        <p>Vous êtes maintenant prêt(e) pour siéger au tribunal. Voici les éléments clés :</p>
+                        <h3>📜 Une première mondiale</h3>
+                        <p>En 2024, l'Union européenne a adopté l'<strong>AI Act</strong>, la toute première loi au monde qui encadre de manière complète l'intelligence artificielle. Son principe est simple : <strong>plus une IA est risquée, plus les règles sont strictes</strong>.</p>
+                    </div>
 
-                        <div class="stat-box">
-                            <h4>🎯 Objectif principal</h4>
-                            <p>Juger <strong>3 affaires</strong> (recrutement, médical, crédit). Pour chaque affaire :</p>
-                            <ul class="briefing-list">
-                                <li>Ouvrir le dossier (choisir l'affaire)</li>
-                                <li>Examiner les preuves (gagner des indices et des points)</li>
-                                <li>Reconstituer la chaîne de responsabilité (puzzle)</li>
-                                <li>Rendre un verdict (responsables + sanctions)</li>
-                            </ul>
+                    <div class="module-section">
+                        <h3>📊 Une classification par niveaux de risque</h3>
+                        <p>L'AI Act classe les systèmes d'IA en quatre niveaux :</p>
+                        <div class="comparison-grid">
+                            <div>
+                                <h4>🟢 Risque minimal</h4>
+                                <p>La grande majorité des IA du quotidien : filtres photo, correcteurs orthographiques, recommandations de musique... Très peu de contraintes.</p>
+                            </div>
+                            <div>
+                                <h4>🟡 Risque limité</h4>
+                                <p>Les chatbots ou systèmes qui interagissent directement avec les gens. Obligation principale : <strong>prévenir l'utilisateur qu'il parle à une IA</strong>.</p>
+                            </div>
+                            <div>
+                                <h4>🟠 Haut risque</h4>
+                                <p>IA utilisées dans le recrutement, la santé, la justice, l'éducation ou le crédit bancaire. Obligations fortes : documentation, tests, supervision humaine, transparence.</p>
+                            </div>
+                            <div>
+                                <h4>🔴 Risque inacceptable</h4>
+                                <p>Certaines utilisations sont tout simplement <strong>interdites</strong> : notation sociale des citoyens, manipulation des comportements, surveillance biométrique de masse...</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="module-section">
-                        <h3>⚠️ Règles d'engagement</h3>
+                        <h3>💰 Des sanctions sérieuses</h3>
                         <div class="stat-box warning">
-                            <ul class="briefing-list">
-                                <li><strong>8 minutes</strong> par affaire</li>
-                                <li>La <em>crédibilité</em> baisse si verdict incohérent ou sanction inadaptée</li>
-                                <li>Si la crédibilité tombe à 0 : session échouée</li>
-                                <li>Objectif final : <strong>≥ 70%</strong> au quiz final pour obtenir l'attestation</li>
-                            </ul>
+                            <p>Les entreprises qui ne respectent pas la loi risquent de très lourdes amendes : jusqu'à <strong style="color:var(--neon-pink);font-size:1.3em;">35 millions d'euros</strong> ou <strong style="color:var(--neon-pink);font-size:1.3em;">7 % de leur chiffre d'affaires</strong> mondial. L'objectif est clair : la loi veut être prise au sérieux.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📅 Quand est-ce que ça s'applique ?</h3>
+                        <p>La loi entre en vigueur progressivement :</p>
+                        <div class="info-card">
+                            <p>Depuis <strong>février 2025</strong>, les pratiques les plus dangereuses sont déjà interdites. Les obligations pour les systèmes à haut risque se mettent en place jusqu'en <strong>2027</strong>.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🌍 Et dans le reste du monde ?",
+                content: `
+                    <div class="module-section">
+                        <h3>🏛️ L'IA, un enjeu planétaire</h3>
+                        <p>L'Europe n'est pas la seule à se préoccuper de l'IA. Partout dans le monde, des gouvernements et des organisations internationales travaillent à encadrer ces technologies, car <strong>une IA mal conçue dans un pays peut causer des dégâts partout</strong> — pensez aux réseaux sociaux ou aux systèmes bancaires internationaux.</p>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🤝 Le Conseil de l'Europe</h3>
+                        <div class="stat-box purple">
+                            <p>En septembre 2024, le <strong>Conseil de l'Europe</strong> (qui regroupe 46 pays, dont la France) a ouvert à la signature une convention internationale sur l'IA. Son objectif : s'assurer que l'IA respecte les <strong>droits humains</strong>, la <strong>démocratie</strong> et l'<strong>État de droit</strong> tout au long de son cycle de vie, de sa conception à son utilisation quotidienne.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>🗺️ Des approches différentes selon les pays</h3>
+                        <div class="info-card">
+                            <p>Chaque pays avance à son rythme. Certains misent sur des <strong>lois strictes</strong> (comme l'Europe avec l'AI Act), d'autres préfèrent des <strong>codes de bonne conduite</strong> volontaires (comme les États-Unis ou le Japon). Mais tous partagent une même préoccupation : quand l'IA touche à des domaines sensibles comme la santé, l'emploi ou la justice, il faut des <strong>règles claires</strong> et une <strong>vérification humaine</strong>.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🧑‍⚖️ La supervision humaine : pourquoi c'est essentiel",
+                content: `
+                    <div class="module-section">
+                        <h3>🚫 Cliquer sur « OK » ne suffit pas</h3>
+                        <p>On entend souvent dire qu'il faut « un humain dans la boucle » (en anglais : <em>human in the loop</em>). Mais attention : cela ne veut pas dire qu'il suffit de placer quelqu'un devant un écran pour qu'il clique sur « valider » sans réfléchir.</p>
+                        <p>Une vraie supervision humaine, c'est bien plus que ça. C'est s'assurer que la personne qui contrôle la décision de l'IA a <strong>le temps</strong>, <strong>les compétences</strong> et <strong>les moyens</strong> de le faire correctement.</p>
+
+                        <div class="stat-box">
+                            <h4>✅ Une supervision humaine digne de ce nom, c'est quand...</h4>
+                            <p>La personne responsable <strong>comprend</strong> ce que l'IA recommande et connaît ses limites. Elle peut <strong>demander des informations complémentaires</strong> si quelque chose lui paraît étrange. Elle a le pouvoir de <strong>refuser</strong> ou de <strong>modifier</strong> la recommandation de l'IA. Et surtout, elle dispose du <strong>temps nécessaire</strong> pour prendre une décision éclairée — pas 12 secondes entre deux dossiers.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>📖 Ce que dit la loi (RGPD, article 22)</h3>
+                        <div class="info-card">
+                            <p>Le Règlement Général sur la Protection des Données (RGPD), qui s'applique dans toute l'Europe, prévoit un droit important : <strong>personne ne devrait subir une décision importante prise uniquement par une machine</strong>. Par exemple, si une IA refuse un prêt ou rejette une candidature, la personne concernée a le droit de demander qu'un humain réexamine son dossier.</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="stat-box warning">
+                            <h4>⚠️ Un exemple concret</h4>
+                            <p>Imaginez un médecin qui utilise une IA pour diagnostiquer une maladie. Si l'IA affiche « confiance : 97 % » et que le médecin valide en 12 secondes sans vérifier, est-ce vraiment une supervision humaine ? Non. Le médecin a la responsabilité de croiser les informations, de consulter le dossier du patient et, si besoin, de demander un second avis.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🧩 Construire une IA responsable",
+                content: `
+                    <div class="module-section">
+                        <h3>🏗️ La responsabilité ne s'improvise pas</h3>
+                        <p>Utiliser une IA de manière responsable, ce n'est pas juste avoir de bonnes intentions. C'est mettre en place des pratiques concrètes, à chaque étape de la vie du système. Voici les quatre piliers d'une IA responsable :</p>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="comparison-grid">
+                            <div>
+                                <h4>📝 Tout documenter</h4>
+                                <p>D'où viennent les données ? Quelles hypothèses ont été faites ? Quelles sont les limites connues du système ? Une IA responsable laisse une trace écrite de chaque choix, pour que tout puisse être vérifié après coup.</p>
+                            </div>
+                            <div>
+                                <h4>🔍 Tester et auditer</h4>
+                                <p>Avant de mettre une IA en service, il faut la tester en profondeur : est-elle juste envers tous les groupes de personnes ? Est-elle fiable ? Et après son déploiement, il faut continuer à la surveiller pour détecter d'éventuels problèmes.</p>
+                            </div>
+                            <div>
+                                <h4>👁️ Superviser et permettre les recours</h4>
+                                <p>Il doit toujours y avoir un moyen de contester une décision prise par l'IA. Si quelqu'un pense avoir été traité injustement, il doit pouvoir demander à un humain de réexaminer son cas.</p>
+                            </div>
+                            <div>
+                                <h4>🎓 Former les utilisateurs</h4>
+                                <p>Les personnes qui utilisent l'IA au quotidien doivent comprendre comment elle fonctionne, quelles sont ses limites, et quand il est important de ne pas se fier aveuglément à ses recommandations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <div class="stat-box">
+                            <h4>🏆 La règle d'or à retenir</h4>
+                            <p>Plus une décision a un impact important sur la vie d'une personne (emploi, santé, finances, justice...), plus le contrôle humain doit être <strong>réel</strong>, <strong>documenté</strong> et <strong>proportionné</strong>. On ne traite pas une IA qui trie des photos de vacances comme une IA qui décide de l'avenir professionnel de quelqu'un.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                title: "🎯 Briefing de mission : Le Tribunal",
+                content: `
+                    <div class="module-section">
+                        <h3>📋 Vous êtes prêt(e) !</h3>
+                        <p>Vous avez maintenant toutes les clés en main pour siéger au tribunal. Récapitulons ce que vous allez devoir faire.</p>
+
+                        <div class="stat-box">
+                            <h4>🎯 Votre mission en tant que juré</h4>
+                            <p>Vous allez juger <strong>3 affaires</strong> différentes. Dans chacune, une IA a causé un préjudice à des personnes. Pour chaque affaire, voici les étapes à suivre :</p>
+                            <p style="margin-top:10px"><strong>1.</strong> D'abord, vous <strong>examinerez les preuves</strong> : des documents, des témoignages, des rapports techniques. Chaque preuve vous donne des indices et des points.</p>
+                            <p style="margin-top:6px"><strong>2.</strong> Ensuite, vous devrez <strong>reconstituer la chaîne de responsabilité</strong> : quel acteur (concepteur, déployeur, décideur) a commis quel manquement ? C'est un puzzle à résoudre.</p>
+                            <p style="margin-top:6px"><strong>3.</strong> Enfin, vous <strong>rendrez votre verdict</strong> : qui est responsable, et quelles sanctions sont appropriées ?</p>
+                        </div>
+                    </div>
+
+                    <div class="module-section">
+                        <h3>⚠️ Les règles du jeu</h3>
+                        <div class="stat-box warning">
+                            <p>Vous disposez de <strong>8 minutes par affaire</strong>. Prenez le temps de bien lire les preuves, mais ne traînez pas trop !</p>
+                            <p style="margin-top:8px">Votre <strong>crédibilité</strong> est votre atout le plus précieux. Elle baisse si vos verdicts sont incohérents ou vos sanctions inadaptées. Si elle tombe à zéro, c'est l'échec.</p>
+                            <p style="margin-top:8px">Après les trois affaires, un <strong>quiz de 10 questions</strong> vous attend. Il faut obtenir au moins <strong>70 %</strong> pour valider le module et obtenir votre attestation.</p>
                         </div>
 
                         <div class="info-card">
-                            <h4>💡 Conseil de juré</h4>
-                            <p>Avant de trancher, cherchez systématiquement une preuve de <em>biais</em>,
-                            une preuve de <em>supervision</em> (ou d'absence), et une preuve de <em>recours</em>.</p>
+                            <h4>💡 Un conseil avant de commencer</h4>
+                            <p>Pour chaque affaire, posez-vous systématiquement trois questions : <strong>Y a-t-il un biais</strong> dans les données ou le système ? <strong>Y avait-il une supervision humaine</strong> digne de ce nom ? Et <strong>la personne concernée pouvait-elle contester</strong> la décision ? Ces trois questions vous guideront vers le bon verdict.</p>
                         </div>
                     </div>
 
                     <div class="module-section" style="text-align: center; padding-top: 20px;">
                         <p style="font-size: 1.2em; color: var(--neon-green); margin-bottom: 20px;">
-                            ⚖️ Briefing terminé. Vous êtes prêt(e) pour le tribunal.
+                            ⚖️ Briefing terminé. La séance est sur le point de commencer.
                         </p>
                     </div>
                 `
@@ -1530,10 +2369,10 @@
                 evidence: [
                     {id:"md_card", k:"Notice clinique", v:"Le fournisseur mentionne 'aide', mais l'interface affiche une recommandation 'fortement sûre' sans incertitude.", points:8, hint:"Design trompeur / surconfiance"},
                     {id:"md_perf", k:"Évaluation de performance", v:"Performance faible sur certains sous-groupes (âge/ethnie) dans les tests. Non communiqué aux utilisateurs.", points:10, hint:"Transparence + équité"},
-                    {id:"md_workflow", k:"Procédure d'usage", v:"Aucun protocole clair de second avis, ni de contrôle contradictoire. Formation minimale.", points:10, hint:"HITL insuffisant"},
+                    {id:"md_workflow", k:"Procédure d'usage", v:"Aucun protocole clair de second avis, ni de contrôle contradictoire. Formation minimale.", points:10, hint:"Supervision humaine insuffisante"},
                     {id:"md_log", k:"Journal de décision", v:"Le clinicien a validé en 12 secondes, sans consulter les alternatives. Pression de temps.", points:8, hint:"Organisation + responsabilité humaine"},
                 ],
-                puzzleCorrect: { "Concepteur": "Interface trompeuse", "Déployeur": "Procédure HITL insuffisante", "Décideur": "Absence de second avis" },
+                puzzleCorrect: { "Concepteur": "Interface trompeuse", "Déployeur": "Supervision humaine insuffisante", "Décideur": "Absence de second avis" },
                 verdict: {
                     responsibles: ["Déployeur", "Concepteur", "Décideur"],
                     sanctions: ["Retrait temporaire du système", "Audit externe", "Formation obligatoire", "Mise à jour interface + incertitudes"],
@@ -1561,6 +2400,40 @@
             }
         };
 
+        // ==================== CASE INTRO DATA ====================
+        const caseIntroData = {
+            NEXUS: {
+                icon: '💼',
+                bgClass: 'nexus-bg',
+                scene: 'Dans les serveurs de NEXUS Corp, une IA de recrutement filtre des milliers de CV chaque jour. Des candidates qualifiées sont systématiquement écartées. L\'entreprise parle d\'« optimisation »...',
+                stats: [
+                    { value: '2,847', label: 'Candidates écartées' },
+                    { value: 'Emploi', label: 'Secteur' },
+                    { value: 'Élevé', label: 'Niveau de risque' }
+                ]
+            },
+            MEDICA: {
+                icon: '🏥',
+                bgClass: 'medica-bg',
+                scene: 'À l\'hôpital Saint-Digital, un système d\'aide au diagnostic a recommandé un traitement inadapté. Le clinicien a suivi la recommandation en 12 secondes. Le patient en subit les conséquences...',
+                stats: [
+                    { value: '1', label: 'Patient lésé' },
+                    { value: 'Santé', label: 'Secteur' },
+                    { value: 'Critique', label: 'Niveau de risque' }
+                ]
+            },
+            CREDITIA: {
+                icon: '🏦',
+                bgClass: 'creditia-bg',
+                scene: 'Dans les algorithmes de CREDITIA Bank, un score automatisé refuse silencieusement des prêts immobiliers. Une candidate perd son logement sans explication. La banque invoque le secret commercial...',
+                stats: [
+                    { value: '12,340', label: 'Refus automatisés' },
+                    { value: 'Finances', label: 'Secteur' },
+                    { value: 'Élevé', label: 'Niveau de risque' }
+                ]
+            }
+        };
+
         // ==================== UTILITIES ====================
         function $(id) { return document.getElementById(id); }
         function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
@@ -1570,6 +2443,289 @@
             t.classList.add('show');
             clearTimeout(t._timer);
             t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ==================== SOUND SYSTEM ====================
+        const SFX = {
+            ctx: null,
+            enabled: true,
+            init() {
+                if (this.ctx) return;
+                try {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) { this.enabled = false; }
+            },
+            play(type) {
+                if (!this.enabled || !this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                switch (type) {
+                    case 'click':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(800, now);
+                        osc.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+                        gain.gain.setValueAtTime(0.08, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                        break;
+                    case 'collect':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(500, now);
+                        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                        osc.start(now);
+                        osc.stop(now + 0.2);
+                        break;
+                    case 'success':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(600, now);
+                        osc.frequency.setValueAtTime(800, now + 0.1);
+                        osc.frequency.setValueAtTime(1000, now + 0.2);
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                        break;
+                    case 'error':
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(300, now);
+                        osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                        gain.gain.setValueAtTime(0.06, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                        osc.start(now);
+                        osc.stop(now + 0.25);
+                        break;
+                    case 'gavel':
+                        osc.type = 'square';
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+                        gain.gain.setValueAtTime(0.15, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                        osc.start(now);
+                        osc.stop(now + 0.4);
+                        break;
+                    case 'transition':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(200, now);
+                        osc.frequency.exponentialRampToValueAtTime(600, now + 0.5);
+                        gain.gain.setValueAtTime(0.06, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                        osc.start(now);
+                        osc.stop(now + 0.6);
+                        break;
+                    case 'ambient':
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(80, now);
+                        gain.gain.setValueAtTime(0.015, now);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + 3);
+                        osc.start(now);
+                        osc.stop(now + 3);
+                        break;
+                }
+            }
+        };
+
+        function toggleSound() {
+            SFX.enabled = !SFX.enabled;
+            const btn = $('soundToggle');
+            btn.textContent = SFX.enabled ? '🔊' : '🔇';
+            btn.classList.toggle('muted', !SFX.enabled);
+        }
+
+        // ==================== PARTICLE SYSTEM ====================
+        function initParticles() {
+            const container = $('particles-bg');
+            if (!container) return;
+            for (let i = 0; i < 35; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                p.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+                p.style.width = (Math.random() * 2 + 1) + 'px';
+                p.style.height = p.style.width;
+                if (Math.random() > 0.6) {
+                    p.style.background = 'var(--neon-green)';
+                    p.style.boxShadow = '0 0 6px var(--neon-green)';
+                }
+                container.appendChild(p);
+            }
+        }
+
+        // ==================== FLOATING SCORE POPUP ====================
+        function floatScore(amount, ev) {
+            const el = document.createElement('div');
+            el.className = 'score-float ' + (amount >= 0 ? 'positive' : 'negative');
+            el.textContent = (amount >= 0 ? '+' : '') + amount + ' pts';
+
+            let x = window.innerWidth / 2, y = window.innerHeight / 2;
+            if (ev) {
+                const rect = ev.target ? ev.target.getBoundingClientRect() : null;
+                if (rect) { x = rect.left + rect.width / 2; y = rect.top; }
+            }
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2000);
+        }
+
+        // ==================== EVIDENCE MODAL ====================
+        function showEvidenceModal(evidence, isNew) {
+            SFX.init();
+            SFX.play(isNew ? 'collect' : 'click');
+
+            $('evidenceModalTitle').innerHTML = `📄 ${evidence.k}`;
+            $('evidenceModalBody').innerHTML = `
+                <div class="evidence-modal-image">
+                    <div class="evidence-type-badge">Pièce à conviction</div>
+                </div>
+                <div class="evidence-document">
+                    <p>${evidence.v}</p>
+                </div>
+                <div class="evidence-hint-box">
+                    <strong>🔍 Indice clé :</strong>
+                    <p>${evidence.hint}</p>
+                </div>
+            `;
+            $('evidenceModalFooter').innerHTML = isNew
+                ? `<span class="evidence-points-badge">+${evidence.points} points</span><span class="muted" style="font-size:0.85em">Preuve ajoutée au dossier</span>`
+                : `<span class="muted" style="font-size:0.85em">Preuve déjà collectée</span><span class="tag">Dans le dossier ✓</span>`;
+
+            $('evidenceModalOverlay').classList.add('active');
+        }
+
+        function closeEvidenceModal() {
+            $('evidenceModalOverlay').classList.remove('active');
+        }
+
+        // Close modal on background click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'evidenceModalOverlay') closeEvidenceModal();
+        });
+
+        // ==================== PHASE TRANSITION ====================
+        function showPhaseTransition(icon, title, subtitle) {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('transition');
+                $('phaseIcon').textContent = icon;
+                $('phaseTitle').textContent = title;
+                $('phaseSubtitle').textContent = subtitle;
+                $('phaseTransition').classList.add('active');
+                setTimeout(() => {
+                    $('phaseTransition').classList.remove('active');
+                    resolve();
+                }, 1800);
+            });
+        }
+
+        // ==================== CASE INTRO CINEMATIC ====================
+        function showCaseIntro(code) {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('transition');
+                const c = cases[code];
+                const intro = caseIntroData[code];
+                const overlay = $('caseIntroOverlay');
+                const bg = $('caseIntroBg');
+                const content = $('caseIntroContent');
+
+                bg.className = 'case-intro-bg ' + intro.bgClass;
+
+                // Scene-specific SVG diagrams
+                const sceneSVGs = {
+                    NEXUS: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="80" height="90" rx="4" fill="none" stroke="#6040c0" stroke-width="1"/><rect x="15" y="25" width="70" height="50" rx="2" fill="#1a0a40" stroke="#8060e0" stroke-width="0.5"/><text x="50" y="55" text-anchor="middle" fill="#8060e0" font-size="8" font-family="monospace">CV SCAN</text><line x1="20" y1="80" x2="80" y2="80" stroke="#6040c0" stroke-width="0.5"/><line x1="20" y1="86" x2="65" y2="86" stroke="#6040c0" stroke-width="0.5"/><line x1="20" y1="92" x2="75" y2="92" stroke="#6040c0" stroke-width="0.5"/><rect x="120" y="10" width="160" height="100" rx="6" fill="none" stroke="#00d4ff" stroke-width="1"/><text x="200" y="35" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="monospace">NEXUS AI ENGINE</text><rect x="135" y="45" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="45" width="95" height="8" rx="2" fill="#6040c0" opacity="0.6"/><rect x="135" y="58" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="58" width="40" height="8" rx="2" fill="#ff0080" opacity="0.6"/><rect x="135" y="71" width="130" height="8" rx="2" fill="#0a1530"/><rect x="135" y="71" width="110" height="8" rx="2" fill="#6040c0" opacity="0.6"/><text x="200" y="95" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">⚠ BIAS DETECTED</text><rect x="310" y="20" width="80" height="90" rx="4" fill="none" stroke="#00ff88" stroke-width="1"/><text x="350" y="45" text-anchor="middle" fill="#00ff88" font-size="7" font-family="monospace">ACCEPTED</text><circle cx="350" cy="65" r="12" fill="none" stroke="#00ff88" stroke-width="1"/><text x="350" y="68" text-anchor="middle" fill="#00ff88" font-size="8">✓</text><text x="350" y="95" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">REJECTED</text><line x1="90" y1="60" x2="120" y2="60" stroke="#6040c0" stroke-width="1" stroke-dasharray="4"/><line x1="280" y1="60" x2="310" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`,
+                    MEDICA: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="15" width="100" height="95" rx="6" fill="none" stroke="#00b896" stroke-width="1"/><text x="60" y="35" text-anchor="middle" fill="#00b896" font-size="8" font-family="monospace">PATIENT DATA</text><line x1="20" y1="42" x2="100" y2="42" stroke="#00b896" stroke-width="0.5" opacity="0.5"/><polyline points="20,70 35,55 50,75 65,50 80,65 95,45" fill="none" stroke="#00b896" stroke-width="1.5"/><text x="60" y="95" text-anchor="middle" fill="#00b896" font-size="7" font-family="monospace">ECG / VITALS</text><rect x="140" y="10" width="120" height="100" rx="8" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="200" y="32" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">MEDICA AI</text><line x1="155" y1="40" x2="245" y2="40" stroke="#00d4ff" stroke-width="0.5"/><text x="200" y="58" text-anchor="middle" fill="#fff" font-size="8" font-family="monospace">DIAGNOSTIC:</text><rect x="155" y="64" width="90" height="12" rx="3" fill="#ff0080" opacity="0.3" stroke="#ff0080" stroke-width="0.5"/><text x="200" y="73" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">CONFIANCE: 97%</text><text x="200" y="95" text-anchor="middle" fill="#ff8c00" font-size="7" font-family="monospace">⚠ INTERFACE TROMPEUSE</text><rect x="290" y="25" width="100" height="80" rx="6" fill="none" stroke="#ff6060" stroke-width="1"/><text x="340" y="52" text-anchor="middle" fill="#ff6060" font-size="20">⏱</text><text x="340" y="75" text-anchor="middle" fill="#ff6060" font-size="14" font-family="monospace">12s</text><text x="340" y="95" text-anchor="middle" fill="#ff6060" font-size="6" font-family="monospace">TEMPS DE VALIDATION</text><line x1="110" y1="60" x2="140" y2="60" stroke="#00b896" stroke-width="1" stroke-dasharray="4"/><line x1="260" y1="60" x2="290" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`,
+                    CREDITIA: `<svg viewBox="0 0 400 120" style="width:100%;max-width:500px;margin-bottom:20px;opacity:0.45" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="20" width="90" height="85" rx="5" fill="none" stroke="#c89600" stroke-width="1"/><text x="55" y="40" text-anchor="middle" fill="#c89600" font-size="8" font-family="monospace">DEMANDE</text><text x="55" y="60" text-anchor="middle" fill="#c89600" font-size="16">🏠</text><text x="55" y="78" text-anchor="middle" fill="#c89600" font-size="7" font-family="monospace">PRÊT IMMOBILIER</text><line x1="20" y1="84" x2="90" y2="84" stroke="#c89600" stroke-width="0.5" opacity="0.5"/><text x="55" y="98" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">DOSSIER #12340</text><rect x="130" y="10" width="140" height="100" rx="6" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="200" y="30" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">SCORING ENGINE</text><line x1="145" y1="38" x2="255" y2="38" stroke="#00d4ff" stroke-width="0.5"/><rect x="145" y="45" width="110" height="10" rx="2" fill="#0a1530"/><rect x="145" y="45" width="35" height="10" rx="2" fill="#ff0080" opacity="0.6"/><text x="200" y="53" text-anchor="middle" fill="#ff0080" font-size="6" font-family="monospace">SCORE: 380/900</text><text x="200" y="75" text-anchor="middle" fill="#ff0080" font-size="10" font-family="monospace">REFUSÉ</text><text x="200" y="92" text-anchor="middle" fill="#ff8c00" font-size="6" font-family="monospace">PROXY VARIABLES DÉTECTÉES</text><text x="200" y="102" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">Aucune explication fournie</text><rect x="300" y="25" width="90" height="80" rx="5" fill="none" stroke="#ff0080" stroke-width="1"/><text x="345" y="55" text-anchor="middle" fill="#ff0080" font-size="20">🚫</text><text x="345" y="75" text-anchor="middle" fill="#ff0080" font-size="7" font-family="monospace">PAS DE RECOURS</text><text x="345" y="95" text-anchor="middle" fill="#8899aa" font-size="6" font-family="monospace">Formulaire auto.</text><line x1="100" y1="60" x2="130" y2="60" stroke="#c89600" stroke-width="1" stroke-dasharray="4"/><line x1="270" y1="60" x2="300" y2="60" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4"/></svg>`
+                };
+
+                content.innerHTML = `
+                    <div class="case-intro-icon">${intro.icon}</div>
+                    <div class="case-intro-code">Dossier ${code}</div>
+                    <div class="case-intro-title">${c.title.split('—')[1] || c.title}</div>
+                    ${sceneSVGs[code] || ''}
+                    <div class="case-intro-scene">${intro.scene}</div>
+                    <div class="case-intro-stats">
+                        ${intro.stats.map(s => `
+                            <div class="case-intro-stat">
+                                <div class="stat-value">${s.value}</div>
+                                <div class="stat-label">${s.label}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="case-intro-enter-btn" id="caseIntroEnterBtn">▶ Ouvrir le dossier</button>
+                `;
+
+                overlay.classList.add('active');
+
+                $('caseIntroEnterBtn').addEventListener('click', () => {
+                    SFX.play('click');
+                    overlay.classList.remove('active');
+                    setTimeout(resolve, 400);
+                }, { once: true });
+            });
+        }
+
+        // ==================== GAVEL ANIMATION ====================
+        function showGavelAnimation() {
+            return new Promise(resolve => {
+                SFX.init();
+                SFX.play('gavel');
+                const overlay = $('gavelOverlay');
+                overlay.classList.add('active');
+
+                // Screen shake
+                document.body.classList.add('shake');
+                setTimeout(() => document.body.classList.remove('shake'), 500);
+
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    resolve();
+                }, 1800);
+            });
+        }
+
+        // ==================== TYPEWRITER EFFECT ====================
+        function typewriterDialogue(container, speaker, text, avatarSrc) {
+            return new Promise(resolve => {
+                const box = document.createElement('div');
+                box.className = 'dialogue-box';
+                box.innerHTML = `
+                    <div class="speaker">
+                        ${avatarSrc ? `<img class="speaker-avatar" src="${avatarSrc}" alt="${speaker}">` : ''}
+                        ${speaker}
+                    </div>
+                    <div class="dialogue-text"><span class="tw-cursor"></span></div>
+                `;
+                container.appendChild(box);
+
+                const textEl = box.querySelector('.dialogue-text');
+                const cursor = box.querySelector('.tw-cursor');
+                let i = 0;
+                const speed = 18;
+
+                function typeChar() {
+                    if (i < text.length) {
+                        textEl.insertBefore(document.createTextNode(text[i]), cursor);
+                        i++;
+                        setTimeout(typeChar, speed);
+                    } else {
+                        setTimeout(() => {
+                            cursor.remove();
+                            resolve();
+                        }, 400);
+                    }
+                }
+                typeChar();
+            });
         }
 
         // ==================== BRIEFING NAVIGATION ====================
@@ -1710,7 +2866,8 @@
         }
 
         // ==================== GAME FLOW ====================
-        function startGame() {
+        async function startGame() {
+            SFX.init();
             $('briefing-screen').classList.remove('active');
             $('game-container').classList.add('active');
             state.game.active = true;
@@ -1719,6 +2876,11 @@
             state.game.caseId = null;
             state.game.casePoints = 0;
             state.game.evidenceFound = new Set();
+
+            // Dramatic entry
+            await showPhaseTransition('⚖️', 'Le Tribunal', 'La séance est ouverte');
+            SFX.play('ambient');
+
             updateHUD();
             renderCaseSelection();
             renderDossierSide();
@@ -1822,10 +2984,7 @@
                     <h2 class="mono">Phase 1 — Ouverture du dossier</h2>
                     <span class="tag">Choisissez une affaire</span>
                 </div>
-                <div class="muted" style="line-height:1.5;margin-bottom:10px">
-                    Le greffier présente les dossiers. Vous devez juger <strong>3 affaires</strong>.
-                    Chaque affaire : <strong>8 minutes</strong>.
-                </div>
+                <div id="caseSelectionDialogue"></div>
 
                 <div class="case-grid">
                     ${renderCaseCard(cases.NEXUS)}
@@ -1854,6 +3013,15 @@
             state.game.evidenceFound = new Set();
             state.game.casePoints = 0;
             updateHUD();
+
+            // Typewriter for case selection
+            const caseDialogue = $('caseSelectionDialogue');
+            if (caseDialogue) {
+                const remaining = 3 - state.game.casesDone.size;
+                if (remaining > 0) {
+                    typewriterDialogue(caseDialogue, 'Greffier', `Le tribunal a ${remaining} affaire${remaining > 1 ? 's' : ''} à juger. Choisissez un dossier. Vous disposez de 8 minutes par affaire.`, 'images/clerk-avatar.png');
+                }
+            }
         }
 
         function renderCaseCard(c) {
@@ -1861,9 +3029,13 @@
             const badge = done ? `<span class="badge">Jugée ✓</span>` : `<span class="badge">À juger</span>`;
             const disabled = done ? 'style="opacity:.55; cursor:not-allowed;"' : '';
             const onclick = done ? '' : `onclick="selectCase('${c.code}')"`;
+            const intro = caseIntroData[c.code];
+            const sceneClass = c.code.toLowerCase();
             return `
                 <div class="case" ${onclick} ${disabled}>
                     ${badge}
+                    <div class="case-scene-gradient ${sceneClass}"></div>
+                    <span class="case-card-icon">${intro ? intro.icon : '📁'}</span>
                     <h3>${c.title}</h3>
                     <p>${c.teaser}</p>
                     <div class="hr"></div>
@@ -1875,12 +3047,26 @@
         function renderDossierSide() {
             const side = $('stageSide');
             const c = state.game.caseId ? cases[state.game.caseId] : null;
+            const phase = state.game.casePhase;
+            const phaseLabels = ['Sélection', 'Preuves', 'Puzzle', 'Verdict', 'Quiz'];
 
             const list = [...state.game.evidenceFound].map(id => {
                 const ev = c ? c.evidence.find(x => x.id === id) : null;
                 if (!ev) return "";
                 return `<div class="item"><strong>${ev.k}</strong><small>${ev.hint}</small></div>`;
             }).join('');
+
+            const statusBar = c ? `
+                <div style="margin: 8px 0 4px;">
+                    <div class="muted" style="font-size:0.75em;margin-bottom:4px">Progression : ${phaseLabels[phase] || '—'}</div>
+                    <div class="case-status-bar">
+                        <div class="case-status-step ${phase > 0 ? 'done' : phase === 0 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 1 ? 'done' : phase === 1 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 2 ? 'done' : phase === 2 ? 'current' : ''}"></div>
+                        <div class="case-status-step ${phase > 3 ? 'done' : phase === 3 ? 'current' : ''}"></div>
+                    </div>
+                </div>
+            ` : '';
 
             side.innerHTML = `
                 <div class="judge-avatar">
@@ -1895,6 +3081,9 @@
                     <h2 class="mono">Dossier du juré</h2>
                     <span class="tag">${c ? c.code : '—'}</span>
                 </div>
+
+                ${statusBar}
+
                 <div class="dossier">
                     <div class="item">
                         <strong>Statut</strong>
@@ -1910,40 +3099,52 @@
         }
 
         // ==================== EVIDENCE PHASE ====================
-        function selectCase(code) {
+        async function selectCase(code) {
             if (state.game.casesDone.has(code)) return;
+            SFX.init();
+            SFX.play('click');
+
+            // Show cinematic case intro
+            await showCaseIntro(code);
+
             state.game.caseId = code;
             state.game.casePhase = 1;
             state.game.evidenceFound = new Set();
             state.game.casePoints = 0;
+
+            // Phase transition
+            await showPhaseTransition('🔍', 'Examen des preuves', `Dossier ${code} — Accès aux archives autorisé`);
+
             startTimer();
             renderEvidencePhase();
             renderDossierSide();
-            toast(`Greffier : Dossier ${code} ouvert. Accès aux archives autorisé.`);
             updateHUD();
         }
 
         function renderEvidencePhase() {
             const c = cases[state.game.caseId];
-            $('stageMain').innerHTML = `
+            const main = $('stageMain');
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Phase 2 — Examen des preuves</h2>
                     <span class="tag">${c.code}</span>
                 </div>
 
-                <div class="callout">
-                    <strong>Greffier :</strong> ${c.clerkIntro}
-                </div>
+                <div id="clerkDialogueArea"></div>
 
                 <div class="muted" style="margin-top:10px">Cliquez sur les pièces à conviction pour les analyser.</div>
 
                 <div class="evidence-grid">
-                    ${c.evidence.map(e => `
-                        <div class="evidence" onclick="inspectEvidence('${e.id}')">
+                    ${c.evidence.map(e => {
+                        const collected = state.game.evidenceFound.has(e.id);
+                        return `
+                        <div class="evidence ${collected ? 'collected' : ''}" onclick="inspectEvidence('${e.id}', event)">
+                            <div class="evidence-icon-large">📄</div>
                             <div class="k">📄 ${e.k}</div>
                             <div class="v">${e.v}</div>
                         </div>
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
 
                 <div class="hr"></div>
@@ -1952,6 +3153,11 @@
                     <button class="btn" onclick="renderCaseSelection()"><span>←</span> Changer d'affaire</button>
                 </div>
             `;
+
+            // Typewriter dialogue for clerk
+            const dialogueArea = $('clerkDialogueArea');
+            typewriterDialogue(dialogueArea, 'Greffier', c.clerkIntro, 'images/clerk-avatar.png');
+
             updateToPuzzleBtn();
         }
 
@@ -1961,27 +3167,30 @@
             btn.disabled = state.game.evidenceFound.size < 3;
         }
 
-        function inspectEvidence(eid) {
+        function inspectEvidence(eid, ev) {
             const c = cases[state.game.caseId];
             const e = c.evidence.find(x => x.id === eid);
             if (!e) return;
 
-            if (!state.game.evidenceFound.has(eid)) {
+            const isNew = !state.game.evidenceFound.has(eid);
+            if (isNew) {
                 state.game.evidenceFound.add(eid);
                 state.game.casePoints += e.points;
-                toast(`+${e.points} pts • Indice : ${e.hint}`);
+                floatScore(e.points, ev);
                 renderDossierSide();
-            } else {
-                toast(`Indice déjà collecté : ${e.hint}`);
+                // Update the card to show collected state
+                renderEvidencePhase();
             }
+
+            showEvidenceModal(e, isNew);
             updateHUD();
             updateToPuzzleBtn();
         }
 
         // ==================== PUZZLE PHASE ====================
-        function goToPuzzle() {
+        async function goToPuzzle() {
             state.game.casePhase = 2;
-            toast("Greffier : Reconstituez maintenant la chaîne de responsabilité.");
+            await showPhaseTransition('🧩', 'Chaîne de responsabilité', 'Reconstituez les manquements de chaque acteur');
             renderPuzzlePhase();
         }
 
@@ -1994,9 +3203,10 @@
                     <h2 class="mono">Phase 3 — Chaîne de responsabilité</h2>
                     <span class="tag">${c.code}</span>
                 </div>
-                <div class="muted" style="line-height:1.5">
+                <div id="puzzleDialogueArea"></div>
+                <div class="muted" style="line-height:1.5;margin-top:8px">
                     Glissez-déposez les <strong>3 manquements</strong> sur le bon acteur.
-                    Vert = cohérent, rose = incohérent.
+                    <span style="color:var(--neon-green)">Vert</span> = cohérent, <span style="color:var(--neon-pink)">rose</span> = incohérent.
                 </div>
 
                 <div class="puzzle">
@@ -2030,6 +3240,12 @@
             `;
 
             wireDragDrop(c.puzzleCorrect);
+
+            // Typewriter instruction
+            const puzzleDialogue = $('puzzleDialogueArea');
+            if (puzzleDialogue) {
+                typewriterDialogue(puzzleDialogue, 'Greffier', 'Reconstituez la chaîne de responsabilité en associant chaque manquement à l\'acteur concerné.', 'images/clerk-avatar.png');
+            }
         }
 
         function resetPuzzle() {
@@ -2059,11 +3275,17 @@
                 drop.classList.add(ok ? 'good' : 'bad');
 
                 if (ok) {
+                    SFX.play('success');
                     toast(`✓ Cohérent : ${actor} ↔ ${key} (+6 pts)`);
                     state.game.casePoints += 6;
+                    floatScore(6);
                 } else {
+                    SFX.play('error');
                     toast(`✗ Incohérent : ${actor} ↔ ${key} (-crédibilité)`);
                     setCredibility(-6);
+                    floatScore(-6);
+                    document.body.classList.add('shake');
+                    setTimeout(() => document.body.classList.remove('shake'), 500);
                 }
                 updateHUD();
 
@@ -2122,16 +3344,17 @@
         }
 
         // ==================== VERDICT PHASE ====================
-        function goToVerdict() {
+        async function goToVerdict() {
             state.game.casePhase = 3;
-            toast("Greffier : Le tribunal attend votre décision.");
+            await showPhaseTransition('⚖️', 'Verdict', 'Le tribunal attend votre décision');
             renderVerdictPhase(false);
         }
 
         function renderVerdictPhase(fromTimeout) {
             const c = cases[state.game.caseId];
+            const main = $('stageMain');
 
-            $('stageMain').innerHTML = `
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Phase 4 — Verdict</h2>
                     <span class="tag">${c.code}</span>
@@ -2139,19 +3362,17 @@
 
                 ${fromTimeout ? `<div class="callout pink"><strong>Temps écoulé :</strong> verdict précipité → crédibilité fragile.</div><div class="hr"></div>` : ''}
 
-                <div class="muted" style="line-height:1.55">
-                    Sélectionnez le(s) responsable(s) et les sanctions adaptées.
-                </div>
+                <div id="verdictIntroDialogue"></div>
 
                 <div class="choices">
                     <div class="choice">
-                        <h4>Responsables principaux</h4>
+                        <h4>⚖️ Responsables principaux</h4>
                         ${["Concepteur", "Déployeur", "Décideur"].map(x => `
                             <label><input type="checkbox" name="resp" value="${x}"> <span>${x}</span></label>
                         `).join('')}
                     </div>
                     <div class="choice">
-                        <h4>Sanctions / mesures</h4>
+                        <h4>📋 Sanctions / mesures</h4>
                         ${[
                             "Amende proportionnée",
                             "Retrait temporaire du système",
@@ -2167,23 +3388,34 @@
                 </div>
 
                 <div class="hr"></div>
-                <button class="btn primary" onclick="submitVerdict()"><span>✅</span> Enregistrer le verdict</button>
+                <button class="btn primary" onclick="submitVerdict()"><span>🔨</span> Prononcer le verdict</button>
             `;
 
+            // Typewriter for judge instruction
+            const dialogueArea = $('verdictIntroDialogue');
+            typewriterDialogue(dialogueArea, 'Juge ARIA-7', 'Les preuves ont été examinées. Sélectionnez les responsables et les sanctions que vous jugez adaptées à cette affaire.', 'images/ai_judge_avatar.png');
+
             $('stageSide').innerHTML = `
+                <div class="judge-avatar">
+                    <img src="images/ai_judge_avatar.png" alt="Juge" onerror="this.style.display='none'">
+                    <div class="judge-info">
+                        <div class="judge-name">Juge ARIA-7</div>
+                        <div class="judge-role">Présidente du tribunal</div>
+                    </div>
+                </div>
                 <div class="stage-title">
                     <h2 class="mono">Conseiller juridique</h2>
                     <span class="tag">Aide</span>
                 </div>
                 <div class="dossier">
-                    <div class="item"><strong>À vérifier</strong><small>Impact élevé → supervision humaine réelle, transparence, recours, documentation.</small></div>
-                    <div class="item"><strong>Indices collectés</strong><small>${state.game.evidenceFound.size} preuve(s).</small></div>
-                    <div class="item"><strong>Attention</strong><small>Cocher "tout le monde responsable" sans justification = pénalité de crédibilité.</small></div>
+                    <div class="item"><strong>⚠️ À vérifier</strong><small>Impact élevé → supervision humaine réelle, transparence, recours, documentation.</small></div>
+                    <div class="item"><strong>🔍 Indices collectés</strong><small>${state.game.evidenceFound.size} preuve(s) dans le dossier.</small></div>
+                    <div class="item"><strong>🚨 Attention</strong><small>Cocher "tout le monde responsable" sans justification = pénalité de crédibilité.</small></div>
                 </div>
             `;
         }
 
-        function submitVerdict() {
+        async function submitVerdict() {
             const c = cases[state.game.caseId];
             const chosenResp = [...document.querySelectorAll('input[name="resp"]:checked')].map(x => x.value);
             const chosenSan = [...document.querySelectorAll('input[name="san"]:checked')].map(x => x.value);
@@ -2214,8 +3446,17 @@
             state.game.casesDone.add(c.code);
             state.game.totalPoints += Math.max(0, state.game.casePoints);
 
-            toast(`Greffier : Verdict enregistré • +${Math.max(0, pts)} pts`);
             stopTimer();
+
+            // Gavel animation
+            await showGavelAnimation();
+
+            if (pts > 0) {
+                SFX.play('success');
+                floatScore(pts);
+            } else {
+                SFX.play('error');
+            }
 
             // Build detailed breakdown
             const respRows = ["Concepteur", "Déployeur", "Décideur"].map(r => {
@@ -2242,35 +3483,46 @@
                 </tr>`;
             }).join('');
 
-            $('stageMain').innerHTML = `
+            const main = $('stageMain');
+            main.innerHTML = `
                 <div class="stage-title">
                     <h2 class="mono">Verdict enregistré</h2>
                     <span class="tag">${c.code}</span>
                 </div>
-                <div class="callout">
-                    <strong>Analyse attendue :</strong> ${c.verdict.rationale}
-                </div>
 
-                <div class="hr"></div>
-                <div class="muted" style="margin-bottom:6px"><strong>Détail — Responsables</strong></div>
-                <table class="verdict-table">
-                    <tr><th>Acteur</th><th>Attendu</th><th>Votre choix</th><th></th></tr>
-                    ${respRows}
-                </table>
+                <div id="verdictDialogueArea"></div>
 
-                <div class="muted" style="margin-bottom:6px;margin-top:12px"><strong>Détail — Sanctions</strong></div>
-                <table class="verdict-table">
-                    <tr><th>Mesure</th><th>Attendue</th><th>Votre choix</th><th></th></tr>
-                    ${sanRows}
-                </table>
+                <div class="verdict-reveal" id="verdictDetails">
+                    <div class="hr"></div>
+                    <div class="muted" style="margin-bottom:6px"><strong>Détail — Responsables</strong></div>
+                    <table class="verdict-table">
+                        <tr><th>Acteur</th><th>Attendu</th><th>Votre choix</th><th></th></tr>
+                        ${respRows}
+                    </table>
 
-                <div class="hr"></div>
-                <div class="muted"><strong>Score d'affaire :</strong> ${state.game.casePoints} pts • <strong>Crédibilité :</strong> ${state.game.credibility}/100</div>
-                <div class="hr"></div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                    <button class="btn primary" onclick="nextAfterCase()"><span>→</span> Continuer</button>
+                    <div class="muted" style="margin-bottom:6px;margin-top:12px"><strong>Détail — Sanctions</strong></div>
+                    <table class="verdict-table">
+                        <tr><th>Mesure</th><th>Attendue</th><th>Votre choix</th><th></th></tr>
+                        ${sanRows}
+                    </table>
+
+                    <div class="hr"></div>
+                    <div class="muted"><strong>Score d'affaire :</strong> ${state.game.casePoints} pts • <strong>Crédibilité :</strong> ${state.game.credibility}/100</div>
+                    <div class="hr"></div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn primary" onclick="nextAfterCase()"><span>→</span> Continuer</button>
+                    </div>
                 </div>
             `;
+
+            // Typewriter for verdict rationale, then reveal details
+            const dialogueArea = $('verdictDialogueArea');
+            await typewriterDialogue(dialogueArea, 'Juge ARIA-7', c.verdict.rationale, 'images/ai_judge_avatar.png');
+
+            // Dramatic reveal of details
+            setTimeout(() => {
+                $('verdictDetails').classList.add('visible');
+            }, 300);
 
             renderDossierSide();
             updateHUD();
@@ -2308,9 +3560,10 @@
         }
 
         // ==================== FINAL QUIZ ====================
-        function renderFinalQuiz() {
+        async function renderFinalQuiz() {
             state.game.casePhase = 4;
             stopTimer();
+            await showPhaseTransition('🧾', 'Quiz Final', 'Certification — 10 questions');
 
             $('stageMain').innerHTML = `
                 <div class="stage-title">
@@ -2332,7 +3585,7 @@
                 </div>
                 <div class="dossier">
                     <div class="item"><strong>AI Act</strong><small>Approche par niveaux de risque + obligations. Sanctions jusqu'à 35 M€ ou 7% CA.</small></div>
-                    <div class="item"><strong>HITL</strong><small>Humain compétent qui peut contester et renverser la recommandation.</small></div>
+                    <div class="item"><strong>Supervision humaine</strong><small>Un humain compétent doit pouvoir contester et corriger la décision de l'IA.</small></div>
                     <div class="item"><strong>RGPD (art. 22)</strong><small>Droit de ne pas être soumis à une décision fondée uniquement sur un traitement automatisé.</small></div>
                 </div>
             `;
@@ -2341,76 +3594,77 @@
         function quizHTML() {
             return `
                 <div class="q">
-                    <h4>Q1. Responsabilité humaine (QCM)</h4>
-                    <div class="muted">Quelle affirmation décrit le mieux la responsabilité humaine quand une IA est utilisée dans une décision à fort impact ?</div>
-                    <label><input type="radio" name="q1" value="a"> L'IA est entièrement responsable.</label>
-                    <label><input type="radio" name="q1" value="b"> L'humain qui définit l'objectif et valide la décision reste responsable.</label>
-                    <label><input type="radio" name="q1" value="c"> Le développeur est seul responsable.</label>
-                    <label><input type="radio" name="q1" value="d"> Aucun responsable n'est nécessaire.</label>
+                    <h4>Q1. Qui est responsable ?</h4>
+                    <div class="muted">Quand une IA est utilisée pour prendre une décision importante (embauche, prêt, diagnostic...), qui porte la responsabilité ?</div>
+                    <label><input type="radio" name="q1" value="a"> C'est l'IA qui est responsable, puisque c'est elle qui décide.</label>
+                    <label><input type="radio" name="q1" value="b"> Ce sont les humains qui ont conçu, déployé et validé la décision qui restent responsables.</label>
+                    <label><input type="radio" name="q1" value="c"> Seul le développeur qui a programmé l'IA est responsable.</label>
+                    <label><input type="radio" name="q1" value="d"> Personne n'est responsable, c'est juste une machine.</label>
                 </div>
                 <div class="q">
-                    <h4>Q2. Cas où la responsabilité est la plus difficile (QCM)</h4>
-                    <label><input type="radio" name="q2" value="a"> IA médicale recommandant un traitement sur données biaisées.</label>
-                    <label><input type="radio" name="q2" value="b"> IA de traduction avec erreur sans conséquence majeure.</label>
-                    <label><input type="radio" name="q2" value="c"> IA générant une image inattendue.</label>
-                    <label><input type="radio" name="q2" value="d"> IA d'astuces ménagères inutiles.</label>
+                    <h4>Q2. Quelle situation est la plus grave ?</h4>
+                    <div class="muted">Dans quel cas les conséquences d'une erreur de l'IA sont-elles les plus sérieuses ?</div>
+                    <label><input type="radio" name="q2" value="a"> Une IA médicale qui recommande un mauvais traitement à cause de données biaisées.</label>
+                    <label><input type="radio" name="q2" value="b"> Une IA de traduction qui fait une erreur sans conséquence grave.</label>
+                    <label><input type="radio" name="q2" value="c"> Une IA qui génère une image bizarre.</label>
+                    <label><input type="radio" name="q2" value="d"> Une IA de recettes de cuisine qui donne un mauvais conseil.</label>
                 </div>
                 <div class="q">
-                    <h4>Q3. AI Act & transparence (Vrai/Faux)</h4>
-                    <div class="muted">« Selon l'AI Act, toute décision prise par une IA doit être transparente pour l'utilisateur final. »</div>
+                    <h4>Q3. Vrai ou Faux ?</h4>
+                    <div class="muted">« D'après l'AI Act européen, toute décision prise par une IA doit être expliquée de manière transparente à la personne concernée. »</div>
                     <label><input type="radio" name="q3" value="v"> Vrai</label>
-                    <label><input type="radio" name="q3" value="f"> Faux</label>
+                    <label><input type="radio" name="q3" value="f"> Faux — l'AI Act impose la transparence surtout pour les IA à haut risque, pas pour toutes les IA.</label>
                 </div>
                 <div class="q">
-                    <h4>Q4. Mécanisme protecteur (QCM)</h4>
-                    <div class="muted">Quel mécanisme protège généralement l'utilisateur quand une IA influence une décision importante ?</div>
-                    <label><input type="radio" name="q4" value="a"> Immunité totale pour l'entreprise</label>
-                    <label><input type="radio" name="q4" value="b"> Obligation de human-in-the-loop</label>
-                    <label><input type="radio" name="q4" value="c"> Aucune responsabilité</label>
-                    <label><input type="radio" name="q4" value="d"> Audit aléatoire après 10 ans</label>
+                    <h4>Q4. Comment protéger les utilisateurs ?</h4>
+                    <div class="muted">Quand une IA influence une décision importante dans la vie de quelqu'un, quel mécanisme permet de protéger cette personne ?</div>
+                    <label><input type="radio" name="q4" value="a"> Donner une immunité totale à l'entreprise qui utilise l'IA.</label>
+                    <label><input type="radio" name="q4" value="b"> Imposer qu'un humain compétent supervise et puisse corriger la décision.</label>
+                    <label><input type="radio" name="q4" value="c"> Ne prévoir aucune responsabilité particulière.</label>
+                    <label><input type="radio" name="q4" value="d"> Faire un audit une seule fois, 10 ans plus tard.</label>
                 </div>
                 <div class="q">
-                    <h4>Q5. Éthique (cases à cocher)</h4>
-                    <div class="muted">Cochez toutes les responsabilités qui s'appliquent dans un cadre éthique :</div>
-                    <label><input type="checkbox" name="q5" value="a"> Transparence sur l'usage de l'IA</label>
-                    <label><input type="checkbox" name="q5" value="b"> Droit à une explication compréhensible</label>
-                    <label><input type="checkbox" name="q5" value="c"> Suppression automatique de toutes les données</label>
-                    <label><input type="checkbox" name="q5" value="d"> Intervention humaine si risque élevé</label>
+                    <h4>Q5. Les principes éthiques (plusieurs réponses possibles)</h4>
+                    <div class="muted">Parmi les propositions suivantes, lesquelles font partie des principes éthiques de l'IA ? Cochez toutes les bonnes réponses.</div>
+                    <label><input type="checkbox" name="q5" value="a"> Informer les gens quand une IA est utilisée pour prendre une décision les concernant.</label>
+                    <label><input type="checkbox" name="q5" value="b"> Pouvoir expliquer à une personne pourquoi l'IA a pris telle ou telle décision.</label>
+                    <label><input type="checkbox" name="q5" value="c"> Effacer automatiquement toutes les données, même celles qui sont utiles.</label>
+                    <label><input type="checkbox" name="q5" value="d"> Permettre à un humain d'intervenir quand l'IA prend une décision risquée.</label>
                 </div>
                 <div class="q">
-                    <h4>Q6. Responsabilité malgré usage non prévu (Vrai/Faux)</h4>
-                    <div class="muted">« Une entreprise peut être tenue responsable si un système IA cause un dommage, même si l'algorithme n'était pas prévu pour cette tâche. »</div>
-                    <label><input type="radio" name="q6" value="v"> Vrai</label>
+                    <h4>Q6. Vrai ou Faux ?</h4>
+                    <div class="muted">« Une entreprise peut être tenue responsable si son IA cause un dommage, même si l'IA a été utilisée d'une manière que l'entreprise n'avait pas prévue. »</div>
+                    <label><input type="radio" name="q6" value="v"> Vrai — l'entreprise a la responsabilité de prévoir les usages possibles et de protéger les utilisateurs.</label>
                     <label><input type="radio" name="q6" value="f"> Faux</label>
                 </div>
                 <div class="q">
-                    <h4>Q7. Diligence maximale (QCM)</h4>
-                    <div class="muted">Quelle situation nécessite le plus haut niveau de diligence humaine ?</div>
-                    <label><input type="radio" name="q7" value="a"> IA triant des livres</label>
-                    <label><input type="radio" name="q7" value="b"> IA recommandant des diagnostics médicaux</label>
-                    <label><input type="radio" name="q7" value="c"> IA générant des slogans</label>
-                    <label><input type="radio" name="q7" value="d"> IA triant des photos</label>
+                    <h4>Q7. Quand faut-il être le plus vigilant ?</h4>
+                    <div class="muted">Dans quelle situation la supervision humaine doit-elle être la plus rigoureuse ?</div>
+                    <label><input type="radio" name="q7" value="a"> Une IA qui classe des livres par genre littéraire.</label>
+                    <label><input type="radio" name="q7" value="b"> Une IA qui aide un médecin à poser un diagnostic.</label>
+                    <label><input type="radio" name="q7" value="c"> Une IA qui invente des slogans publicitaires.</label>
+                    <label><input type="radio" name="q7" value="d"> Une IA qui trie des photos de vacances.</label>
                 </div>
                 <div class="q">
-                    <h4>Q8. Question ouverte courte</h4>
-                    <div class="muted">Donnez deux raisons pour lesquelles l'éthique est importante dans les décisions assistées par IA (1–2 phrases).</div>
-                    <textarea id="q8" placeholder="Votre réponse…"></textarea>
+                    <h4>Q8. À vous de réfléchir</h4>
+                    <div class="muted">Expliquez en une ou deux phrases pourquoi il est important de respecter des principes éthiques quand on utilise l'IA pour prendre des décisions.</div>
+                    <textarea id="q8" placeholder="Écrivez votre réponse ici…"></textarea>
                 </div>
                 <div class="q">
-                    <h4>Q9. Cas pratique (QCM)</h4>
-                    <div class="muted">Une IA d'octroi de prêt rejette un dossier sans explication ; la candidate perd son logement. Quel problème est le plus probable ?</div>
-                    <label><input type="radio" name="q9" value="a"> L'IA avait suffisamment de données</label>
-                    <label><input type="radio" name="q9" value="b"> La transparence est insuffisante</label>
-                    <label><input type="radio" name="q9" value="c"> L'IA a été trop lente</label>
-                    <label><input type="radio" name="q9" value="d"> C'est forcément une erreur de code</label>
+                    <h4>Q9. Un cas concret</h4>
+                    <div class="muted">Une banque utilise une IA pour décider qui a droit à un prêt immobilier. L'IA refuse le dossier d'une cliente sans lui donner aucune explication. La cliente perd son logement. Quel est le problème principal ?</div>
+                    <label><input type="radio" name="q9" value="a"> L'IA avait suffisamment de données, donc la décision est forcément juste.</label>
+                    <label><input type="radio" name="q9" value="b"> Le manque de transparence : la cliente n'a reçu aucune explication et n'a pas pu contester.</label>
+                    <label><input type="radio" name="q9" value="c"> L'IA a pris trop de temps à répondre.</label>
+                    <label><input type="radio" name="q9" value="d"> C'est forcément un bug dans le code de l'IA.</label>
                 </div>
                 <div class="q">
-                    <h4>Q10. Obligations possibles (cases à cocher)</h4>
-                    <div class="muted">Cochez toutes les obligations potentielles pour une entreprise dans un cadre réglementaire IA :</div>
-                    <label><input type="checkbox" name="q10" value="a"> Documentation complète des jeux de données</label>
-                    <label><input type="checkbox" name="q10" value="b"> Suppression de toutes les données client sans exception</label>
-                    <label><input type="checkbox" name="q10" value="c"> Démontrer la supervision humaine dans les décisions à risque</label>
-                    <label><input type="checkbox" name="q10" value="d"> Ne tester que des modèles non documentés</label>
+                    <h4>Q10. Les obligations des entreprises (plusieurs réponses possibles)</h4>
+                    <div class="muted">Que doit faire une entreprise qui utilise une IA à haut risque, selon la réglementation ? Cochez toutes les bonnes réponses.</div>
+                    <label><input type="checkbox" name="q10" value="a"> Documenter précisément les données utilisées et le fonctionnement du système.</label>
+                    <label><input type="checkbox" name="q10" value="b"> Supprimer toutes les données de ses clients sans exception.</label>
+                    <label><input type="checkbox" name="q10" value="c"> Prouver qu'un humain supervise les décisions à risque.</label>
+                    <label><input type="checkbox" name="q10" value="d"> Utiliser uniquement des modèles non documentés pour plus de sécurité.</label>
                 </div>
             `;
         }
@@ -2448,7 +3702,7 @@
                 ["biais", "discrimination", "équité", "justice"],
                 ["transparence", "explication", "compréhensible"],
                 ["préjudice", "dommage", "sécurité"],
-                ["responsabilité", "supervision", "contrôle", "hitl"]
+                ["responsabilité", "supervision", "contrôle", "humain"]
             ];
             let hits = 0;
             kw.forEach(group => { if (group.some(w => ans8.includes(w))) hits++; });
@@ -2688,7 +3942,7 @@
                 <span class="skill">🔗 Chaîne de responsabilité</span>
                 <span class="skill">🇪🇺 AI Act</span>
                 <span class="skill">🤝 Éthique de l'IA</span>
-                <span class="skill">🧑‍⚖️ Human-in-the-loop</span>
+                <span class="skill">🧑‍⚖️ Supervision humaine</span>
                 <span class="skill">🧠 Analyse critique</span>
             </div>
         </div>
@@ -2729,6 +3983,15 @@
 
         // ==================== INIT ====================
         showLesson(0);
+        initParticles();
+
+        // Initialize sound on first user interaction
+        document.addEventListener('click', () => SFX.init(), { once: true });
+
+        // Ambient sound pulse every 30 seconds when game is active
+        setInterval(() => {
+            if (state.game.active && SFX.enabled) SFX.play('ambient');
+        }, 30000);
     </script>
 </body>
 </html>
