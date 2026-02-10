@@ -53,7 +53,7 @@ Former le grand public (notamment les jeunes et enseignants) aux enjeux de l'IA 
 12. **Impact environnemental** - Empreinte carbone de l'IA ✅ *Disponible*
 13. **Vie privée et données** - Protection des informations personnelles
 14. **IA et emploi** - Transformation du travail
-15. **Régulation et éthique** - Cadre légal et moral
+15. **Le Tribunal de l'IA** - Éthique, supervision humaine et responsabilité ✅ *Disponible*
 
 ---
 
@@ -65,12 +65,17 @@ formationia/
 ├── index.html                              # Page d'accueil
 ├── modules.html                            # Catalogue des modules
 ├── certification.html                      # Page certification (future)
-├── module-12-impact-environnemental.html   # Module 12 (référence)
+├── module-12-impact-environnemental.html   # Module 12 - Escape game environnement
+├── module15-le-tribunal-de-l-ia.html       # Module 15 - Tribunal de l'IA
 ├── images/
 │   ├── logo-profexpress.png
 │   ├── hero-ia.png
 │   ├── domain-*.png                        # Icônes des domaines
-│   ├── room-*.png                          # Arrière-plans escape game
+│   ├── room-*.png                          # Arrière-plans escape game (Module 12)
+│   ├── scene-*.png                         # Décors des affaires (Module 15)
+│   ├── tribunal-courtroom.png              # Salle d'audience (Module 15)
+│   ├── clerk-avatar.png                    # Avatar greffier (Module 15)
+│   ├── evidence-inspect.png                # Inspection preuves (Module 15)
 │   └── ...
 └── README.md
 ```
@@ -163,26 +168,13 @@ formationia/
 
 ---
 
-## Module 12 - Référence Technique
+## Module 12 - Impact Environnemental
 
 ### Spécifications
 - **Fichier** : `module-12-impact-environnemental.html`
 - **Lignes** : ~4400 (HTML + CSS + JS intégré)
 - **Type** : Escape Game immersif
 - **Durée** : 15-20 minutes
-
-### Structure interne
-```javascript
-// État du jeu
-const gameState = {
-    currentRoom: 'corridor',
-    inventory: [],
-    evidence: { energy: false, water: false, models: false, manufacturing: false, co2: false },
-    suspicion: 0,
-    timeRemaining: 900, // 15 minutes
-    // ...
-};
-```
 
 ### Fonctionnalités implémentées
 - [x] Écran titre avec contexte narratif
@@ -196,6 +188,51 @@ const gameState = {
 - [x] Système de dialogues/SMS
 - [x] Puzzles interactifs (calculs, associations)
 - [x] Quiz final de certification
+- [x] Génération d'attestation téléchargeable
+- [x] Bouton retour vers liste des modules
+
+---
+
+## Module 15 - Le Tribunal de l'IA
+
+### Spécifications
+- **Fichier** : `module15-le-tribunal-de-l-ia.html`
+- **Lignes** : ~4000 (HTML + CSS + JS intégré)
+- **Type** : Simulation de procès (tribunal)
+- **Durée** : 15-20 minutes
+- **Thème** : Éthique de l'IA, supervision humaine, responsabilité
+
+### Gameplay
+Le joueur incarne un **auditeur du tribunal numérique** chargé d'examiner 3 affaires où des systèmes d'IA ont causé des préjudices. Pour chaque affaire :
+
+1. **Introduction cinématique** - Contexte de l'affaire avec décors immersifs
+2. **Collecte de preuves** - Inspecter les pièces du dossier
+3. **Puzzle (drag & drop)** - Reconstituer la chaîne de responsabilités
+4. **Verdict** - Choisir qui est responsable (développeur, entreprise, superviseur…)
+
+Les 3 affaires :
+| Affaire | Sujet | IA en cause |
+|---------|-------|-------------|
+| **NEXUS** | Discrimination à l'embauche | IA de recrutement biaisée |
+| **MEDICA** | Erreur de diagnostic médical | IA de santé mal supervisée |
+| **CREDITIA** | Refus de prêt discriminatoire | IA bancaire opaque |
+
+### Fonctionnalités implémentées
+- [x] Écran titre avec contexte narratif
+- [x] 8 sections de briefing éducatif (textes adaptés collégiens)
+- [x] 3 affaires complètes avec scénarios réalistes
+- [x] Système de crédibilité (score de performance)
+- [x] Timer de 15 minutes
+- [x] Système de preuves avec modal d'inspection détaillé
+- [x] Puzzles drag & drop (reconstitution de responsabilités)
+- [x] Verdicts avec animation de marteau de juge
+- [x] Système de dialogues typewriter (greffier, juge ARIA-7)
+- [x] Cinématiques de transition entre phases
+- [x] Système audio (Web Audio API, 7 types de sons)
+- [x] Particules flottantes en arrière-plan
+- [x] Images Ideogram intégrées (décors, avatars, preuves)
+- [x] Effets holographiques sur les cartes de preuves
+- [x] Quiz final de 10 questions
 - [x] Génération d'attestation téléchargeable
 - [x] Bouton retour vers liste des modules
 
@@ -242,22 +279,23 @@ Chaque module génère une attestation HTML téléchargeable avec :
 
 ## Versioning
 
-### V1.0.0 (actuelle)
-- Branche Git : `v1-stable`
+### V1.1.0 (actuelle)
 - Contenu :
   - Page d'accueil (`index.html`)
   - Catalogue des modules (`modules.html`)
-  - Module 12 complet (escape game environnement)
+  - Module 12 complet (escape game - impact environnemental)
+  - Module 15 complet (tribunal - éthique et supervision humaine)
   - Charte graphique établie
   - Infrastructure de base
   - UX améliorée (boutons retour, SMS d'aide, validations)
+  - Images Ideogram intégrées (Module 15)
 
 ### Roadmap
-- V1.1 : Modules 1-4 (Fondations IA)
-- V1.2 : Modules 5-8 (Interaction Raisonnée)
-- V1.3 : Modules 9-11 (Limites et Esprit Critique)
-- V1.4 : Modules 13-15 (Enjeux Citoyens restants)
-- V2.0 : Page certification globale
+- Modules 1-4 : Fondations IA
+- Modules 5-8 : Interaction Raisonnée
+- Modules 9-11 : Limites et Esprit Critique
+- Modules 13-14 : Enjeux Citoyens restants
+- Page certification globale
 
 ---
 
