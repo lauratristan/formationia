@@ -20,7 +20,7 @@
             --danger: #ff4d4d;
             --warn: #ffcc00;
             --ok: #00ff88;
-            /* Couleur du domaine Interaction Raisonnée */
+            
             --domain-color: #4ecdc4;
         }
 
@@ -34,7 +34,7 @@
             height: 100vh;
         }
 
-        /* ==================== GRILLE DE FOND ==================== */
+        
         body::before {
             content: '';
             position: fixed;
@@ -47,7 +47,7 @@
             z-index: 0;
         }
 
-        /* ==================== ÉCRAN TITRE ==================== */
+        
         #title-screen {
             position: fixed;
             inset: 0;
@@ -64,7 +64,7 @@
         #title-screen::before { content: ''; position: absolute; inset: 0; background: rgba(10,14,23,0.7); z-index: -1; }
         #title-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        /* Logo flottant */
+        
         .title-logo {
             font-size: 4em;
             margin-bottom: 20px;
@@ -72,7 +72,7 @@
         }
         @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* Titre principal — gradient standard (vert → bleu → rose) */
+        
         .main-title {
             font-family: 'Space Mono', monospace;
             font-size: 2.8em;
@@ -88,7 +88,7 @@
             text-align: center;
         }
 
-        /* Sous-titre */
+        
         .subtitle {
             font-size: 1.3em;
             color: #8899aa;
@@ -97,7 +97,7 @@
             text-align: center;
         }
 
-        /* Texte intro */
+        
         .intro-text {
             max-width: 820px;
             text-align: center;
@@ -106,7 +106,7 @@
             color: #aabbcc;
         }
 
-        /* Bouton démarrer — couleur standard neon-green */
+        
         .start-btn {
             font-family: 'Space Mono', monospace;
             font-size: 1.1em;
@@ -136,7 +136,7 @@
             transform: scale(1.05);
         }
 
-        /* Lien retour — style module 2 */
+        
         .back-link-title {
             position: absolute;
             top: 20px; left: 20px;
@@ -155,7 +155,7 @@
         }
         .back-link-title:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #aabbcc; }
 
-        /* Lien retour sidebar briefing */
+        
         .back-link-sidebar {
             display: flex; align-items: center; gap: 10px;
             padding: 12px 15px; margin: 0 15px 20px;
@@ -194,7 +194,7 @@
             transform: scale(1.05);
         }
 
-        /* Particules déco */
+        
         .particles {
             position: absolute;
             inset: 0;
@@ -223,7 +223,7 @@
         .blink { animation: blink 1.2s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* ==================== BRIEFING ==================== */
+        
         #briefing-screen {
             position: fixed;
             inset: 0;
@@ -326,7 +326,7 @@
         .briefing-btn.primary:hover { background: var(--neon-blue); border-color: var(--neon-blue); }
         .briefing-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ---- Contenu cours ---- */
+        
         .section-title {
             font-family: 'Space Mono', monospace;
             font-size: 1.6em;
@@ -435,7 +435,7 @@
 
         p.body-text { line-height: 1.75; color: #cfe9ff; margin: 14px 0; }
 
-        /* ==================== ÉCRAN JEU ==================== */
+        
         #game-screen {
             display: none;
             position: fixed;
@@ -446,7 +446,7 @@
         }
         #game-screen.active { display: flex; }
 
-        /* Grille de fond dans le jeu */
+        
         #game-screen::before {
             content: '';
             position: absolute;
@@ -458,7 +458,7 @@
             pointer-events: none;
         }
 
-        /* Header jeu */
+        
         .game-header {
             background: rgba(5,12,24,0.95);
             border-bottom: 1px solid rgba(78,205,196,0.3);
@@ -500,7 +500,7 @@
         .room-dot.active { border-color: var(--domain-color); background: rgba(78,205,196,0.3); }
         .room-dot.done { border-color: var(--neon-green); background: var(--neon-green); }
 
-        /* Corps du jeu */
+        
         .game-body {
             display: flex;
             flex: 1;
@@ -510,7 +510,7 @@
             background: rgba(5, 12, 24, 0.60);
         }
 
-        /* Zone principale challenge */
+        
         .game-challenge-area {
             flex: 1;
             padding: 30px 40px;
@@ -522,7 +522,7 @@
         .game-challenge-area::-webkit-scrollbar { width: 5px; }
         .game-challenge-area::-webkit-scrollbar-thumb { background: rgba(78,205,196,0.3); border-radius: 3px; }
 
-        /* Terminal ARIA */
+        
         .aria-terminal {
             width: 320px;
             background: rgba(0,0,0,0.6);
@@ -562,7 +562,7 @@
         .t-success { color: var(--neon-green); }
         .t-system { color: var(--muted); }
 
-        /* Titre de salle */
+        
         .room-title {
             font-family: 'Space Mono', monospace;
             font-size: 1.4em;
@@ -573,7 +573,7 @@
         }
         .room-subtitle { color: var(--muted); font-size: 0.92em; line-height: 1.6; }
 
-        /* Carte scénario */
+        
         .scenario-card {
             background: rgba(10,25,45,0.8);
             border: 1px solid rgba(78,205,196,0.25);
@@ -590,7 +590,7 @@
             margin-bottom: 8px;
         }
 
-        /* Bouton valider */
+        
         .validate-btn {
             font-family: 'Space Mono', monospace;
             padding: 13px 35px;
@@ -613,7 +613,7 @@
         }
         .validate-btn.success-btn:hover { box-shadow: 0 0 20px rgba(0,255,136,0.3); }
 
-        /* Résultat feedback */
+        
         .result-panel {
             border-radius: 8px;
             padding: 18px 22px;
@@ -626,7 +626,7 @@
         .result-panel.ok { border-color: rgba(0,255,136,0.4); background: rgba(0,255,136,0.06); color: #cce8ff; }
         .result-panel.bad { border-color: rgba(255,77,77,0.4); background: rgba(255,77,77,0.06); color: #cce8ff; }
 
-        /* ---- SALLE 1 : Tri de consignes ---- */
+        
         .sort-prompts {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -680,7 +680,7 @@
         .btn-precis { border-color: rgba(0,255,136,0.4); color: #80ffb0; }
         .btn-precis:hover, .btn-precis.active { background: rgba(0,255,136,0.12); border-color: var(--neon-green); }
 
-        /* ---- SALLE 2 : Détecteur RCTF ---- */
+        
         .rctf-checker {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -708,7 +708,7 @@
         .rctf-check-label { font-size: 0.92em; }
         .rctf-check-letter { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 1.1em; color: var(--domain-color); }
 
-        /* ---- SALLE 3 : Réparation ---- */
+        
         .options-grid {
             display: flex;
             flex-direction: column;
@@ -739,7 +739,7 @@
         }
         .option-text { font-size: 0.9em; line-height: 1.65; }
 
-        /* ---- SALLE 4 : Classement ---- */
+        
         .rank-list {
             display: flex;
             flex-direction: column;
@@ -779,7 +779,7 @@
         .rank-badge.b2 { border-color: var(--muted); color: var(--muted); }
         .rank-badge.b3 { border-color: rgba(139,90,43,0.8); color: #c8a000; }
 
-        /* ---- SALLE 5 : Constructeur ---- */
+        
         .builder-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -842,7 +842,7 @@
         .prompt-preview .part-t { color: var(--neon-green); }
         .prompt-preview .part-f { color: var(--warn); }
 
-        /* Animation porte déverrouillée */
+        
         .door-unlock {
             text-align: center;
             padding: 25px;
@@ -871,7 +871,7 @@
         }
         .next-room-btn:hover { background: rgba(0,255,136,0.1); box-shadow: 0 0 20px rgba(0,255,136,0.3); }
 
-        /* ==================== QUIZ ==================== */
+        
         #quiz-screen {
             display: none;
             position: fixed;
@@ -966,7 +966,7 @@
             font-size: 0.93em;
         }
 
-        /* Footer jeu */
+        
         .game-footer {
             background: rgba(5,12,24,0.95);
             border-top: 1px solid rgba(78,205,196,0.2);
@@ -987,7 +987,7 @@
         .game-footer a:hover { color: var(--domain-color); }
 
     
-    /* ==================== HARMONISATION TITRE (standardized) ==================== */
+    
     .domain-badge-std {
       display: inline-flex;
       align-items: center;
@@ -1068,7 +1068,7 @@
     }
 
 
-    /* ==================== COULEURS DOMAINE SIDEBAR ==================== */
+    
     .briefing-nav { border-right-color: rgba(78,205,196,0.2) !important; }
     .briefing-nav::-webkit-scrollbar-thumb { background: rgba(78,205,196,0.3) !important; border-radius: 2px; }
     .back-link-sidebar {
@@ -1089,7 +1089,7 @@
     .nav-number, .nav-num { background: rgba(78,205,196,0.2) !important; }
     .briefing-nav-item.active .nav-number, .briefing-nav-item.active .nav-num { background: rgba(78,205,196,0.4) !important; }
 
-    /* === STANDARDISATION FORMAT SIDEBAR === */
+    
     .briefing-nav { width: 280px !important; }
     .briefing-nav-item { padding: 15px 20px !important; font-size: 0.9em !important; }
     .nav-icon { font-size: 1.2em !important; width: 28px !important; text-align: center !important; flex-shrink: 0 !important; }
@@ -1099,7 +1099,7 @@
 
     .briefing-progress{display:none!important}
     .briefing-footer{display:none!important}
-    /* ──── NAVIGATION MOBILE ──────────────────────── */
+    
     .mobile-nav-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(5,10,25,0.97);border-bottom:1px solid rgba(0,229,204,0.2);position:sticky;top:0;z-index:50;flex-shrink:0}
     .mobile-hamburger{background:transparent;border:1px solid var(--domain-color,#00e5cc);color:var(--domain-color,#00e5cc);font-size:1.2em;width:36px;height:36px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .mobile-nav-title{flex:1;font-size:0.78em;color:#8899aa;font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
@@ -1116,7 +1116,7 @@
       .briefing-content{max-width:100%!important;margin:0!important;padding:16px 16px 60px!important}
     }
 
-    /* Titres de leçons — harmonisation */
+    
     .module-title, .lesson-title, .section-title {
       font-size: 1.8em !important;
       font-weight: 700 !important;
@@ -1129,29 +1129,29 @@
 </head>
 <body>
 
-    <!-- Particules de fond -->
+    
     <div class="particles" id="particles"></div>
 
-    <!-- ==================== ÉCRAN TITRE ==================== -->
+    
     <div id="title-screen">
 
-        <!-- Retour — style module 2 -->
+        
         <a href="modules.html" class="back-link-title" title="Retour à la liste des modules">
             <span>←</span><span>Tous les modules</span>
         </a>
 
     <div class="domain-badge-std" style="background:#4ecdc422;border:1px solid #4ecdc488;color:#4ecdc4;">Interaction Raisonnée - Module n°05</div>
 
-        <!-- Logo flottant -->
+        
         <div class="title-logo">🤖</div>
 
-        <!-- Titre principal -->
+        
         <h1 class="main-title">L'art de la consigne</h1>
     <p class="mission-label">ARIA-7 LAB</p>
 
-        <!-- Sous-titre -->
+        
 
-        <!-- Texte d'intro -->
+        
         <p class="intro-text">
             <strong>ARIA Lab — Protocole de réactivation.</strong> L'IA du laboratoire, ARIA-7, a été corrompue par une cyberattaque.
             Ses réponses sont devenues incohérentes — les anciens opérateurs formulaient leurs consignes n'importe comment.
@@ -1159,11 +1159,11 @@
             l'art des consignes efficaces. Seules des instructions bien structurées peuvent débloquer chaque porte.
         </p>
 
-        <!-- Bouton démarrer -->
+        
     <div class="activity-badge-std">🔐 Escape Room</div>
         <button class="start-btn" onclick="startMission()">Accéder au Lab</button>
 
-        <!-- Logo Prof Express — style module 2 -->
+        
         <div class="profexpress-std">
       <p>Une formation proposée par</p>
       <a href="https://www.profexpress.com" target="_blank" rel="noopener">
@@ -1172,10 +1172,10 @@
     </div>
     </div>
 
-    <!-- ==================== BRIEFING ==================== -->
+    
     <div id="briefing-screen">
 
-        <!-- En-tête -->
+        
         <div class="briefing-header">
             <div class="briefing-title">Module n°5 — L'art de la consigne</div>
             <div class="briefing-progress">
@@ -1186,10 +1186,10 @@
             </div>
         </div>
 
-        <!-- Corps -->
+        
         <div class="briefing-body">
 
-            <!-- Nav latérale — style module 2 avec emoji icons -->
+            
             <nav class="briefing-nav" id="briefing-nav">
                 <a href="modules.html" class="back-link-sidebar" title="Retour à la liste des modules">
           <span class="back-arrow">←</span><span>Tous les modules</span>
@@ -1227,17 +1227,17 @@
         </div>
       </nav>
 
-            <!-- Contenu -->
+            
             <div class="briefing-content" id="briefing-content"></div>
         </div>
 
-        <!-- Pied de page -->
+        
     </div>
 
-    <!-- ==================== JEU : ESCAPE ROOM ==================== -->
+    
     <div id="game-screen">
 
-        <!-- Header -->
+        
         <div class="game-header">
             <div class="game-title">
                 🔐 <span id="room-name-header">ARIA LAB</span>
@@ -1252,15 +1252,15 @@
             </div>
         </div>
 
-        <!-- Corps -->
+        
         <div class="game-body">
 
-            <!-- Zone challenge -->
+            
             <div class="game-challenge-area" id="game-challenge-area">
-                <!-- Rendu dynamiquement par JS -->
+                
             </div>
 
-            <!-- Terminal ARIA -->
+            
             <div class="aria-terminal">
                 <div class="terminal-header">
                     <span class="terminal-dot td-red"></span>
@@ -1277,7 +1277,7 @@
             </div>
         </div>
 
-        <!-- Footer -->
+        
         <div class="game-footer">
             <button onclick="showBriefing()" style="font-family:'Space Mono',monospace;padding:8px 20px;border:1px solid rgba(78,205,196,0.3);background:transparent;color:var(--muted);cursor:pointer;font-size:0.8em;">
                 ← Retour au dossier
@@ -1287,7 +1287,7 @@
     </div>
 
     <script>
-        // ==================== PARTICULES ====================
+        
         (function spawnParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 25; i++) {
@@ -1301,7 +1301,7 @@
             }
         })();
 
-        // ==================== CONTENU BRIEFING ====================
+        
         const briefingSections = [
             {
                 title: '01 — La consigne, c\'est quoi ?',
@@ -1684,7 +1684,7 @@
             }
         ];
 
-        // ==================== NAVIGATION BRIEFING ====================
+        
         let currentSection = 0;
         const TOTAL_SECTIONS = briefingSections.length;
 
@@ -1698,14 +1698,14 @@
             `;
             content.scrollTop = 0;
 
-            // Bouton lancement jeu sur dernière section
+            
             if (index === TOTAL_SECTIONS - 1) {
                 content.innerHTML += `<div style="text-align:center;margin-top:35px;padding-bottom:20px">
                     <button onclick="startGame()" style="font-family:inherit;padding:16px 50px;background:rgba(78,205,196,0.15);border:2px solid #4ecdc4;color:#4ecdc4;cursor:pointer;font-size:1.1em;letter-spacing:2px;text-transform:uppercase;border-radius:6px;transition:all .3s" onmouseover="this.style.background='rgba(78,205,196,0.3)'" onmouseout="this.style.background='rgba(78,205,196,0.15)'">🔐 Entrer dans le Lab</button>
                 </div>`;
             }
 
-            // Nav items
+            
             document.querySelectorAll('.briefing-nav-item').forEach((item, i) => {
                 item.classList.remove('active');
                 if (i < index) item.classList.add('completed');
@@ -1713,12 +1713,12 @@
             });
             document.querySelector(`[data-section="${index}"]`).classList.add('active');
 
-            // Progress
+            
             const pct = ((index + 1) / TOTAL_SECTIONS * 100).toFixed(1);
             document.getElementById('progress-fill').style.width = pct + '%';
             document.getElementById('progress-label').textContent = `Dossier ${index + 1}/${TOTAL_SECTIONS}`;
 
-            // Buttons
+            
             { const _pb = document.getElementById('prev-btn'); if (_pb) _pb.disabled = (index === 0); }
             const nextBtn = document.getElementById('next-btn');
             if (index === TOTAL_SECTIONS - 1) {
@@ -1749,7 +1749,7 @@
             renderSection(currentSection);
         }
 
-        // ==================== TRANSITIONS ====================
+        
         function startMission() {
             const titleScreen = document.getElementById('title-screen');
             const briefingScreen = document.getElementById('briefing-screen');
@@ -1773,11 +1773,11 @@
             renderRoom(1);
         }
 
-        // ==================== ÉTAT DU JEU ====================
+        
         let currentRoom = 1;
         let roomsCompleted = [];
 
-        // ==================== TERMINAL ARIA ====================
+        
         function terminalLog(lines) {
             const body = document.getElementById('aria-terminal-body');
             body.innerHTML = '';
@@ -1816,7 +1816,7 @@
 
         function renderRoom(n) {
             updateRoomHeader(n);
-            // Image de fond selon la salle
+            
             const gs = document.getElementById('game-screen');
             gs.style.backgroundImage = `url('${roomBg[n]}'), linear-gradient(135deg,#050c18 0%,#0c1c2e 50%,#050c18 100%)`;
             gs.style.backgroundSize = 'cover, cover';
@@ -1835,7 +1835,7 @@
             }
         }
 
-        // ==================== SALLE 1 : TRI DE CONSIGNES ====================
+        
         const room1Data = [
             { id: 0, text: "Écris-moi quelque chose.", correct: 'vague' },
             { id: 1, text: "Tu es un journaliste sportif. Rédige un article de 200 mots sur la finale de la Coupe du Monde 2022 pour un public adolescent.", correct: 'precis' },
@@ -1934,7 +1934,7 @@
             }
         }
 
-        // ==================== SALLE 2 : DÉTECTEUR RCTF ====================
+        
         const room2Prompts = [
             {
                 text: `"Tu es un avocat spécialisé en droit du travail. Mon employeur refuse de me rembourser mes frais de déplacement alors que mon contrat le prévoit. Rédige un email formel de réclamation en 3 paragraphes, ton assertif mais professionnel."`,
@@ -2036,7 +2036,7 @@
             }
         }
 
-        // ==================== SALLE 3 : RÉPARATION ====================
+        
         function renderRoom3() {
             const area = document.getElementById('game-challenge-area');
             area.innerHTML = `
@@ -2132,7 +2132,7 @@
             }
         }
 
-        // ==================== SALLE 4 : OPTIMISATION ====================
+        
         const room4Prompts = [
             { id: 0, rank: 3, label: 'PROMPT ALPHA', text: '"Écris quelque chose sur le changement climatique pour des jeunes."' },
             { id: 1, rank: 2, label: 'PROMPT BETA', text: '"Explique le changement climatique de façon claire et engageante pour des lycéens de Terminale."' },
@@ -2202,7 +2202,7 @@
                 showResultPanel('r4-result', false, 'Classe les 3 prompts avant de valider.', null);
                 return;
             }
-            // Correct order: Gamma(id=2) #1, Beta(id=1) #2, Alpha(id=0) #3
+            
             const correct = room4Rankings[2] === 1 && room4Rankings[1] === 2 && room4Rankings[0] === 3;
             if (correct) {
                 terminalLog([
@@ -2225,7 +2225,7 @@
             }
         }
 
-        // ==================== SALLE 5 : CONSTRUCTION ====================
+        
         const room5Options = {
             R: [
                 { val: '', label: '— Choisir un rôle —' },
@@ -2341,7 +2341,7 @@
             if (f) html += `<span class="part-f">[F] ${f}</span>`;
             preview.innerHTML = html || '<em style="color:var(--muted)">Prompt vide...</em>';
 
-            // Terminal dynamique
+            
             terminalLog([
                 ['t-system', '// Analyse du prompt en cours...'],
                 ['', ''],
@@ -2394,7 +2394,7 @@
             }
         }
 
-        // ==================== HELPERS ====================
+        
         function showResultPanel(id, ok, msg, extra) {
             const el = document.getElementById(id);
             el.className = 'result-panel show ' + (ok ? 'ok' : 'bad');
@@ -2420,14 +2420,14 @@
             `;
         }
 
-        // ==================== TRANSITION VERS QUIZ ====================
+        
         function startQuiz() {
             document.getElementById('game-screen').classList.remove('active');
             document.getElementById('quiz-screen').classList.add('active');
             initQuiz();
         }
 
-        // ==================== QUIZ ====================
+        
         const quizQuestions = [
             {
                 question: "Dans la méthode RCTF, que représente la lettre 'R' ?",
@@ -2604,7 +2604,7 @@
             }
         }
 
-        // ==================== ATTESTATION ====================
+        
         function showAttestation() {
             const name = prompt('Entrez votre prénom et nom pour l\'attestation :');
             if (!name || !name.trim()) return;
@@ -2764,7 +2764,7 @@
             URL.revokeObjectURL(url);
         }
     
-/* ==================== ATTESTATION SIDEBAR ==================== */
+
 let certFinalPct05 = 0;
 function unlockCertificate(pct) {
   certFinalPct05 = pct || certFinalPct05;
@@ -2777,7 +2777,7 @@ function unlockCertificate(pct) {
   }
 }
 function showCertificateInFolder() {
-  // Show the quiz screen which has the attestation section
+  
   const qs = document.getElementById('quiz-screen');
   if (qs) { qs.style.display = 'flex'; }
   const bs = document.getElementById('briefing-screen');
@@ -2785,13 +2785,13 @@ function showCertificateInFolder() {
 }
 </script>
 
-    <!-- ==================== QUIZ ==================== -->
+    
     <div id="quiz-screen">
-        <!-- Contenu rendu dynamiquement par initQuiz() / renderQuizQuestion() -->
+        
     </div>
 
 <script>
-/* ──── NAVIGATION MOBILE ──────────────────────────────── */
+
 (function(){
   var bar=document.createElement('div');
   bar.id='mobile-nav-bar';bar.className='mobile-nav-bar';
@@ -2819,7 +2819,7 @@ function closeMobileNav(){
   if(o)o.classList.remove('visible');
   document.body.style.overflow='';
 }
-/* Fermeture auto du tiroir au clic sur un item nav (mobile) */
+
 document.addEventListener('click',function(e){
   if(window.innerWidth>768)return;
   if(e.target.closest('.briefing-nav-item')&&document.querySelector('.briefing-nav.nav-open'))

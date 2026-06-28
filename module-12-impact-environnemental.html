@@ -32,7 +32,7 @@
             height: 100vh;
         }
 
-        /* ==================== ÉCRAN TITRE ==================== */
+        
         #title-screen {
             position: fixed;
             inset: 0;
@@ -134,8 +134,8 @@
             color: #aabbcc;
         }
 
-        /* ==================== LIENS RETOUR MODULES ==================== */
-        /* Lien dans la sidebar du briefing */
+        
+        
         .back-link-sidebar {
             display: flex;
             align-items: center;
@@ -168,7 +168,7 @@
             transform: translateX(-3px);
         }
 
-        /* Bouton dans la top-bar du jeu */
+        
         .back-btn-game {
             display: flex;
             align-items: center;
@@ -192,7 +192,7 @@
             border-color: var(--neon-blue);
         }
 
-        /* Lien discret sur l'écran titre */
+        
         .back-link-title {
             position: absolute;
             top: 20px;
@@ -219,7 +219,7 @@
             color: #aabbcc;
         }
 
-        /* ==================== GAME CONTAINER ==================== */
+        
         #game-container {
             display: none;
             width: 100vw;
@@ -231,7 +231,7 @@
             display: block;
         }
 
-        /* ==================== ROOM VIEW ==================== */
+        
         #room-view {
             width: 100%;
             height: 100%;
@@ -247,7 +247,7 @@
             transition: opacity 0.5s;
         }
 
-        /* Salles avec images de fond */
+        
         .room-corridor {
             background: url('images/room-corridor.png') center/cover no-repeat;
         }
@@ -268,7 +268,7 @@
             background: url('images/room-office.png') center/cover no-repeat;
         }
 
-        /* Overlay sombre sur les salles pour meilleure lisibilité */
+        
         .room-background::after {
             content: '';
             position: absolute;
@@ -277,7 +277,7 @@
             pointer-events: none;
         }
 
-        /* ==================== OBJETS INTERACTIFS ==================== */
+        
         .interactive-object {
             position: absolute;
             cursor: pointer;
@@ -294,7 +294,7 @@
             pointer-events: none;
         }
 
-        /* Serveurs */
+        
         .server-rack {
             width: 80px;
             height: 200px;
@@ -334,7 +334,7 @@
             50% { opacity: 0.3; }
         }
 
-        /* Terminal */
+        
         .terminal-object {
             width: 120px;
             height: 100px;
@@ -373,7 +373,7 @@
             border-radius: 3px;
         }
 
-        /* Document */
+        
         .document-object {
             width: 60px;
             height: 80px;
@@ -408,7 +408,7 @@
             padding: 2px 5px;
         }
 
-        /* Tuyaux de refroidissement */
+        
         .cooling-pipe {
             width: 40px;
             height: 300px;
@@ -437,7 +437,7 @@
             100% { background-position: 0 100px; }
         }
 
-        /* Compteur énergie */
+        
         .energy-meter {
             width: 100px;
             height: 120px;
@@ -483,7 +483,7 @@
             50% { opacity: 1; }
         }
 
-        /* ==================== UI OVERLAY ==================== */
+        
         #ui-overlay {
             position: fixed;
             inset: 0;
@@ -495,7 +495,7 @@
             pointer-events: auto;
         }
 
-        /* Top bar */
+        
         .top-bar {
             position: absolute;
             top: 0;
@@ -523,7 +523,7 @@
             font-size: 1.5em;
         }
 
-        /* Timer & alertes */
+        
         .alert-level {
             display: flex;
             align-items: center;
@@ -552,7 +552,7 @@
             border-radius: 5px;
         }
 
-        /* Inventaire */
+        
         .inventory-bar {
             position: absolute;
             bottom: 20px;
@@ -590,7 +590,7 @@
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
 
-        /* Navigation arrows */
+        
         .nav-arrow {
             position: absolute;
             width: 60px;
@@ -624,7 +624,7 @@
         .nav-arrow.up:hover { transform: translateX(-50%) scale(1.1); }
         .nav-arrow.down:hover { transform: translateX(-50%) scale(1.1); }
 
-        /* ==================== MODALS & PUZZLES ==================== */
+        
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -682,7 +682,7 @@
             gap: 15px;
         }
 
-        /* ==================== PUZZLE: CONNEXION ==================== */
+        
         .connection-puzzle {
             display: flex;
             justify-content: space-between;
@@ -728,7 +728,7 @@
             background: rgba(255, 0, 128, 0.2);
         }
 
-        /* ==================== PUZZLE: CODE ==================== */
+        
         .code-puzzle {
             text-align: center;
         }
@@ -769,7 +769,7 @@
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
 
-        /* ==================== PUZZLE: SLIDER/GAUGE ==================== */
+        
         .gauge-puzzle {
             margin: 30px 0;
         }
@@ -818,7 +818,7 @@
             color: var(--neon-blue);
         }
 
-        /* ==================== PUZZLE: TRI ==================== */
+        
         .sorting-puzzle {
             display: flex;
             flex-direction: column;
@@ -881,7 +881,7 @@
             border-radius: 15px;
         }
 
-        /* ==================== DOCUMENT VIEWER ==================== */
+        
         .document-viewer {
             background: #f5f5f0;
             color: #1a1a1a;
@@ -922,7 +922,7 @@
             padding: 0 30px;
         }
 
-        /* ==================== INFO DÉCOUVERTE ==================== */
+        
         .discovery-panel {
             background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
             border-left: 4px solid var(--neon-green);
@@ -948,7 +948,7 @@
             margin: 15px 0;
         }
 
-        /* ==================== DIALOGUE SYSTEM ==================== */
+        
         .dialogue-box {
             position: fixed;
             bottom: 100px;
@@ -1012,7 +1012,7 @@
             transform: translateX(10px);
         }
 
-        /* ==================== PROGRESS TRACKER ==================== */
+        
         .evidence-tracker {
             position: absolute;
             top: 80px;
@@ -1066,7 +1066,7 @@
             border-color: var(--neon-green);
         }
 
-        /* ==================== FINAL SCREEN ==================== */
+        
         .final-report {
             text-align: center;
             padding: 40px;
@@ -1104,7 +1104,7 @@
             margin-top: 10px;
         }
 
-        /* ==================== ANIMATIONS ==================== */
+        
         .shake {
             animation: shake 0.5s ease-in-out;
         }
@@ -1124,7 +1124,7 @@
             50% { box-shadow: 0 0 0 15px rgba(0, 255, 136, 0); }
         }
 
-        /* ==================== MINI-MAP ==================== */
+        
         .mini-map {
             position: absolute;
             bottom: 100px;
@@ -1166,7 +1166,7 @@
             background: rgba(0, 212, 255, 0.2);
         }
 
-        /* ==================== BOUTON TÉLÉPHONE ==================== */
+        
         .phone-button {
             position: fixed;
             bottom: 130px;
@@ -1213,7 +1213,7 @@
             50% { transform: scale(1.2); }
         }
 
-        /* ==================== SECTION BRIEFING/COURS ==================== */
+        
         #briefing-screen {
             position: fixed;
             inset: 0;
@@ -1517,7 +1517,7 @@
             background: rgba(0, 255, 136, 0.05);
         }
 
-        /* ==================== TERMINAL INTERACTIF ==================== */
+        
         .terminal-puzzle {
             background: #0a0a0a;
             border: 2px solid var(--neon-green);
@@ -1583,7 +1583,7 @@
             51%, 100% { opacity: 0; }
         }
 
-        /* ==================== SMS NOTIFICATIONS ==================== */
+        
         .sms-notification {
             position: fixed;
             bottom: 100px;
@@ -1669,7 +1669,7 @@
             color: var(--neon-pink);
         }
 
-        /* ==================== RESPONSIVE ==================== */
+        
         @media (max-width: 768px) {
             .main-title { font-size: 1.8em; }
             .inventory-bar {
@@ -1687,7 +1687,7 @@
                 margin: 10px;
                 padding: 20px;
             }
-            /* Briefing responsive */
+            
             .briefing-nav { display: none; }
             .briefing-content {
                 padding: 20px;
@@ -1705,7 +1705,7 @@
             #skip-btn { display: none; }
         }
     
-    /* ==================== HARMONISATION TITRE (standardized) ==================== */
+    
     .domain-badge-std {
       display: inline-flex;
       align-items: center;
@@ -1786,7 +1786,7 @@
     }
 
 
-    /* ==================== COULEURS DOMAINE SIDEBAR ==================== */
+    
     .briefing-nav { border-right-color: rgba(149,225,211,0.2) !important; }
     .briefing-nav::-webkit-scrollbar-thumb { background: rgba(149,225,211,0.3) !important; border-radius: 2px; }
     .back-link-sidebar {
@@ -1807,7 +1807,7 @@
     .nav-number { background: rgba(149,225,211,0.2) !important; }
     .briefing-nav-item.active .nav-number { background: rgba(149,225,211,0.4) !important; }
 
-    /* === STANDARDISATION FORMAT SIDEBAR === */
+    
     .briefing-nav { width: 280px !important; }
     .briefing-nav-item { padding: 15px 20px !important; font-size: 0.9em !important; }
     .nav-icon { font-size: 1.2em !important; width: 28px !important; text-align: center !important; flex-shrink: 0 !important; }
@@ -1817,7 +1817,7 @@
 
     .briefing-progress{display:none!important}
     .briefing-footer{display:none!important}
-    /* ──── NAVIGATION MOBILE ──────────────────────── */
+    
     .mobile-nav-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(5,10,25,0.97);border-bottom:1px solid rgba(0,229,204,0.2);position:sticky;top:0;z-index:50;flex-shrink:0}
     .mobile-hamburger{background:transparent;border:1px solid var(--domain-color,#00e5cc);color:var(--domain-color,#00e5cc);font-size:1.2em;width:36px;height:36px;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .mobile-nav-title{flex:1;font-size:0.78em;color:#8899aa;font-family:'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 6px}
@@ -1833,7 +1833,7 @@
       .briefing-content{max-width:100%!important;margin:0!important;padding:16px 16px 60px!important}
     }
 
-    /* Titres de leçons — harmonisation */
+    
     .module-title, .lesson-title, .section-title {
       font-size: 1.8em !important;
       font-weight: 700 !important;
@@ -1845,9 +1845,9 @@
     </style>
 </head>
 <body>
-    <!-- ÉCRAN TITRE -->
+    
     <div id="title-screen">
-        <!-- Lien retour discret -->
+        
         <a href="modules.html" class="back-link-title" title="Retour à la liste des modules">
             <span>←</span>
             <span>Tous les modules</span>
@@ -1877,7 +1877,7 @@
     </div>
     </div>
 
-    <!-- SECTION BRIEFING / COURS -->
+    
     <div id="briefing-screen">
         <div class="briefing-header">
             <div class="briefing-title">Module n°12 — IA et environnement</div>
@@ -1891,7 +1891,7 @@
 
         <div class="briefing-body">
             <nav class="briefing-nav">
-                <!-- Lien retour vers modules -->
+                
                 <a href="modules.html" class="back-link-sidebar" title="Retour à la liste des modules">
           <span class="back-arrow">←</span><span>Tous les modules</span>
         </a>
@@ -1948,26 +1948,26 @@
             </nav>
 
             <div class="briefing-content" id="briefing-content">
-                <!-- Contenu des modules chargé dynamiquement -->
+                
             </div>
         </div>
 
     </div>
 
-    <!-- CONTAINER PRINCIPAL -->
+    
     <div id="game-container">
-        <!-- Vue de la salle -->
+        
         <div id="room-view">
             <div class="room-background" id="room-bg"></div>
             <div id="room-objects"></div>
         </div>
 
-        <!-- UI OVERLAY -->
+        
         <div id="ui-overlay">
-            <!-- Barre supérieure -->
+            
             <div class="top-bar">
                 <div style="display: flex; align-items: center;">
-                    <!-- Bouton retour dossier -->
+                    
                     <button onclick="returnToDossier()" class="back-btn-game" title="Retour au dossier" style="cursor:pointer;border:none;">
                         <span>←</span>
                         <span>Retour au dossier</span>
@@ -1988,28 +1988,28 @@
                 </div>
             </div>
 
-            <!-- Tracker de preuves -->
+            
             <div class="evidence-tracker">
                 <div class="tracker-title">📋 PREUVES À COLLECTER</div>
                 <div class="evidence-list" id="evidence-list">
-                    <!-- Dynamique -->
+                    
                 </div>
             </div>
 
-            <!-- Mini-map -->
+            
             <div class="mini-map">
                 <div class="mini-map-grid" id="mini-map">
-                    <!-- Dynamique -->
+                    
                 </div>
             </div>
 
-            <!-- Bouton Téléphone -->
+            
             <div class="phone-button" onclick="openPhone()">
                 📱
                 <span class="phone-indicator" id="phone-indicator" style="display:none;">0</span>
             </div>
 
-            <!-- Inventaire -->
+            
             <div class="inventory-bar">
                 <div class="inventory-slot" id="inv-0"></div>
                 <div class="inventory-slot" id="inv-1"></div>
@@ -2018,11 +2018,11 @@
                 <div class="inventory-slot" id="inv-4"></div>
             </div>
 
-            <!-- Flèches de navigation -->
+            
             <div id="nav-arrows"></div>
         </div>
 
-        <!-- Dialogue -->
+        
         <div class="dialogue-box" id="dialogue-box">
             <div class="dialogue-speaker" id="dialogue-speaker"></div>
             <div class="dialogue-text" id="dialogue-text"></div>
@@ -2030,7 +2030,7 @@
         </div>
     </div>
 
-    <!-- MODAL POUR PUZZLES -->
+    
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal-content" id="modal-content">
             <button class="modal-close" onclick="closeModal()">✕</button>
@@ -2039,37 +2039,37 @@
     </div>
 
     <script>
-        // ==================== CONFIGURATION DU JEU ====================
+        
         const gameConfig = {
-            timeLimit: 900, // 15 minutes en secondes
+            timeLimit: 900, 
             maxSuspicion: 100
         };
 
-        // État du jeu
+        
         const gameState = {
             currentRoom: 'corridor',
             inventory: [],
             evidence: {
-                energy: false,      // Consommation électrique
-                water: false,       // Consommation d'eau
-                models: false,      // Différence entre modèles
-                manufacturing: false, // Impact fabrication
-                co2: false          // Émissions CO2
+                energy: false,      
+                water: false,       
+                models: false,      
+                manufacturing: false, 
+                co2: false          
             },
             visitedRooms: ['corridor'],
             suspicion: 0,
             timeLeft: gameConfig.timeLimit,
             puzzlesSolved: {},
             dialogueState: {},
-            gameEnded: false       // Flag pour éviter les appels multiples
+            gameEnded: false       
         };
 
-        // ==================== SYSTÈME DE BRIEFING ====================
+        
         let currentLesson = 0;
         const completedLessons = new Set();
 
         const briefingLessons = [
-            // Cours 1: Introduction
+            
             {
                 title: "🎬 Introduction : La Révolution de l'IA Générative",
                 content: `
@@ -2103,7 +2103,7 @@
                     </div>
                 `
             },
-            // Cours 2: Data Centers
+            
             {
                 title: "🏢 Les Centres de Données : Cœur Énergétique de l'IA",
                 content: `
@@ -2160,7 +2160,7 @@
                     </div>
                 `
             },
-            // Cours 3: Empreinte Carbone
+            
             {
                 title: "🌡️ L'Empreinte Carbone du Numérique",
                 content: `
@@ -2213,7 +2213,7 @@
                     </div>
                 `
             },
-            // Cours 4: Ressources en Eau
+            
             {
                 title: "💧 L'Impact sur les Ressources en Eau",
                 content: `
@@ -2266,7 +2266,7 @@
                     </div>
                 `
             },
-            // Cours 5: Ressources Naturelles
+            
             {
                 title: "⛏️ L'Extraction des Ressources Naturelles",
                 content: `
@@ -2309,7 +2309,7 @@
                     </div>
                 `
             },
-            // Cours 6: Déchets Électroniques
+            
             {
                 title: "🗑️ Les Déchets Électroniques",
                 content: `
@@ -2358,7 +2358,7 @@
                     </div>
                 `
             },
-            // Cours 7: Fondamentaux et usages de l'intelligence artificielle
+            
             {
                 title: "🌱 Pistes pour une IA Plus Responsable",
                 content: `
@@ -2412,7 +2412,7 @@
                     </div>
                 `
             },
-            // Cours 8: Mission Briefing
+            
             {
                 title: "🎯 Briefing de Mission : Infiltration NovaTech",
                 content: `
@@ -2489,21 +2489,21 @@
             showLesson(0);
         }
 
-        // Retour au dossier depuis l'écran de jeu
+        
         function returnToDossier() {
             document.getElementById('game-container').style.display = 'none';
             document.getElementById('briefing-screen').classList.add('active');
             showCertificateInFolder();
         }
 
-        // Variable pour suivre si le quiz est réussi (session courante uniquement)
+        
         let certificateUnlocked = false;
         let finalScore = 0;
 
-        // Afficher l'attestation dans le dossier
+        
         function showCertificateInFolder() {
             if (!certificateUnlocked) {
-                // Attestation verrouillée
+                
                 document.getElementById('briefing-content').innerHTML = `
                     <h2 class="module-title" style="color:var(--neon-pink);">🔒 Attestation de réussite</h2>
                     <div class="module-section" style="text-align:center;padding:40px 20px;">
@@ -2529,7 +2529,7 @@
                     </div>
                 `;
             } else {
-                // Attestation débloquée
+                
                 document.getElementById('briefing-content').innerHTML = `
                     <h2 class="module-title" style="color:var(--neon-green);">🎓 Attestation de réussite</h2>
                     <div class="module-section" style="text-align:center;padding:40px 20px;">
@@ -2564,12 +2564,12 @@
             }
         }
 
-        // Débloquer l'attestation dans le dossier
+        
         function unlockCertificate(score) {
             certificateUnlocked = true;
             finalScore = score;
 
-            // Mettre à jour l'apparence du bouton dans la nav
+            
             const navItem = document.getElementById('certificate-nav-item');
             if (navItem) {
                 navItem.style.opacity = '1';
@@ -2583,14 +2583,14 @@
             }
         }
 
-        // Télécharger l'attestation depuis le dossier
+        
         function downloadCertificateFromFolder() {
             const name = document.getElementById('certificate-name-folder').value.trim() || 'Participant';
             const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
             generateCertificateHTML(name, date, finalScore);
         }
 
-        // Aller au dossier pour récupérer l'attestation
+        
         function goToFolderCertificate() {
             closeModal();
             document.getElementById('game-container').style.display = 'none';
@@ -2602,13 +2602,13 @@
             currentLesson = index;
             const lesson = briefingLessons[index];
 
-            // Mettre à jour le contenu
+            
             document.getElementById('briefing-content').innerHTML = `
                 <h2 class="module-title">${lesson.title}</h2>
                 ${lesson.content}
             `;
 
-            // Mettre à jour la navigation
+            
             const navItems = document.querySelectorAll('.briefing-nav-item');
             navItems.forEach((item, i) => {
                 item.classList.remove('active');
@@ -2616,31 +2616,31 @@
                 if (completedLessons.has(i)) item.classList.add('completed');
             });
 
-            // Marquer le cours comme lu
+            
             completedLessons.add(index);
 
-            // Mettre à jour la barre de progression
+            
             const progress = ((completedLessons.size) / briefingLessons.length) * 100;
             document.getElementById('progress-fill').style.width = progress + '%';
 
-            // Afficher "Fichier X/7" pour les fichiers, "Mission" pour la mission
+            
             if (index < 7) {
                 document.getElementById('progress-text').textContent = `Fichier ${index + 1}/7`;
             } else {
                 document.getElementById('progress-text').textContent = `Mission`;
             }
 
-            // Gérer les boutons
+            
             { const _pb = document.getElementById('prev-btn'); if (_pb) _pb.disabled = index === 0; }
 
             const nextBtn = document.getElementById('next-btn');
             if (index === briefingLessons.length - 1) {
-                // Sur la page Mission : bouton pour lancer le jeu
+                
                 if (nextBtn) if (nextBtn) nextBtn.style.visibility = 'visible';
                 if (nextBtn) nextBtn.textContent = '🎮 Commencer la mission';
                 if (nextBtn) nextBtn.onclick = startGame;
             } else if (index === 6) {
-                // Dernier fichier : masquer le bouton suivant (accès mission via menu)
+                
                 if (nextBtn) if (nextBtn) nextBtn.style.visibility = 'hidden';
             } else {
                 if (nextBtn) if (nextBtn) nextBtn.style.visibility = 'visible';
@@ -2648,7 +2648,7 @@
                 if (nextBtn) nextBtn.onclick = nextLesson;
             }
 
-            // Scroll en haut
+            
             document.getElementById('briefing-content').scrollTop = 0;
         }
 
@@ -2668,7 +2668,7 @@
             showLesson(briefingLessons.length - 1);
         }
 
-        // Définition des salles
+        
         const rooms = {
             corridor: {
                 name: "Couloir Principal",
@@ -2830,7 +2830,7 @@
             }
         };
 
-        // Helpers pour créer des objets
+        
         function createServerRack() {
             let html = '<div class="server-rack">';
             for (let i = 0; i < 8; i++) {
@@ -2854,11 +2854,11 @@
             </div>`;
         }
 
-        // ==================== SYSTÈME SMS SOURCE ANONYME ====================
+        
         const receivedSMS = [];
         const sentSMSForRoom = new Set();
 
-        // SMS déclenchés par salle
+        
         const roomSMS = {
             corridor: {
                 condition: () => true,
@@ -2889,7 +2889,7 @@
                 setTimeout(() => showSMSNotification(sms.message), 1000);
             }
 
-            // Message quand toutes les preuves sont collectées
+            
             if (Object.values(gameState.evidence).every(v => v) && !sentSMSForRoom.has('escape')) {
                 sentSMSForRoom.add('escape');
                 setTimeout(() => {
@@ -2899,12 +2899,12 @@
         }
 
         function showSMSNotification(message) {
-            // Stocker le message
+            
             const time = new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
             receivedSMS.push({ message, time });
             updatePhoneIndicator();
 
-            // Supprimer le SMS précédent s'il existe
+            
             const existingSMS = document.querySelector('.sms-notification');
             if (existingSMS) existingSMS.remove();
 
@@ -2923,7 +2923,7 @@
             document.body.appendChild(smsEl);
             smsEl.querySelector('.sms-icon').style.animation = 'vibrate 0.3s ease-in-out 3';
 
-            // Auto-fermeture après 12 secondes
+            
             setTimeout(() => {
                 if (smsEl.parentElement) {
                     smsEl.style.animation = 'slideInSMS 0.3s ease-in reverse';
@@ -2968,7 +2968,7 @@
             `);
         }
 
-        // ==================== INITIALISATION ====================
+        
         function startGame() {
             document.getElementById('title-screen').classList.add('hidden');
             document.getElementById('briefing-screen').classList.remove('active');
@@ -2979,7 +2979,7 @@
             loadRoom('corridor');
             startTimer();
 
-            // Dialogue d'introduction
+            
             setTimeout(() => {
                 showDialogue({
                     speaker: "📱 Source Anonyme",
@@ -3014,9 +3014,9 @@
 
         function initializeMiniMap() {
             const map = document.getElementById('mini-map');
-            // Disposition correcte correspondant aux connexions réelles :
-            // Row 0: [corridor] [servers] [cooling]
-            // Row 1: [control]  [office]  [empty]
+            
+            
+            
             const icons = { corridor: '🚪', servers: '🖥️', cooling: '❄️', control: '🎛️', office: '📊' };
 
             map.innerHTML = '';
@@ -3043,7 +3043,7 @@
             });
         }
 
-        // ==================== GESTION DES SALLES ====================
+        
         function loadRoom(roomId) {
             const room = rooms[roomId];
             if (!room) return;
@@ -3053,24 +3053,24 @@
                 gameState.visitedRooms.push(roomId);
             }
 
-            // Update UI
+            
             document.getElementById('location-name').textContent = room.name;
             document.getElementById('location-icon').textContent = room.icon;
 
-            // Update background
+            
             const bg = document.getElementById('room-bg');
             bg.className = 'room-background ' + room.bgClass;
 
-            // Load objects
+            
             loadRoomObjects(room);
 
-            // Update navigation
+            
             updateNavigation(room);
 
-            // Update minimap
+            
             updateMiniMap();
 
-            // Déclencher SMS contextuel
+            
             checkRoomSMS(roomId);
         }
 
@@ -3091,7 +3091,7 @@
                     el.classList.add('pulse');
                 }
 
-                // Check if already collected
+                
                 if (obj.evidence && gameState.evidence[obj.evidence]) {
                     el.classList.add('collected');
                 }
@@ -3120,7 +3120,7 @@
             }
         }
 
-        // ==================== TIMER ====================
+        
         let timerInterval = null;
 
         function startTimer() {
@@ -3133,7 +3133,7 @@
                 const seconds = gameState.timeLeft % 60;
                 timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-                // Augmentation passive de la suspicion (+1% toutes les 20 secondes)
+                
                 if (gameState.timeLeft % 20 === 0 && gameState.timeLeft > 0) {
                     addSuspicion(1);
                 }
@@ -3156,7 +3156,7 @@
             }
         }
 
-        // ==================== SUSPICION ====================
+        
         function addSuspicion(amount) {
             gameState.suspicion = Math.min(100, gameState.suspicion + amount);
             document.getElementById('suspicion-fill').style.width = gameState.suspicion + '%';
@@ -3166,14 +3166,14 @@
             }
         }
 
-        // ==================== INTERACTIONS ====================
+        
         function handleObjectClick(obj) {
             if (obj.action && typeof window[obj.action] === 'function') {
                 window[obj.action](obj);
             }
         }
 
-        // ==================== DIALOGUES ====================
+        
         function showDialogue(config) {
             const box = document.getElementById('dialogue-box');
             document.getElementById('dialogue-speaker').innerHTML = config.speaker;
@@ -3197,7 +3197,7 @@
             document.getElementById('dialogue-box').classList.remove('active');
         }
 
-        // ==================== MODALS ====================
+        
         function showModal(content) {
             document.getElementById('modal-body').innerHTML = content;
             document.getElementById('modal-overlay').classList.add('active');
@@ -3207,13 +3207,13 @@
             document.getElementById('modal-overlay').classList.remove('active');
         }
 
-        // ==================== EVIDENCE ====================
+        
         function collectEvidence(type) {
             if (!gameState.evidence[type]) {
                 gameState.evidence[type] = true;
                 document.getElementById('evidence-' + type).classList.add('found');
 
-                // Ajouter à l'inventaire
+                
                 const emptySlot = document.querySelector('.inventory-slot:not(.filled)');
                 if (emptySlot) {
                     const icons = { energy: '⚡', water: '💧', models: '🤖', manufacturing: '🏭', co2: '🌍' };
@@ -3221,7 +3221,7 @@
                     emptySlot.classList.add('filled');
                 }
 
-                // Vérifier si toutes les preuves sont collectées
+                
                 if (Object.values(gameState.evidence).every(v => v)) {
                     setTimeout(() => {
                         showDialogue({
@@ -3236,9 +3236,9 @@
             }
         }
 
-        // ==================== ACTIONS SPÉCIFIQUES ====================
+        
 
-        // Poster énergie
+        
         function showPoster() {
             showModal(`
                 <div class="modal-title">⚡ Affiche "Économie d'Énergie"</div>
@@ -3251,7 +3251,7 @@
             `);
         }
 
-        // Planning des gardes
+        
         function showSchedule() {
             showModal(`
                 <div class="modal-title">📋 Planning de Sécurité</div>
@@ -3277,7 +3277,7 @@
             `);
         }
 
-        // Examiner serveur
+        
         function examineServer() {
             showDialogue({
                 speaker: "🔍 Observation",
@@ -3288,7 +3288,7 @@
             });
         }
 
-        // PUZZLE 1: Terminal Interactif - Consommation Électrique
+        
         let terminalState = {
             loggedIn: false,
             currentDir: '/home/guest',
@@ -3356,7 +3356,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             const command = parts[0];
             const args = parts.slice(1);
 
-            // Ajouter la commande à l'historique
+            
             output.innerHTML += `<span class="info">guest@novatech:~$</span> ${cmd}\n`;
 
             let result = '';
@@ -3485,7 +3485,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             if (container) container.scrollTop = container.scrollHeight;
         }
 
-        // Rapport énergie
+        
         function showEnergyReport() {
             showModal(`
                 <div class="modal-title">📄 Rapport Énergétique Confidentiel</div>
@@ -3505,7 +3505,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             `);
         }
 
-        // PUZZLE 2: Calculateur d'Impact Eau
+        
         function puzzleWater() {
             if (gameState.evidence.water) {
                 showAlreadyCollected('water');
@@ -3568,14 +3568,14 @@ Tapez <span class="info">help</span> pour la liste des commandes.
 
             document.getElementById('exchanges-value').textContent = exchanges + ' échanges';
 
-            // Calcul: ~10mL par échange
-            const convWater = exchanges * 10; // mL pour une conversation
-            const monthlyWater = (convWater * 10 * 30) / 1000; // 10 conv/jour × 30 jours en Litres
+            
+            const convWater = exchanges * 10; 
+            const monthlyWater = (convWater * 10 * 30) / 1000; 
 
             document.getElementById('water-conv').textContent = convWater + ' mL';
             document.getElementById('water-month').textContent = monthlyWater.toFixed(0) + ' L';
 
-            // Changer la couleur selon l'impact
+            
             const convEl = document.getElementById('water-conv');
             if (convWater > 700) {
                 convEl.style.color = 'var(--neon-pink)';
@@ -3588,7 +3588,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
 
         function checkWaterCalc() {
             const answer = parseInt(document.getElementById('water-answer').value);
-            // 50 échanges × 10mL = 500mL
+            
             const correct = answer >= 450 && answer <= 550;
 
             if (correct) {
@@ -3619,7 +3619,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             }
         }
 
-        // Log maintenance eau
+        
         function showWaterLog() {
             showModal(`
                 <div class="modal-title">📋 Journal de Maintenance - Refroidissement</div>
@@ -3636,7 +3636,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             `);
         }
 
-        // Inspection des vannes
+        
         function inspectValve() {
             showModal(`
                 <div class="modal-title">🔧 Système de Vannes</div>
@@ -3652,7 +3652,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             `);
         }
 
-        // PUZZLE 3: Analyse de Graphique - Différence entre modèles
+        
         function puzzleModels() {
             if (gameState.evidence.models) {
                 showAlreadyCollected('models');
@@ -3708,7 +3708,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
                 <div id="models-result"></div>
             `);
 
-            // Animation des barres
+            
             setTimeout(() => {
                 document.getElementById('bar1').style.height = '10px';
                 document.getElementById('bar2').style.height = '30px';
@@ -3755,7 +3755,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             }
         }
 
-        // Fouiller le bureau
+        
         function searchDesk() {
             showModal(`
                 <div class="modal-title">🔍 Bureau du Directeur</div>
@@ -3770,7 +3770,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             `);
         }
 
-        // PUZZLE 4: Décryptage - Coffre-fort (Fabrication)
+        
         function puzzleSafe() {
             if (gameState.evidence.manufacturing) {
                 showAlreadyCollected('manufacturing');
@@ -3844,7 +3844,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             const decrypted = caesarDecrypt(encrypted, shift);
             document.getElementById('decrypted-msg').textContent = decrypted;
 
-            // Couleur neutre pour ne pas révéler la réponse
+            
             document.getElementById('decrypted-msg').style.color = '#8899aa';
         }
 
@@ -3891,7 +3891,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             }
         }
 
-        // PUZZLE 5: Émissions CO2
+        
         function puzzleCO2() {
             if (gameState.evidence.co2) {
                 showAlreadyCollected('co2');
@@ -3932,7 +3932,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
         }
 
         function selectCO2(el, side) {
-            // Reset previous selection on this side
+            
             document.querySelectorAll(`#co2-${side} .connection-item`).forEach(item => {
                 item.classList.remove('selected');
             });
@@ -3940,10 +3940,10 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             el.classList.add('selected');
             window.co2Selection[side] = el.dataset.pair;
 
-            // Check if we have both sides selected
+            
             if (window.co2Selection.left && window.co2Selection.right) {
                 if (window.co2Selection.left === window.co2Selection.right) {
-                    // Match!
+                    
                     window.co2Matches.push(window.co2Selection.left);
                     document.querySelectorAll('.connection-item.selected').forEach(item => {
                         item.classList.remove('selected');
@@ -4004,9 +4004,9 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             });
         }
 
-        // ==================== FIN DU JEU ====================
+        
         function checkEscape() {
-            // Ne pas vérifier si le jeu est déjà terminé
+            
             if (gameState.gameEnded) return;
 
             if (gameState.currentRoom === 'corridor' && Object.values(gameState.evidence).every(v => v)) {
@@ -4015,11 +4015,11 @@ Tapez <span class="info">help</span> pour la liste des commandes.
         }
 
         function gameOver(success) {
-            // Éviter les appels multiples
+            
             if (gameState.gameEnded) return;
             gameState.gameEnded = true;
 
-            stopTimer(); // Arrêter le timer
+            stopTimer(); 
 
             const evidenceCount = Object.values(gameState.evidence).filter(v => v).length;
             const timeUsed = gameConfig.timeLimit - gameState.timeLeft;
@@ -4122,10 +4122,10 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             document.querySelector('.modal-close').style.display = 'none';
         }
 
-        // Vérification périodique pour l'évasion
+        
         setInterval(checkEscape, 1000);
 
-        // ==================== QUIZ DE CERTIFICATION ====================
+        
         const quizQuestions = [
             {
                 question: "Quelle part de l'électricité mondiale est consommée par les data centers ?",
@@ -4280,7 +4280,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
             }
         }
 
-        // ==================== ATTESTATION ====================
+        
         function downloadCertificate() {
             const name = document.getElementById('certificate-name').value.trim() || 'Participant';
             const date = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -4484,7 +4484,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
                 </html>
             `;
 
-            // Télécharger le fichier HTML
+            
             const blob = new Blob([certificateHTML], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -4497,7 +4497,7 @@ Tapez <span class="info">help</span> pour la liste des commandes.
         }
     </script>
 <script>
-/* ──── NAVIGATION MOBILE ──────────────────────────────── */
+
 (function(){
   var bar=document.createElement('div');
   bar.id='mobile-nav-bar';bar.className='mobile-nav-bar';
@@ -4525,7 +4525,7 @@ function closeMobileNav(){
   if(o)o.classList.remove('visible');
   document.body.style.overflow='';
 }
-/* Fermeture auto du tiroir au clic sur un item nav (mobile) */
+
 document.addEventListener('click',function(e){
   if(window.innerWidth>768)return;
   if(e.target.closest('.briefing-nav-item')&&document.querySelector('.briefing-nav.nav-open'))
